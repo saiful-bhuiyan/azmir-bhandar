@@ -9,6 +9,7 @@ use DataTables;
 use App\Models\check_book_page_setup;
 use App\Models\hawlat_entry;
 use App\Models\hawlat_setup;
+use Carbon\Carbon;
 
 class HawlatEntryController extends Controller
 {
@@ -22,7 +23,7 @@ class HawlatEntryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = hawlat_entry::whereDay('updated_at', now()->day)->get();
+            $data = hawlat_entry::whereDay('entry_date', now()->day)->get();
             return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('sl',function($row){
@@ -130,6 +131,7 @@ class HawlatEntryController extends Controller
                 'marfot'=>$request->marfot,
                 'taka'=>$request->taka,
                 'payment_by'=>$request->payment_by,
+                'entry_date'=> Carbon::now(),
             );
             
             if($request->payment_by == 2)

@@ -11,6 +11,7 @@ use App\Models\ponno_marka_setup;
 use App\Models\temp_ponno_sale;
 use App\Models\ponno_sales_entry;
 use App\Models\stock;
+use App\Models\arod_chotha_entry;
 
 class ponno_purchase_entry extends Model
 {
@@ -51,5 +52,10 @@ class ponno_purchase_entry extends Model
     public function stock()
     {
         return $this->hasMany(stock::class,'purchase_id');
+    }
+
+    public function arod_chotha_entry()
+    {
+        return $this->hasMany(arod_chotha_entry::class,'purchase_id');
     }
 }

@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kreta_koifiyot_entries', function (Blueprint $table) {
+        Schema::create('arod_chotha_entries', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('kreta_setup_id');
-            $table->foreign('kreta_setup_id')->references('id')->on('kreta_setups');
-            $table->string('marfot')->nullable();
-            $table->double('taka',10 ,2);
-            $table->date('entry_date')->nullable();
+            $table->unsignedBigInteger('purchase_id');
+            $table->foreign('purchase_id')->references('id')->on('ponno_purchase_entries');
+            $table->double('sales_qty');
+            $table->double('sales_weight');
+            $table->double('sales_rate');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kreta_koifiyot_entries');
+        Schema::dropIfExists('arod_chotha_entries');
     }
 };

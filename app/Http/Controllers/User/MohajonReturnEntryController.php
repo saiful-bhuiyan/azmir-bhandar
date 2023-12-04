@@ -8,6 +8,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
 use App\Models\mohajon_return_entry;
 use App\Models\mohajon_setup;
+use Carbon\Carbon;
 
 class MohajonReturnEntryController extends Controller
 {
@@ -21,7 +22,7 @@ class MohajonReturnEntryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = mohajon_return_entry::whereDay('updated_at', now()->day)->get();
+            $data = mohajon_return_entry::whereDay('entry_date', now()->day)->get();
             return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('sl',function($row){
@@ -109,6 +110,7 @@ class MohajonReturnEntryController extends Controller
                 'marfot'=>$request->marfot,
                 'taka'=>$request->taka,
                 'payment_by'=>$request->payment_by,
+                'entry_date'=> Carbon::now(),
             );
             
             if($request->payment_by == 2)

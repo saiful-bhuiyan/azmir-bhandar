@@ -19,5 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
+        $this->call(PonnoSalesInfosTableSeeder::class);
+        $this->call(PonnoSalesEntriesTableSeeder::class);
     }
 }

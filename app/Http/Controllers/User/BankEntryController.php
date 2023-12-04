@@ -9,6 +9,7 @@ use DataTables;
 use App\Models\bank_setup;
 use App\Models\check_book_page_setup;
 use App\Models\bank_entry;
+use Carbon\Carbon;
 
 class BankEntryController extends Controller
 {
@@ -22,7 +23,7 @@ class BankEntryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = bank_entry::whereDay('updated_at', now()->day)->get();
+            $data = bank_entry::whereDay('entry_date', now()->day)->get();
             return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('sl',function($row){
@@ -130,6 +131,8 @@ class BankEntryController extends Controller
                 }
                 
             }
+
+            $data['entry_date'] = Carbon::now();
     
             $insert = bank_entry::create($data);
             if($insert)

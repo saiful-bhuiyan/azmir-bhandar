@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreign('check_id')->references('id')->on('check_book_page_setups');
             $table->string('marfot')->nullable();
             $table->double('taka' , 10, 2);
+            $table->date('entry_date')->nullable();
             $table->timestamps();
         });
     }

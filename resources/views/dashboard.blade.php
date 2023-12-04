@@ -120,7 +120,7 @@
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য বিক্রয়</p>
                 </a>
-                <a href="entry_kharid/entry_kharid.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('arod_chotha.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">আড়ৎ চৌথা</p>
                 </a>
@@ -159,11 +159,11 @@
             </div>
 
             <div id="reportDiv" class="grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-2 border-solid md:mb-16">
-                <a href="report_amdani/report_amdani.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{url('ponno_purchase_report')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/import_ledger.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য গ্রহন রিপোর্ট</p>
                 </a>
-                <a href="report_bikroy/report_bikroy.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{url('ponno_sales_report')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/sale.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পণ্য বিক্রয় রিপোর্ট</p>
                 </a>

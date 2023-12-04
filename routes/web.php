@@ -27,6 +27,12 @@ use App\Http\Controllers\User\HawlatEntryController;
 use App\Http\Controllers\User\OtherJomaKhorocEntryController;
 use App\Http\Controllers\User\PonnoPurchaseEntryController;
 use App\Http\Controllers\User\PonnoSalesEntryController;
+use App\Http\Controllers\User\ArodchothaController;
+
+/************* Report  ****************/
+
+use App\Http\Controllers\Report\PonnoPurchaseReportController;
+use App\Http\Controllers\Report\PonnoSaleReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,9 +133,22 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::get('getAmountByKreta',[PonnoSalesEntryController::class,'getAmountByKreta']);
     Route::post('storePonnoSales',[PonnoSalesEntryController::class,'storePonnoSales']);
 
+    Route::resource('arod_chotha' ,ArodchothaController::class);
+    Route::post('getPurchaseIdByMohajonId',[ArodchothaController::class,'getPurchaseIdByMohajonId']);
+    Route::post('loadArodChothaTable',[ArodchothaController::class,'loadArodChothaTable']);
+    Route::get('arod_chotha_entry/{purchase_id}',[ArodchothaController::class,'arod_chotha_entry']);
 
 
+    /************ Report Routes *******************/
 
+    Route::get('ponno_purchase_report',[PonnoPurchaseReportController::class,'ponno_purchase_report']);
+    Route::post('searchPurchaseReport',[PonnoPurchaseReportController::class,'searchPurchaseReport']);
+    Route::get('purchase_memo/{id}',[PonnoPurchaseReportController::class,'purchase_memo'])->name('ponno_purchase_report.memo');
+
+
+    Route::get('ponno_sales_report',[PonnoSaleReportController::class,'ponno_sales_report']);
+    Route::post('searchSalesReport',[PonnoSaleReportController::class,'searchSalesReport']);
+    Route::get('sales_memo/{id}',[PonnoSaleReportController::class,'sales_memo'])->name('ponno_sales_report.memo');
 
 
 

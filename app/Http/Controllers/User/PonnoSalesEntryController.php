@@ -14,6 +14,7 @@ use App\Models\temp_ponno_sale;
 use App\Models\ponno_sales_info;
 use App\Models\ponno_sales_entry;
 use App\Models\stock;
+use Carbon\Carbon;
 
 class PonnoSalesEntryController extends Controller
 {
@@ -81,7 +82,7 @@ class PonnoSalesEntryController extends Controller
              ->make(true);
          }
 
-        $stock = stock::where('quantity','quantity' > 0)->get();
+        $stock = stock::where('quantity' ,'>', 0)->get();
         $kreta_area = kreta_setup::select('area')->groupBy('area')->where('status',1)->get();
         return view('user.entry_user.ponno_sales_entry',compact('stock','kreta_area'));
     }
@@ -190,6 +191,7 @@ class PonnoSalesEntryController extends Controller
             'sales_type'=>$request->sales_type,
             'marfot'=>$request->marfot,
             'discount'=>$request->discount ? $request->discount : 0,
+            'entry_date'=> Carbon::now(),
         );
 
         if($request->sales_type == 1)
@@ -198,14 +200,17 @@ class PonnoSalesEntryController extends Controller
             [
                 'cash_kreta_address' => 'required',
                 'cash_kreta_name' => 'required',
+                'cash_kreta_mobile' => 'required',
             ],
             [
                 'cash_kreta_address.required'=>'দয়া করে ক্রেতার ঠিকানা ইনপুট করুন',
                 'cash_kreta_name.required'=>'দয়া করে ক্রেতার নাম ইনপুট করুন',
+                'cash_kreta_mobile.required'=>'দয়া করে ক্রেতার মোবাইল ইনপুট করুন',
             ]);
             
             $data['cash_kreta_address'] = $request->cash_kreta_address;
             $data['cash_kreta_name'] = $request->cash_kreta_name;
+            $data['cash_kreta_mobile'] = $request->cash_kreta_name;
         }
         else
         {

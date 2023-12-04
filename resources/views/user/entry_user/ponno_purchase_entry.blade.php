@@ -151,6 +151,22 @@
                 @endif
               </div>
 
+              <div class="md:col-span-1">
+                <label for="van_cost">ভ্যান ভাড়া :</label>
+                <input type="number" step="any" name="van_cost" id="van_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                @if($errors->has('van_cost'))
+                <span class="text-sm text-red-600">{{ $errors->first('van_cost') }} </span>
+                @endif
+              </div>
+
+              <div class="md:col-span-1">
+                <label for="tohori_cost">তহরী :</label>
+                <input type="number" step="any" name="tohori_cost" id="tohori_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                @if($errors->has('tohori_cost'))
+                <span class="text-sm text-red-600">{{ $errors->first('tohori_cost') }} </span>
+                @endif
+              </div>
+
               <div class="md:col-span-2" id="total_taka_div">
                 <label for="total_taka">সর্বমোট টাকা :</label>
                 <input type="text" id="total_taka" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly/>
@@ -219,13 +235,7 @@
                 দর
             </th>
             <th scope="col" class="px-6 py-3">
-                লেবার
-            </th>
-            <th scope="col" class="px-6 py-3">
-                অন্যান্য
-            </th>
-            <th scope="col" class="px-6 py-3">
-                ট্রাক ভাড়া
+                মোট খরচ
             </th>
             <th scope="col" class="px-6 py-3">
                 মোট টাকা
@@ -306,9 +316,7 @@
                 {data: 'quantity', name: 'quantity'},
                 {data: 'weight', name: 'weight'},
                 {data: 'rate', name: 'rate'},
-                {data: 'labour_cost', name: 'labour_cost'},
-                {data: 'other_cost', name: 'other_cost'},
-                {data: 'truck_cost', name: 'truck_cost'},
+                {data: 'total_cost', name: 'total_cost'},
                 {data: 'total_taka', name: 'total_taka'},
                 {data: 'action', name: 'action' , orderable: "false", searchable: "false"},
             
@@ -328,6 +336,8 @@
       var labour_cost = parseFloat($('#labour_cost').val()) || 0;
       var other_cost = parseFloat($('#other_cost').val()) || 0;
       var truck_cost = parseFloat($('#truck_cost').val()) || 0;
+      var van_cost = parseFloat($('#van_cost').val()) || 0;
+      var tohori_cost = parseFloat($('#tohori_cost').val()) || 0;
 
       if($('#weight').val() != "" && $('#rate').val() != "")
       {
@@ -335,7 +345,7 @@
         
         $('#taka').val(total.toFixed(2));
 
-        var all_total = labour_cost + other_cost + truck_cost + total;
+        var all_total = labour_cost + other_cost + truck_cost + van_cost + tohori_cost + total;
         $('#total_taka').val(all_total.toFixed(2));
 
         var avg = all_total / weight;

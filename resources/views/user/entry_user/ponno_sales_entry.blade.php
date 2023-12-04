@@ -202,6 +202,14 @@
                   @endif
                 </div>
 
+                <div class="md:col-span-1 cash_sale">
+                  <label for="cash_kreta_mobile">মোবাইল নাম্বার :</label>
+                  <input type="text" name="cash_kreta_mobile" id="cash_kreta_mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return totalWithDiscount();" />
+                  @if($errors->has('cash_kreta_mobile'))
+                  <span class="text-sm text-red-600">{{ $errors->first('cash_kreta_mobile') }} </span>
+                  @endif
+                </div>
+
                 <!-- End nogod Select -->
 
                 <div class="md:col-span-1 due_sale">

@@ -31,6 +31,9 @@ return new class extends Migration
             $table->double('labour_cost' ,10 ,2)->nullable();
             $table->double('other_cost' ,10 ,2)->nullable();
             $table->double('truck_cost' ,10 ,2)->nullable();
+            $table->double('van_cost' ,10 ,2)->nullable();
+            $table->double('tohori_cost' ,10 ,2)->nullable();
+            $table->date('entry_date')->nullable();
             $table->timestamps();
         });
     }

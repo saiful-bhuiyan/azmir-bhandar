@@ -12,6 +12,7 @@ use App\Models\ponno_size_setup;
 use App\Models\ponno_marka_setup;
 use App\Models\ponno_purchase_entry;
 use App\Models\stock;
+use Carbon\Carbon;
 
 class PonnoPurchaseEntryController extends Controller
 {
@@ -66,14 +67,9 @@ class PonnoPurchaseEntryController extends Controller
             ->addColumn('rate',function($v){
                 return $v->rate ? $v->rate : '-';
             })
-            ->addColumn('labour_cost',function($v){
-                return $v->labour_cost;
-            })
-            ->addColumn('other_cost',function($v){
-                return $v->other_cost;
-            })
-            ->addColumn('truck_cost',function($v){
-                return $v->truck_cost;
+            ->addColumn('total_cost',function($v){
+                $total_cost = $v->labour_cost + $v->other_cost + $v->truck_cost + $v->van_cost + $v->tohori_cost;
+                return $total_cost;
             })
             ->addColumn('total_taka',function($v){
                 if($v->purchase_type == 1)
@@ -82,6 +78,8 @@ class PonnoPurchaseEntryController extends Controller
                     $total +=$v->labour_cost;
                     $total +=$v->other_cost;
                     $total +=$v->truck_cost;
+                    $total +=$v->van_cost;
+                    $total +=$v->tohori_cost;
 
                     return $total;
                 }
@@ -100,7 +98,7 @@ class PonnoPurchaseEntryController extends Controller
             })
             
              ->rawColumns(['sl','mohajon','purchase_type','ponno_name','ponno_size','ponno_marka','gari_no','quantity',
-             'weight','rate','labour_cost','other_cost','truck_cost','total_taka','action'])
+             'weight','rate','total_cost','total_taka','action'])
              ->make(true);
          }
  
@@ -168,6 +166,9 @@ class PonnoPurchaseEntryController extends Controller
                 'labour_cost'=>$request->labour_cost ? $request->labour_cost : 0,
                 'other_cost'=>$request->other_cost ? $request->other_cost : 0,
                 'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
+                'van_cost'=>$request->van_cost ? $request->van_cost : 0,
+                'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
+                'entry_date'=> Carbon::now(),
             );
             
             if($request->purchase_type == 1)
@@ -237,7 +238,26 @@ class PonnoPurchaseEntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = array(
+            'labour_cost'=>$request->labour_cost ? $request->labour_cost : 0,
+            'other_cost'=>$request->other_cost ? $request->other_cost : 0,
+            'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
+            'van_cost'=>$request->van_cost ? $request->van_cost : 0,
+            'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
+        );
+
+        $update = ponno_purchase_entry::where('id',$id)->update($data);
+
+            if($update)
+            {
+                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+            }
+    
+            return redirect()->back();
     }
 
     /**
@@ -248,6 +268,26 @@ class PonnoPurchaseEntryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $purchase = ponno_purchase_entry::where('id',$id)->first();
+        $stock = stock::where('purchase_id',$id)->first();
+        if($purchase->quantity == $stock->quantity)
+        {
+            $delete = stock::where('purchase_id',$id)->delete();
+            ponno_purchase_entry::find($id)->delete();
+            if($delete)
+            {
+                Toastr::success(__('ডিলিট সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('ডিলিট সফল হয়নি<br>দয়া করে স্টক চেক করুন'), __('ব্যর্থ'));
+            }
+        }
+        else
+        {
+            Toastr::error(__('ডিলিট সফল হয়নি<br>দয়া করে স্টক চেক করুন'), __('ব্যর্থ'));
+        }
+        
+        return redirect()->back();
     }
 }

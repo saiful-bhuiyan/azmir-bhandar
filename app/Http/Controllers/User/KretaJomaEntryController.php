@@ -8,6 +8,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
 use App\Models\kreta_setup;
 use App\Models\kreta_joma_entry;
+use Carbon\Carbon;
 
 class KretaJomaEntryController extends Controller
 {
@@ -21,7 +22,7 @@ class KretaJomaEntryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = kreta_joma_entry::whereDay('updated_at', now()->day)->get();
+            $data = kreta_joma_entry::whereDay('entry_date', now()->day)->get();
             return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('sl',function($row){
@@ -121,6 +122,7 @@ class KretaJomaEntryController extends Controller
                 'marfot'=>$request->marfot,
                 'taka'=>$request->taka,
                 'payment_by'=>$request->payment_by,
+                'entry_date'=> Carbon::now(),
             );
     
             $insert = kreta_joma_entry::create($data);

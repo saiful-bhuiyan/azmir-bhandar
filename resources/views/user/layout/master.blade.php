@@ -10,7 +10,8 @@
     <!-- <link rel="stylesheet" href="./output/tailwind.css" /> -->
     <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="{{asset('js')}}/jquery.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
     <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
@@ -21,6 +22,11 @@
  
     <script src="{{asset('datatable')}}/datatables.min.js"></script>
     <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.1.1/datepicker.min.js"></script> -->
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script> -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800;900&display=swap');
