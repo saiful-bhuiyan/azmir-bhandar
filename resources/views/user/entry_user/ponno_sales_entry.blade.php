@@ -271,10 +271,17 @@
                 </div>
 
                 <div class="md:col-span-1">
-                  <label for="marfot">মারফত :</label>
-                  <input type="text" name="marfot" id="marfot" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
-                  @if($errors->has('marfot'))
-                  <span class="text-sm text-red-600">{{ $errors->first('marfot') }} </span>
+                  <label for="marfot_id">মারফত :</label>
+                  <select name="marfot_id" id="marfot_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+                      <option value="" selected>সিলেক্ট</option>
+                      @if($marfot)
+                      @foreach($marfot as $v)
+                      <option value="{{$v->id}}">{{$v->marfot_name}}</option>
+                      @endforeach
+                      @endif
+                  </select>
+                  @if($errors->has('marfot_id'))
+                  <span class="text-sm text-red-600">{{ $errors->first('marfot_id') }} </span>
                   @endif
                 </div>
 
@@ -533,8 +540,9 @@
       if(sales_weight > 0  && sales_rate > 0)
       {
         var total = sales_weight *  sales_rate;
-        var all_total = total + labour + other;
         var kreta_com = sales_weight * kreta_com_per_kg;
+        var num_kreta_com = parseFloat(kreta_com);
+        var all_total = total + labour + other +num_kreta_com;
         $('#read_taka').val(total.toFixed(2));
         $('#kreta_commission').val(kreta_com.toFixed(2));
         $('#read_total_taka').val(all_total.toFixed(2));

@@ -22,7 +22,9 @@ return new class extends Migration
             $table->string('cash_kreta_name')->nullable();
             $table->string('cash_kreta_mobile')->nullable();
             $table->double('discount', 10,2)->nullable();
-            $table->string('marfot')->nullable();
+            $table->double('total_taka', 10,2)->nullable();
+            $table->unsignedBigInteger('marfot_id')->nullable();
+            $table->foreign('marfot_id')->references('id')->on('bikroy_marfot_setups');
             $table->date('entry_date')->nullable();
             $table->timestamps();
         });

@@ -37,12 +37,20 @@ class PonnoSaleReportController extends Controller
                         $query2->whereIn('ponno_setup_id',[$ponno_setup_id]);
                     });
                  })->whereBetween('entry_date',[$date_from, $date_to])->get();
-                 return view('user.report.ponno_sales_report.all_table',compact('sales','sales_type'));
+
+                 $viewContent = view('user.report.ponno_sales_report.all_table', compact('sales','sales_type'))->render();
+
+                 return response()->json(['viewContent' => $viewContent]);
+                 
             }
             else
             {
                 $sales = ponno_sales_info::whereBetween('entry_date',[$date_from, $date_to])->get();
-                return view('user.report.ponno_sales_report.all_table',compact('sales','sales_type'));
+
+                $viewContent = view('user.report.ponno_sales_report.all_table', compact('sales','sales_type'))->render();
+
+                return response()->json(['viewContent' => $viewContent]);
+         
             }
             
         }
@@ -56,12 +64,20 @@ class PonnoSaleReportController extends Controller
                         $query2->whereIn('ponno_setup_id',[$ponno_setup_id]);
                     });
                  })->where('sales_type',$sales_type)->whereBetween('entry_date',[$date_from, $date_to])->get();
-                 return view('user.report.ponno_sales_report.all_table',compact('sales','sales_type'));
+
+                 $viewContent = view('user.report.ponno_sales_report.all_table', compact('sales','sales_type'))->render();
+
+                 return response()->json(['viewContent' => $viewContent]);
+                 
             }
             else
             {
                 $sales = ponno_sales_info::where('sales_type',$sales_type)->whereBetween('entry_date',[$date_from, $date_to])->get();
-                return view('user.report.ponno_sales_report.type_table',compact('sales','sales_type'));
+
+                $viewContent = view('user.report.ponno_sales_report.type_table', compact('sales','sales_type'))->render();
+
+                return response()->json(['viewContent' => $viewContent]);
+      
             }
             
             

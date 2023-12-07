@@ -63,29 +63,18 @@
 
 <div class="mb-4">
 
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-
-<div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto shadow-lg sm:rounded-lg bg-white pb-6">
-  <p class="text-lg text-gray-700 uppercase px-6 py-3 font-bold text-center barlow">পন্য গ্রহণ রিপোর্ট</p>
-  <table id="purchase_table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 data-table">
-  
-    </table>
-
-</div>
-
 </div>
 
 <script>
-  // $('#search').click(function(){
-  //   searchPurchaseReport();
-  // })
+
   function searchPurchaseReport()
   {
     var purchase_type = $('#purchase_type').val();
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
-
-    $.ajax({
+    if(purchase_type != ""  && date_from != "" && date_to != "")
+    {
+      $.ajax({
       type : 'POST',
       url : '{{url('searchPurchaseReport')}}',
       data :  {
@@ -95,10 +84,28 @@
       },
       success : function(response)
       {
-        //  console.log(response)
-        $('#purchase_table').html(response);
+        var left = (screen.width - 800) / 2;
+        var top = (screen.height - 700) / 4;
+
+        var myWindow = window.open('','_blank',
+        'resizable=yes, width=' + '800'
+        + ', height=' + '700' + ', top='
+        + top + ', left=' + left);
+      
+        myWindow.document.write(response.viewContent);
+
+            
+      },
+      error: function(xhr, status, error) {
+        console.error(error);
       }
-    })
+      })
+    }
+    else
+    {
+      swal('সঠিক তথ্য ইনপুট করুন')
+    }
+    
   }
 
   $( function() {

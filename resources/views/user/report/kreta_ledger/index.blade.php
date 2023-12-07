@@ -8,37 +8,45 @@
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 mb-2 text-center">
-            <p class="font-medium text-lg">পন্য বিক্রয় রিপোর্ট</p>
+            <p class="font-medium text-lg">ক্রেতার লেজার</p>
           </div>
 
           
           <div class="lg:col-span-2">
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
               
-              <div class="md:col-span-1">
-                <label for="sales_type">বিক্রির ধরণ :</label>
-                <select name="sales_type" id="sales_type" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
-                    <option value="3" selected>সকল</option>
-                    <option value="1">নগদ</option>
-                    <option value="2">বাকি</option>
-                </select>
-                @if($errors->has('sales_type'))
-                <span class="text-sm text-red-600">{{ $errors->first('sales_type') }} </span>
-                @endif
-              </div>
-
-              <div class="md:col-span-1">
-                <label for="ponno_setup_id">পন্যের নাম :</label>
-                <select name="ponno_setup_id" id="ponno_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+            <div class="md:col-span-1">
+                <label for="area">এরিয়া :</label>
+                <select name="area" id="area" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getkretaAddressByArea();" required>
                     <option value="" selected>সিলেক্ট</option>
-                    @if($ponno_setup)
-                    @foreach($ponno_setup as $v)
-                    <option value="{{$v->id}}">{{$v->ponno_name}}</option>
+                    @if($kreta_setup)
+                    @foreach($kreta_setup as $b)
+                    <option value="{{$b->area}}">{{$b->area}}</option>
                     @endforeach
                     @endif
                 </select>
-                @if($errors->has('ponno_setup_id'))
-                <span class="text-sm text-red-600">{{ $errors->first('ponno_setup_id') }} </span>
+                @if($errors->has('area'))
+                <span class="text-sm text-red-600">{{ $errors->first('area') }} </span>
+                @endif
+              </div>
+              
+              <div class="md:col-span-2">
+                <label for="address">ঠিকানা :</label>
+                <select name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getKretaNameByAddress();" required>
+                    <option value="" selected>সিলেক্ট</option>
+                </select>
+                @if($errors->has('address'))
+                <span class="text-sm text-red-600">{{ $errors->first('address') }} </span>
+                @endif
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="kreta_setup_id">ক্রেতার নাম :</label>
+                <select name="kreta_setup_id" id="kreta_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+                    <option value="" selected>সিলেক্ট</option>
+                </select>
+                @if($errors->has('kreta_setup_id'))
+                <span class="text-sm text-red-600">{{ $errors->first('kreta_setup_id') }} </span>
                 @endif
               </div>
 
@@ -60,7 +68,7 @@
       
               <div class="md:col-span-6 text-right">
                 <div class="inline-flex items-end">
-                  <button type="button" id="search" onclick="searchSalesReport();" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সার্চ</button>
+                  <button type="button" id="search" onclick="search();" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সার্চ</button>
                 </div>
               </div>
 
@@ -78,24 +86,25 @@
 
 <div class="mb-4">
 
+
+  
+    
+
 </div>
 
 <script>
 
-  function searchSalesReport()
+function search()
   {
-    var sales_type = $('#sales_type').val();
-    var ponno_setup_id = $('#ponno_setup_id').val();
+    var kreta_setup_id = $('#kreta_setup_id').val();
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
-    if(date_from != "" && date_to != "")
-    {
-      $.ajax({
+
+    $.ajax({
       type : 'POST',
-      url : '{{url('searchSalesReport')}}',
+      url : "{{route('kreta_ledger.search')}}",
       data :  {
-        sales_type : sales_type,
-        ponno_setup_id : ponno_setup_id,
+        kreta_setup_id : kreta_setup_id,
         date_from : date_from,
         date_to : date_to
       },
@@ -116,14 +125,51 @@
       error: function(xhr, status, error) {
         console.error(error);
       }
-      })
-    }
-    else
-    {
-      swal("সঠিক তথ্য ইনপুট করুন")
-    }
-    
+
+    })
   }
+
+function getkretaAddressByArea()
+    {
+        var area = $('#area').val();
+
+        if(area != "")
+        {
+            $.ajax({
+                type : 'POST',
+                url : '{{url('getkretaAddressByArea')}}',
+                data : {
+                    area : area,
+                },
+                success:function(response)
+                {
+                    $('#address').html(response);
+                }
+
+            });
+        }
+    }
+
+    function getKretaNameByAddress()
+    {
+        var address = $('#address').val();
+
+        if(address != "")
+        {
+            $.ajax({
+                type : 'POST',
+                url : '{{url('getKretaNameByAddress')}}',
+                data : {
+                    address : address,
+                },
+                success:function(response)
+                {
+                    $('#kreta_setup_id').html(response);
+                }
+
+            });
+        }
+    }
 
   $( function() {
     $( "#date_from" ).datepicker({
@@ -146,6 +192,9 @@
         }
     });
   } );
+
+  
+
 </script>
 
 

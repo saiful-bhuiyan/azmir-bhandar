@@ -7,10 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Home</title>
-    <!-- <link rel="stylesheet" href="./output/tailwind.css" /> -->
-    <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="{{asset('js')}}/jquery.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" />
 
     <style>
@@ -114,7 +112,7 @@
           <p class="text-sm font-bold text-red-600">বিক্রয় মারফত : {{$sales->marfot}}</p>
         </div>
         <div class="col-span-2">
-          <p class="text-sm font-bold text-red-600">ধরণ : @if($sales->sales_type == 2) নগদ @elseif($sales->sales_type == 1) বাকি @endif</p>
+          <p class="text-sm font-bold text-red-600">ধরণ : @if($sales->sales_type == 1) নগদ @elseif($sales->sales_type == 2) বাকি @endif</p>
         </div>
         <div class="col-span-2">
           <p class="text-sm font-bold text-red-600">ক্রেতার নাম : @if($sales->sales_type == 2){{$sales->kreta_setup->name}}@else{{$sales->cash_kreta_name}} @endif</p>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
 use App\Models\kreta_setup;
+use App\Models\bikroy_marfot_setup;
 use App\Models\mohajon_commission_setup;
 use App\Models\kreta_commission_setup;
 use App\Models\ponno_purchase_entry;
@@ -84,7 +85,8 @@ class PonnoSalesEntryController extends Controller
 
         $stock = stock::where('quantity' ,'>', 0)->get();
         $kreta_area = kreta_setup::select('area')->groupBy('area')->where('status',1)->get();
-        return view('user.entry_user.ponno_sales_entry',compact('stock','kreta_area'));
+        $marfot = bikroy_marfot_setup::get();
+        return view('user.entry_user.ponno_sales_entry',compact('stock','kreta_area','marfot'));
     }
 
     /**
@@ -180,16 +182,16 @@ class PonnoSalesEntryController extends Controller
         $validated = $request->validate(
         [
             'sales_type' => 'required',
-            'marfot' => 'required',
+            'marfot_id' => 'required',
         ],
         [
             'sales_type.required'=>'দয়া করে বিক্রির ধরণ সিলেক্ট করুন',
-            'marfot.required'=>'দয়া করে মারফতের নাম ইনপুট করুন',
+            'marfot_id.required'=>'দয়া করে মারফতের নাম সিলেক্ট করুন',
         ]);
 
         $data = array(
             'sales_type'=>$request->sales_type,
-            'marfot'=>$request->marfot,
+            'marfot_id'=>$request->marfot_id,
             'discount'=>$request->discount ? $request->discount : 0,
             'entry_date'=> Carbon::now(),
         );
@@ -225,6 +227,13 @@ class PonnoSalesEntryController extends Controller
             $data['kreta_setup_id'] = $request->kreta_setup_id;
 
         }
+        $total_sale_amount = 0;
+        $sales_infos = temp_ponno_sale::get();
+        foreach($sales_infos as $s)
+        {
+            $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission;
+        }
+        $data['total_taka'] = $total_sale_amount;
 
         $insert = ponno_sales_info::create($data);
         if($insert)

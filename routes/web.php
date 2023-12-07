@@ -19,6 +19,7 @@ use App\Http\Controllers\User\OtherJomaKhorocSetupController;
 use App\Http\Controllers\User\MohajonCommissionSetupController;
 use App\Http\Controllers\User\KretaCommissionSetupController;
 use App\Http\Controllers\User\KretaJomaEntryController;
+use App\Http\Controllers\User\KretaKoifiyotEntryController;
 use App\Http\Controllers\User\BankEntryController;
 use App\Http\Controllers\User\MohajonPaymentEntryController;
 use App\Http\Controllers\User\MohajonReturnEntryController;
@@ -33,6 +34,10 @@ use App\Http\Controllers\User\ArodchothaController;
 
 use App\Http\Controllers\Report\PonnoPurchaseReportController;
 use App\Http\Controllers\Report\PonnoSaleReportController;
+use App\Http\Controllers\Report\KretaLedgerController;
+use App\Http\Controllers\Report\StockReportController;
+use App\Http\Controllers\Report\AmanotReportController;
+use App\Http\Controllers\Report\HawlatReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -149,6 +154,18 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::get('ponno_sales_report',[PonnoSaleReportController::class,'ponno_sales_report']);
     Route::post('searchSalesReport',[PonnoSaleReportController::class,'searchSalesReport']);
     Route::get('sales_memo/{id}',[PonnoSaleReportController::class,'sales_memo'])->name('ponno_sales_report.memo');
+
+    Route::get('kreta_ledger',[KretaLedgerController::class,'index'])->name('kreta_ledger.index');
+    Route::post('kreta_ledger_search',[KretaLedgerController::class,'search'])->name('kreta_ledger.search');
+
+    Route::get('stock_report',[StockReportController::class,'index'])->name('stock_report.index');
+    Route::post('stock_report_search',[StockReportController::class,'search'])->name('stock_report.search');
+
+    Route::get('amanot_ledger',[AmanotReportController::class,'index'])->name('amanot_ledger.index');
+    Route::post('amanot_ledger_search',[AmanotReportController::class,'search'])->name('amanot_ledger.search');
+
+    Route::get('hawlat_ledger',[HawlatReportController::class,'index'])->name('hawlat_ledger.index');
+    Route::post('hawlat_ledger_search',[HawlatReportController::class,'search'])->name('hawlat_ledger.search');
 
 
 

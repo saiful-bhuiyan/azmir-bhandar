@@ -167,7 +167,7 @@
                     <img src="{{asset('frontend')}}/image/sale.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পণ্য বিক্রয় রিপোর্ট</p>
                 </a>
-                <a href="report_cash/report_cash.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/document.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">দৈনিক ক্যাশ রিপোর্ট</p>
                 </a>
@@ -179,15 +179,15 @@
                     <img src="{{asset('frontend')}}/image/payment-method.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">মহাজন লেজার</p>
                 </a>
-                <a href="report_kreta/report_kreta.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('kreta_ledger.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার লেজার</p>
                 </a>
-                <a href="report_kreta/report_kreta.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('amanot_ledger.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">আমানত লেজার</p>
                 </a>
-                <a href="report_kreta/report_kreta.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('hawlat_ledger.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">হাওলাত লেজার</p>
                 </a>
@@ -207,7 +207,7 @@
                     <img src="{{asset('frontend')}}/image/product_cost.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্যের লাভ লস রিপোর্ট</p>
                 </a>
-                <a href="report_stock/report_stock.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('stock_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/product.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">স্টক রিপোর্ট</p>
                 </a>
@@ -299,7 +299,7 @@
 
             var url = $(this).attr('href');
 
-            var myWindow = window.open(url, 'Demo',
+            var myWindow = window.open(url, url,
             'resizable=yes, width=' + '800'
             + ', height=' + '700' + ', top='
             + top + ', left=' + left);

@@ -24,13 +24,19 @@ class PonnoPurchaseReportController extends Controller
         if($purchase_type == 3)
         {
             $purchase = ponno_purchase_entry::whereBetween('entry_date',[$date_from, $date_to])->get();
-            return view('user.report.ponno_purchase_report.all_table',compact('purchase','purchase_type'));
+
+            $viewContent = view('user.report.ponno_purchase_report.all_table', compact('purchase','purchase_type'))->render();
+
+            return response()->json(['viewContent' => $viewContent]);
+           
         }
         else if($purchase_type == 1 or 2)
         {
             $purchase = ponno_purchase_entry::where('purchase_type',$purchase_type)->whereBetween('entry_date',[$date_from, $date_to])->get();
-            return view('user.report.ponno_purchase_report.type_table',compact('purchase','purchase_type'));
-            
+
+            $viewContent = view('user.report.ponno_purchase_report.type_table', compact('purchase','purchase_type'))->render();
+
+            return response()->json(['viewContent' => $viewContent]);  
         }
         else
         {
