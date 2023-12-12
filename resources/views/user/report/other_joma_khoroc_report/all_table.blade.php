@@ -3,7 +3,7 @@
 
 <div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white md:p-8">
-      <span class="p-1 text-white bg-blue-600">ক্রেতার লেজার</span>
+      <span class="p-1 text-white bg-blue-600">অন্যান্য জমা/খরচ রিপোর্ট</span>
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
       <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>
       <p class="text-lg font-bold text-red-600">সাথী মার্কেট ইসলামপুর রোড,ফেনী</p>
@@ -19,22 +19,20 @@
       </div>
 
     <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
-    <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">ক্রেতা লেজার</p>
+    <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">অন্যান্য জমা/খরচ রিপোর্ট</p>
         <div class="grid grid-cols-2 mt-2 text-center px-4">
-            <div class="col-span-1">
-                <h1 class="text-base font-bold text-red-600">ক্রেতার নাম : {{$kreta->name}}</h1>
+        @if($other_joma_khoroc_setup)
+            <div class="col-span-1 py-1">
+                <h1 class="text-base font-bold text-red-600">খাতের নাম : {{$other_joma_khoroc_setup->name}}</h1>
             </div>
-            <div class="col-span-1">
-                <h1 class="text-base font-bold text-red-600">ক্রেতার ঠিকানা : {{$kreta->address}}</h1>
+            <div class="col-span-1 py-1">
+                <h1 class="text-base font-bold text-red-600">খাতের ঠিকানা : {{$other_joma_khoroc_setup->address}}</h1>
             </div>
-            <div class="col-span-1">
-                <h1 class="text-base font-bold text-red-600">ক্রেতার এরিয়া : {{$kreta->area}}</h1>
-            </div>
-            <div class="col-span-1">
-                <h1 class="text-base font-bold text-red-600">ক্রেতার মোবাইল : {{$kreta->mobile}}</h1>
+            <div class="col-span-1 py-1">
+                <h1 class="text-base font-bold text-red-600">খাতের মোবাইল : {{$other_joma_khoroc_setup->mobile}}</h1>
             </div>
         </div>
-        
+        @endif
         <table id="table" class="w-full text-sm text-left text-gray-500 data-table">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
                 <tr class="border border-collapse">
@@ -42,7 +40,7 @@
                         তারিখ
                     </th>
                     <th scope="col" class="px-2 py-3">
-                        ইনভয়েস
+                        ইনভয়েস/আইডি
                     </th>
                     <th scope="col" class="px-2 py-3">
                         পেমেন্টের মাধ্যম
@@ -64,48 +62,43 @@
             </thead>
             <tbody id="table_body">
                 @php
+                use Illuminate\Support\Carbon;
+                @endphp
+                
+                @if($other_joma_khoroc)
+                @php
+                
                 $total = 0;
                 $total_joma = 0;
                 $total_khoroc = 0;
                 @endphp
 
-                @if($kreta)
+                @foreach($other_joma_khoroc as $v)
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td colspan="6" class="px-2 py-3 text-right">সাবেক পাওনা :</td>
-                    <td class="px-2 py-3 text-sm font-bold text-red-600 ">{{$total += $kreta->old_amount}}</td>
+                    <td class="px-2 py-3">{{ Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y')  }}</td>
+                    <td class="px-2 py-3">{{ $v->id }}</td>
+                    <td class="px-2 py-3">@if($v->payment_by == 1) ক্যাশ @elseif($v->payment_by == 2)
+                         {{$v->bank_setup->bank_name}}/{{substr($v->bank_setup->account_no, -4)}} @endif</td>
+                    <td class="px-2 py-3">{{ $v->marfot }}</td>
+                    <td class="px-2 py-3">@if($v->type == 2){{ $v->taka }}@else - @endif</td>
+                    <td class="px-2 py-3">@if($v->type == 1){{ $v->taka }}@else - @endif</td>
+                    @if($v->type == 1)
+                    <td class="px-2 py-3">{{ $total += $v->taka }}</td>
+                    @else
+                    <td class="px-2 py-3">{{ $total -= $v->taka }}</td>
+                    @endif
                 </tr>
+                @if($v->type == 1)
+                    @php
+                    $total_joma += $v->taka;
+                    @endphp
+                @elseif($v->type == 2)
+                    @php
+                    $total_khoroc += $v->taka;
+                    @endphp
                 @endif
 
-                @if($record)
-                @foreach($record as $data)
-                @php
-                if($data['table'] == 1)
-                {
-                $total_khoroc += $data['khoroc'];
-                }
-                else
-                {
-                $total_joma += $data['joma'];
-                }
-
-                @endphp
-                <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td class="px-2 py-3">{{ $data['entry_date'] }}</td>
-                    @if($data['table'] == 1)
-                    <td class="px-2 py-3 font-bold text-blue-700 "><a href="{{route('ponno_sales_report.memo',$data['id'])}}" class="url" onclick="return false;">{{ $data['id'] }}</a></td>
-                    @else
-                    <td class="px-2 py-3">{{ $data['id'] }}</td>
-                    @endif
-                    <td class="px-2 py-3">{{ $data['payment'] }}</td>
-                    <td class="px-2 py-3">{{ $data['marfot'] }}</td>
-                    <td class="px-2 py-3">{{ $data['khoroc'] }}</td>
-                    <td class="px-2 py-3">{{ $data['joma'] }}</td>
-                    @if($data['table'] != 1)
-                    <td class="px-2 py-3">{{ $total -= $data['joma'] }}</td>
-                    @else
-                    <td class="px-2 py-3">{{ $total += $data['khoroc'] }}</td>
-                    @endif
-                </tr>
+                
 
                 @endforeach
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
@@ -116,7 +109,7 @@
                 </tr>
                 @endif
             </tbody>
-            
+         
         </table>
     </div>
 
@@ -132,18 +125,6 @@
             margin: 0;
         }
     </style>
-    <script>
-        $('.url').click(function() {
-            var left = (screen.width - 800) / 2;
-            var top = (screen.height - 700) / 4;
-
-            var url = $(this).attr('href');
-
-            var myWindow = window.open(url, url,
-                'resizable=yes, width=' + '800' +
-                ', height=' + '700' + ', top=' +
-                top + ', left=' + left);
-        })
-    </script>
+ 
 
 @endsection

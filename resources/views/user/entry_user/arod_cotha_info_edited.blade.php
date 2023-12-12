@@ -60,9 +60,10 @@
                 @foreach($sales as $s)
                 
                 @php
+                $total_mohajon_commission += $s->sales_weight * $s->ponno_purchase_entry->ponno_setup->mohajon_commission_setup->commission_amount;
+
                 $total_sale += $s->sales_weight * $s->sales_rate;
                 $total_sale_qty += $s->sales_qty;
-                $total_mohajon_commission += $s->mohajon_commission;
                 @endphp
                 <tr>
                     <td class="border border-slate-500">{{$count++}}</td>
@@ -78,7 +79,8 @@
                             $purchase->van_cost + $purchase->other_cost +$purchase->tohori_cost;
                 $kacha_sales = $total_sale - $total_cost;
                 
-              @endphp
+               @endphp
+
             </tbody>
             <tfoot class="">
               <tr>
@@ -118,7 +120,7 @@
               <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost}}</p>
               <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost}}</p>
               <p class="p-1 text-xs text-gray-800">তহরী : {{$purchase->tohori_cost}}</p>
-             
+              
               <p class="p-1 text-xs text-gray-800">মোট খরচ : {{$total_cost}}</p>
               <p class="p-1 text-xs text-gray-800">কাচা বিক্রি : {{$kacha_sales}}</p>
               <p class="p-1 text-xs text-gray-800">নগদ বিক্রি : {{$total_sale}}</p>

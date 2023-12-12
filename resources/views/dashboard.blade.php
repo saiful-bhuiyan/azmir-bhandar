@@ -171,11 +171,11 @@
                     <img src="{{asset('frontend')}}/image/document.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">দৈনিক ক্যাশ রিপোর্ট</p>
                 </a>
-                <a href="report_commission_ponno/report_commission_ponno.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('commission_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">কমিশন রিপোর্ট</p>
                 </a>
-                <a href="report_kharid/report_kharid.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('mohajon_ledger.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/payment-method.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">মহাজন লেজার</p>
                 </a>
@@ -191,19 +191,19 @@
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">হাওলাত লেজার</p>
                 </a>
-                <a href="report_commission_ponno/report_commission_ponno.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('other_joma_khoroc_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/other_cost.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">অন্যান্য জমা/খরচ রিপোর্ট</p>
                 </a>
-                <a href="report_kharid_ponno/report_kharid_ponno.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('kreta_koifiyot_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার কৈফিয়ত রিপোর্ট</p>
                 </a>
-                <a href="report_bank/report_bank.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('bank_ledger.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ব্যাংক লেজার</p>
                 </a>
-                <a href="report_onno_khoroc/report_onno_khoroc.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('ponno_lav_loss_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/product_cost.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্যের লাভ লস রিপোর্ট</p>
                 </a>

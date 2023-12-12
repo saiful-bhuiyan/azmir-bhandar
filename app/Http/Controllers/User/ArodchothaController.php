@@ -187,8 +187,19 @@ class ArodchothaController extends Controller
 
         $purchase = ponno_purchase_entry::where('id', $request->purchase_id)->first(); 
 
-        $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
+        $arod_chotha = arod_chotha_entry::where('purchase_id',$purchase->id)->count();
 
-        return view('user.entry_user.arod_cotha_info',compact('purchase','sales'));
+        if($arod_chotha > 0)
+        {
+            $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+            return view('user.entry_user.arod_cotha_info_edited',compact('purchase','sales'));
+        }
+        else
+        {
+            $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
+            return view('user.entry_user.arod_cotha_info',compact('purchase','sales'));
+        }
+
+        
     }
 }

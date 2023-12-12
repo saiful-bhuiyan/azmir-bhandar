@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\HomeController;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\User\CommonAjaxController;
 use App\Http\Controllers\User\MohajonSetupController;
 use App\Http\Controllers\User\PonnoSetupController;
@@ -38,6 +40,13 @@ use App\Http\Controllers\Report\KretaLedgerController;
 use App\Http\Controllers\Report\StockReportController;
 use App\Http\Controllers\Report\AmanotReportController;
 use App\Http\Controllers\Report\HawlatReportController;
+use App\Http\Controllers\Report\OtherJomaKhorocReportController;
+use App\Http\Controllers\Report\KretaKoifiyotReportController;
+use App\Http\Controllers\Report\BankReportController;
+use App\Http\Controllers\Report\CommissionReportController;
+use App\Http\Controllers\Report\PonnoLavLossReportController;
+use App\Http\Controllers\Report\MohajonLedgerController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +60,12 @@ use App\Http\Controllers\Report\HawlatReportController;
 */
 
 Route::get('/', function () {
+    if (Auth::guard('admin')->check()) {
+        return redirect('/admin/dashboard'); // Redirect to the dashboard if the user is already authenticated
+    }
+    else{
+        return redirect('/dashboard');
+    }
     return view('auth.login');
 });
 
@@ -166,6 +181,24 @@ Route::group(['middleware' => 'auth'],  function() {
 
     Route::get('hawlat_ledger',[HawlatReportController::class,'index'])->name('hawlat_ledger.index');
     Route::post('hawlat_ledger_search',[HawlatReportController::class,'search'])->name('hawlat_ledger.search');
+
+    Route::get('other_joma_khoroc_report',[OtherJomaKhorocReportController::class,'index'])->name('other_joma_khoroc_report.index');
+    Route::post('other_joma_khoroc_report_search',[OtherJomaKhorocReportController::class,'search'])->name('other_joma_khoroc_report.search');
+
+    Route::get('kreta_koifiyot_report',[KretaKoifiyotReportController::class,'index'])->name('kreta_koifiyot_report.index');
+    Route::post('kreta_koifiyot_report_search',[KretaKoifiyotReportController::class,'search'])->name('kreta_koifiyot_report.search');
+
+    Route::get('bank_ledger',[BankReportController::class,'index'])->name('bank_ledger.index');
+    Route::post('bank_ledger_search',[BankReportController::class,'search'])->name('bank_ledger.search');
+
+    Route::get('commission_report',[CommissionReportController::class,'index'])->name('commission_report.index');
+    Route::post('commission_report_search',[CommissionReportController::class,'search'])->name('commission_report.search');
+
+    Route::get('ponno_lav_loss_report',[PonnoLavLossReportController::class,'index'])->name('ponno_lav_loss_report.index');
+    Route::post('ponno_lav_loss_report_search',[PonnoLavLossReportController::class,'search'])->name('ponno_lav_loss_report.search');
+
+    Route::get('mohajon_ledger',[MohajonLedgerController::class,'index'])->name('mohajon_ledger.index');
+    Route::post('mohajon_ledger_search',[MohajonLedgerController::class,'search'])->name('mohajon_ledger.search');
 
 
 

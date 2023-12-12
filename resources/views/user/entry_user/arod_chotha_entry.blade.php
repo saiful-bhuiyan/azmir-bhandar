@@ -325,7 +325,7 @@
     }
 
   }
-  $(document).ready(function(){
+
     function getTotalTaka()
     {
       var labour_cost = parseFloat($('#labour_cost').val()) || 0;
@@ -338,7 +338,8 @@
       $('#total_cost').val(all_total.toFixed(2));
       
     }
-  })
+
+
 
 </script>
 

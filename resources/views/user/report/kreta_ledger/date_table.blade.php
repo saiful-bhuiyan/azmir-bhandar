@@ -46,7 +46,7 @@
                         তারিখ
                     </th>
                     <th scope="col" class="px-2 py-3">
-                        ইনভয়েস/আইডি
+                        ইনভয়েস
                     </th>
                     <th scope="col" class="px-2 py-3">
                         পেমেন্টের মাধ্যম

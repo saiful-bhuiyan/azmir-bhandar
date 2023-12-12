@@ -88,7 +88,7 @@
 @if($purchase)
   <div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white rounded shadow-lg md:p-8">
-      <span class="p-1 text-white bg-blue-600">আড়ত চৌথা</span>
+      <span class="p-1 text-white bg-blue-600">পন্য গ্রহণ মেমো</span>
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
       <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>
       <p class="text-lg font-bold text-red-600">সাথী মার্কেট ইসলামপুর রোড,ফেনী</p>
@@ -221,7 +221,7 @@
               <p class="p-1 text-xs text-gray-800">মোট খরচ : {{$total_cost}}</p>
               <p class="p-1 text-xs text-gray-800">কাচা বিক্রি : {{$kacha_sales}}</p>
               <p class="p-1 text-xs text-gray-800">নগদ বিক্রি : {{$total_sale}}</p>
-              <p class="p-1 text-xs text-gray-800">সর্বমোট টাকা : </p>
+              <p class="p-1 text-xs text-gray-800">সর্বমোট টাকা : {{$kacha_sales}} </p>
 
             </div>
           </div>

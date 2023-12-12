@@ -8,45 +8,25 @@
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 mb-2 text-center">
-            <p class="font-medium text-lg">ক্রেতার লেজার</p>
+            <p class="font-medium text-lg">ব্যাংক লেজার</p>
           </div>
 
           
           <div class="lg:col-span-2">
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
               
-            <div class="md:col-span-1">
-                <label for="area">এরিয়া :</label>
-                <select name="area" id="area" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getkretaAddressByArea();" required>
+            <div class="md:col-span-3">
+                <label for="bank_setup_id">ব্যাংক তথ্য :</label>
+                <select name="bank_setup_id" id="bank_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
                     <option value="" selected>সিলেক্ট</option>
-                    @if($kreta_setup)
-                    @foreach($kreta_setup as $b)
-                    <option value="{{$b->area}}">{{$b->area}}</option>
+                    @if($bank_setup)
+                    @foreach($bank_setup as $b)
+                    <option value="{{$b->id}}">{{$b->shakha}}/{{$b->bank_name}}/{{$b->account_name}}/{{$b->account_no}}</option>
                     @endforeach
                     @endif
                 </select>
-                @if($errors->has('area'))
-                <span class="text-sm text-red-600">{{ $errors->first('area') }} </span>
-                @endif
-              </div>
-              
-              <div class="md:col-span-2">
-                <label for="address">ঠিকানা :</label>
-                <select name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getKretaNameByAddress();" required>
-                    <option value="" selected>সিলেক্ট</option>
-                </select>
-                @if($errors->has('address'))
-                <span class="text-sm text-red-600">{{ $errors->first('address') }} </span>
-                @endif
-              </div>
-
-              <div class="md:col-span-2">
-                <label for="kreta_setup_id">ক্রেতার নাম :</label>
-                <select name="kreta_setup_id" id="kreta_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
-                    <option value="" selected>সিলেক্ট</option>
-                </select>
-                @if($errors->has('kreta_setup_id'))
-                <span class="text-sm text-red-600">{{ $errors->first('kreta_setup_id') }} </span>
+                @if($errors->has('bank_setup_id'))
+                <span class="text-sm text-red-600">{{ $errors->first('bank_setup_id') }} </span>
                 @endif
               </div>
 
@@ -96,15 +76,15 @@
 
 function search()
   {
-    var kreta_setup_id = $('#kreta_setup_id').val();
+    var bank_setup_id = $('#bank_setup_id').val();
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
 
     $.ajax({
       type : 'POST',
-      url : "{{route('kreta_ledger.search')}}",
+      url : "{{route('bank_ledger.search')}}",
       data :  {
-        kreta_setup_id : kreta_setup_id,
+        bank_setup_id : bank_setup_id,
         date_from : date_from,
         date_to : date_to
       },
@@ -128,48 +108,6 @@ function search()
 
     })
   }
-
-function getkretaAddressByArea()
-    {
-        var area = $('#area').val();
-
-        if(area != "")
-        {
-            $.ajax({
-                type : 'POST',
-                url : '{{url("getkretaAddressByArea")}}',
-                data : {
-                    area : area,
-                },
-                success:function(response)
-                {
-                    $('#address').html(response);
-                }
-
-            });
-        }
-    }
-
-    function getKretaNameByAddress()
-    {
-        var address = $('#address').val();
-
-        if(address != "")
-        {
-            $.ajax({
-                type : 'POST',
-                url : '{{url("getKretaNameByAddress")}}',
-                data : {
-                    address : address,
-                },
-                success:function(response)
-                {
-                    $('#kreta_setup_id').html(response);
-                }
-
-            });
-        }
-    }
 
   $( function() {
     $( "#date_from" ).datepicker({

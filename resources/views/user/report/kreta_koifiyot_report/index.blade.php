@@ -8,7 +8,7 @@
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 mb-2 text-center">
-            <p class="font-medium text-lg">ক্রেতার লেজার</p>
+            <p class="font-medium text-lg">ক্রেতার কৈফিয়ত রিপোর্ট</p>
           </div>
 
           
@@ -99,10 +99,11 @@ function search()
     var kreta_setup_id = $('#kreta_setup_id').val();
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
-
-    $.ajax({
+    if(kreta_setup_id != "")
+    {
+      $.ajax({
       type : 'POST',
-      url : "{{route('kreta_ledger.search')}}",
+      url : "{{route('kreta_koifiyot_report.search')}}",
       data :  {
         kreta_setup_id : kreta_setup_id,
         date_from : date_from,
@@ -110,26 +111,32 @@ function search()
       },
       success : function(response)
       {
-        var left = (screen.width - 800) / 2;
-        var top = (screen.height - 700) / 4;
+          var left = (screen.width - 800) / 2;
+          var top = (screen.height - 700) / 4;
 
-        var myWindow = window.open('','_blank',
-        'resizable=yes, width=' + '800'
-        + ', height=' + '700' + ', top='
-        + top + ', left=' + left);
-      
-        myWindow.document.write(response.viewContent);
+          var myWindow = window.open('','_blank',
+          'resizable=yes, width=' + '800'
+          + ', height=' + '700' + ', top='
+          + top + ', left=' + left);
+        
+          myWindow.document.write(response.viewContent);
 
-            
-      },
-      error: function(xhr, status, error) {
-        console.error(error);
-      }
+              
+        },
+          error: function(xhr, status, error) {
+          console.error(error);
+        }
 
-    })
+      })
+    }
+    else
+    {
+      swal("দয়া করে ক্রেতার নাম সিলেক্ট করুন")
+    }
+    
   }
 
-function getkretaAddressByArea()
+  function getkretaAddressByArea()
     {
         var area = $('#area').val();
 
@@ -137,7 +144,7 @@ function getkretaAddressByArea()
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url("getkretaAddressByArea")}}',
+                url : '{{url('getkretaAddressByArea')}}',
                 data : {
                     area : area,
                 },

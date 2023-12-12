@@ -91,7 +91,7 @@
     {
       $.ajax({
         type : 'POST',
-        url : '{{url('getCommissionPurchaseMonth')}}',
+        url : '{{url("getCommissionPurchaseMonth")}}',
         data : {
           txtMonth : txtMonth,
         },
@@ -111,7 +111,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getMohajonAddressByArea')}}',
+                url : '{{url("getMohajonAddressByArea")}}',
                 data : {
                     area : area,
                 },
@@ -132,7 +132,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getMohajonNameByAddress')}}',
+                url : '{{url("getMohajonNameByAddress")}}',
                 data : {
                     address : address,
                 },
@@ -153,7 +153,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getPurchaseIdByMohajonId')}}',
+                url : '{{url("getPurchaseIdByMohajonId")}}',
                 data : {
                   mohajon_setup_id : mohajon_setup_id,
                 },
@@ -174,7 +174,7 @@
       {
         $.ajax({
           type : 'POST',
-          url : '{{url('loadArodChothaTable')}}',
+          url : '{{url("loadArodChothaTable")}}',
           data : {
             purchase_id : purchase_id,
           },

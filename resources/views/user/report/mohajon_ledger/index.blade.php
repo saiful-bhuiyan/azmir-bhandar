@@ -8,19 +8,19 @@
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 mb-2 text-center">
-            <p class="font-medium text-lg">ক্রেতার লেজার</p>
+            <p class="font-medium text-lg">মহাজন লেজার</p>
           </div>
 
           
           <div class="lg:col-span-2">
-            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
+            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               
             <div class="md:col-span-1">
                 <label for="area">এরিয়া :</label>
-                <select name="area" id="area" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getkretaAddressByArea();" required>
+                <select name="area" id="area" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getMohajonAddressByArea();" required>
                     <option value="" selected>সিলেক্ট</option>
-                    @if($kreta_setup)
-                    @foreach($kreta_setup as $b)
+                    @if($mohajon_setup)
+                    @foreach($mohajon_setup as $b)
                     <option value="{{$b->area}}">{{$b->area}}</option>
                     @endforeach
                     @endif
@@ -32,7 +32,7 @@
               
               <div class="md:col-span-2">
                 <label for="address">ঠিকানা :</label>
-                <select name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getKretaNameByAddress();" required>
+                <select name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getMohajonNameByAddress();" required>
                     <option value="" selected>সিলেক্ট</option>
                 </select>
                 @if($errors->has('address'))
@@ -41,12 +41,12 @@
               </div>
 
               <div class="md:col-span-2">
-                <label for="kreta_setup_id">ক্রেতার নাম :</label>
-                <select name="kreta_setup_id" id="kreta_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+                <label for="mohajon_setup_id">মহাজনের নাম :</label>
+                <select name="mohajon_setup_id" id="mohajon_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
                     <option value="" selected>সিলেক্ট</option>
                 </select>
-                @if($errors->has('kreta_setup_id'))
-                <span class="text-sm text-red-600">{{ $errors->first('kreta_setup_id') }} </span>
+                @if($errors->has('mohajon_setup_id'))
+                <span class="text-sm text-red-600">{{ $errors->first('mohajon_setup_id') }} </span>
                 @endif
               </div>
 
@@ -66,7 +66,7 @@
                 @endif
               </div>
       
-              <div class="md:col-span-6 text-right">
+              <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
                   <button type="button" id="search" onclick="search();" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সার্চ</button>
                 </div>
@@ -96,15 +96,15 @@
 
 function search()
   {
-    var kreta_setup_id = $('#kreta_setup_id').val();
+    var mohajon_setup_id = $('#mohajon_setup_id').val();
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
 
     $.ajax({
       type : 'POST',
-      url : "{{route('kreta_ledger.search')}}",
+      url : "{{route('mohajon_ledger.search')}}",
       data :  {
-        kreta_setup_id : kreta_setup_id,
+        mohajon_setup_id : mohajon_setup_id,
         date_from : date_from,
         date_to : date_to
       },
@@ -129,7 +129,7 @@ function search()
     })
   }
 
-function getkretaAddressByArea()
+function getMohajonAddressByArea()
     {
         var area = $('#area').val();
 
@@ -137,7 +137,7 @@ function getkretaAddressByArea()
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url("getkretaAddressByArea")}}',
+                url : '{{url("getMohajonAddressByArea")}}',
                 data : {
                     area : area,
                 },
@@ -150,7 +150,7 @@ function getkretaAddressByArea()
         }
     }
 
-    function getKretaNameByAddress()
+    function getMohajonNameByAddress()
     {
         var address = $('#address').val();
 
@@ -158,13 +158,13 @@ function getkretaAddressByArea()
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url("getKretaNameByAddress")}}',
+                url : '{{url("getMohajonNameByAddress")}}',
                 data : {
                     address : address,
                 },
                 success:function(response)
                 {
-                    $('#kreta_setup_id').html(response);
+                    $('#mohajon_setup_id').html(response);
                 }
 
             });
