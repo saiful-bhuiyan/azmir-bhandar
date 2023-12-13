@@ -211,7 +211,7 @@
                     <img src="{{asset('frontend')}}/image/product.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">স্টক রিপোর্ট</p>
                 </a>
-                <a href="report_commission/report_commission.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('kreta_short_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার সর্ট রিপোর্ট</p>
                 </a>
@@ -219,15 +219,11 @@
                     <img src="{{asset('frontend')}}/image/borrow.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">মহাজন সর্ট রিপোর্ট</p>
                 </a>
-                <a href="report_lav_loss/report_lav_loss.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('short_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/financial-profit.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ব্যাংক/আমানত/হাওলাত সর্ট রিপোর্ট</p>
                 </a>
-                <a href="report_ponno_khoroc/report_ponno_khoroc.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
-                    <img src="{{asset('frontend')}}/image/product_cost.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">অন্যান্য জমা/খরচ সর্ট রিপোর্ট</p>
-                </a>
-                <a href="report_koifiyot/report_koifiyot.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('bikroy_marfot_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">বিক্রয় মারফত রিপোর্ট</p>
                 </a>

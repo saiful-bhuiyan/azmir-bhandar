@@ -18,8 +18,9 @@
             </div>
         </div>
 
-        <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
-            <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">বিক্রয় রিপোর্ট</p>
+        <div class=" w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
+            <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">বিক্রয় মারফত রিপোর্ট</p>
+
 
             <table id="table" class="w-full text-sm text-left text-gray-500 data-table">
                 @if($sales)
@@ -28,14 +29,24 @@
                         <th scope="col" class="px-6 py-3">
                             ইনভয়েস
                         </th>
+                        @if($sales_type == 3)
                         <th scope="col" class="px-6 py-3">
                             ধরণ
                         </th>
+                        @endif
+                        @if($sales_type == 2)
+                        <th scope="col" class="px-6 py-3">
+                            এরিয়া
+                        </th>
+                        @endif
                         <th scope="col" class="px-6 py-3">
                             ঠিকানা
                         </th>
                         <th scope="col" class="px-6 py-3">
                             ক্রেতার নাম
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            ডিসকাউন্ট
                         </th>
                         <th scope="col" class="px-6 py-3">
                             মারফত
@@ -50,23 +61,26 @@
                 </thead>
                 <tbody id="table_body">
                     @php
-                    $count = count($sales);
+                    $countRow = count($sales);
                     @endphp
-                    @if($count > 0)
+                    @if($countRow > 0)
                     @foreach($sales as $s)
                     <tr class="border border-collapse">
-                        <td class="px-6 py-3 font-bold text-blue-700"><a class="url" onclick="return false;" href="{{route('ponno_sales_report.memo',$s->id)}}">{{$s->id}}</a></td>
-                        <td class="px-6 py-3">@if($s->sales_type == 1) নগদ @elseif($s->sales_type == 2) বাকি @endif</td>
-                        @if($s->sales_type == 2)
+                        <td class="px-6 py-3 font-bold text-blue-700"><a href="{{route('ponno_sales_report.memo',$s->id)}}" class="url" onclick="return false;">{{$s->id}}</a></td>
+                        @if($sales_type == 3)
+                        <td class="px-6 py-3">{{$s->sales_type}}</td>
+                        @endif
+                        @if($sales_type == 2)
+                        <td class="px-6 py-3">{{$s->kreta_setup->area}}</td>
                         <td class="px-6 py-3">{{$s->kreta_setup->address}}</td>
                         <td class="px-6 py-3">{{$s->kreta_setup->name}}</td>
                         @else
                         <td class="px-6 py-3">{{$s->cash_kreta_address}}</td>
                         <td class="px-6 py-3">{{$s->cash_kreta_name}}</td>
                         @endif
+                        <td class="px-6 py-3">{{$s->discount}}</td>
                         <td class="px-6 py-3">{{$s->bikroy_marfot_setup->marfot_name}}</td>
                         @php
-
                         $total_taka = 0;
                         $entry = DB::table('ponno_sales_entries')->where('sales_invoice',$s->id)->get();
                         foreach($entry as $v)
@@ -84,21 +98,21 @@
                     </tr>
                     @endif
                 </tbody>
-            </table>
-        </div>
-        <script>
-            $('.url').click(function() {
-                var left = (screen.width - 800) / 2;
-                var top = (screen.height - 700) / 4;
 
-                var url = $(this).attr('href');
+                <script>
+                    $('.url').click(function() {
+                        var left = (screen.width - 800) / 2;
+                        var top = (screen.height - 700) / 4;
 
-                var myWindow = window.open(url, url,
-                    'resizable=yes, width=' + '800' +
-                    ', height=' + '700' + ', top=' +
-                    top + ', left=' + left);
-            })
-        </script>
-        @endif
-        
+                        var url = $(this).attr('href');
+
+                        var myWindow = window.open(url, url,
+                            'resizable=yes, width=' + '800' +
+                            ', height=' + '700' + ', top=' +
+                            top + ', left=' + left);
+                    })
+                </script>
+
+                @endif
+
 @endsection

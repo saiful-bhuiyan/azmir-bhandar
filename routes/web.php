@@ -46,6 +46,9 @@ use App\Http\Controllers\Report\BankReportController;
 use App\Http\Controllers\Report\CommissionReportController;
 use App\Http\Controllers\Report\PonnoLavLossReportController;
 use App\Http\Controllers\Report\MohajonLedgerController;
+use App\Http\Controllers\Report\KretaShortReportController;
+use App\Http\Controllers\Report\ShortReportController;
+use App\Http\Controllers\Report\BikroyMarfotReportController;
 
 
 /*
@@ -199,6 +202,15 @@ Route::group(['middleware' => 'auth'],  function() {
 
     Route::get('mohajon_ledger',[MohajonLedgerController::class,'index'])->name('mohajon_ledger.index');
     Route::post('mohajon_ledger_search',[MohajonLedgerController::class,'search'])->name('mohajon_ledger.search');
+
+    Route::get('kreta_short_report',[KretaShortReportController::class,'index'])->name('kreta_short_report.index');
+
+    Route::get('short_report',[ShortReportController::class,'index'])->name('short_report.index');
+    Route::post('short_report_search',[ShortReportController::class,'search'])->name('short_report.search');
+
+    Route::get('bikroy_marfot_report',[BikroyMarfotReportController::class,'index'])->name('bikroy_marfot_report.index');
+    Route::post('bikroy_marfot_report_search',[BikroyMarfotReportController::class,'search'])->name('bikroy_marfot_report.search');
+
 
 
 

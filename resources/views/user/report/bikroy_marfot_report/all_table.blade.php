@@ -18,8 +18,8 @@
             </div>
         </div>
 
-        <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
-            <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">বিক্রয় রিপোর্ট</p>
+        <div class=" w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
+            <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">বিক্রয় মারফত রিপোর্ট</p>
 
             <table id="table" class="w-full text-sm text-left text-gray-500 data-table">
                 @if($sales)
