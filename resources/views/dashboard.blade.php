@@ -167,7 +167,7 @@
                     <img src="{{asset('frontend')}}/image/sale.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পণ্য বিক্রয় রিপোর্ট</p>
                 </a>
-                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('cash_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/document.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">দৈনিক ক্যাশ রিপোর্ট</p>
                 </a>

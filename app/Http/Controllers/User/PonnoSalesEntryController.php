@@ -231,7 +231,7 @@ class PonnoSalesEntryController extends Controller
         $sales_infos = temp_ponno_sale::get();
         foreach($sales_infos as $s)
         {
-            $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission;
+            $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission - $request->discount;
         }
         $data['total_taka'] = $total_sale_amount;
 
@@ -259,13 +259,15 @@ class PonnoSalesEntryController extends Controller
                 temp_ponno_sale::truncate();
             }
             Toastr::success(__('বিক্রয় সফল হয়েছে'), __('সফল'));
+            return redirect()->back()->with('invoice',$insert->id);
         }
         else
         {
             Toastr::error(__('বিক্রয় সফল হয়নি'), __('ব্যর্থ'));
+            return redirect()->back();
         }
 
-        return redirect()->back();
+       
     }
 
 

@@ -205,10 +205,30 @@
                   <td class="border border-slate-500"> {{$sales->discount}}</td>
                 </tr>
                @endif
+               @php 
+                $current_sale = $total_sale + $total_kreta_commission + $labour + $other - $sales->discount;
+               @endphp
                 <tr>
-                    <td colspan="7" class="font-bold border border-slate-500">মোট টাকা : </td>
-                    <td class="font-bold border border-slate-500">{{$total_sale + $total_kreta_commission + $labour + $other - $sales->discount}}</td>
+                    <td colspan="7" class="font-bold border border-slate-500 text-right">মোট টাকা : </td>
+                    <td class="font-bold border border-slate-500">{{$current_sale}}</td>
                 </tr>
+                @if($sales->sales_type == 2)
+                @php
+                $sabek = 0;
+                $sabek += $old_sales ? $old_sales : 0;
+                $sabek -= $joma ? $joma : 0;
+                $sabek -= $koifiyot ? $koifiyot : 0;
+                $sabek += $kreta_old_amount ? $kreta_old_amount : 0;
+                @endphp
+                <tr>
+                    <td colspan="7" class="font-bold border border-slate-500">সাবেক : </td>
+                    <td class="font-bold border border-slate-500">{{$sabek - $current_sale}}</td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="font-bold border border-slate-500">সর্বমোট : </td>
+                    <td class="font-bold border border-slate-500">{{$sabek}}</td>
+                </tr>
+                @endif
             </tbody>
           </table>
         </div>

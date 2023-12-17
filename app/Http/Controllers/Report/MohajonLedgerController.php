@@ -42,13 +42,15 @@ class MohajonLedgerController extends Controller
 
                         $total_sale = 0;
                         $total_sale_qty = 0;
+                        $total_mohajon_commission = 0;
 
                         foreach($sales as $s){
                             $total_sale += $s->sales_weight * $s->sales_rate;
                             $total_sale_qty += $s->sales_qty;
+                            $total_mohajon_commission += $s->mohajon_commission;
                         }
 
-                        $total_cost = $v->labour_cost + $v->truck_cost +
+                        $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
                                 $v->van_cost + $v->other_cost +$v->tohori_cost;
                         $kacha_sales = $total_sale - $total_cost;
 
@@ -269,13 +271,15 @@ class MohajonLedgerController extends Controller
 
                             $total_sale = 0;
                             $total_sale_qty = 0;
+                            $total_mohajon_commission = 0;
 
                             foreach($sales as $s){
                                 $total_sale += $s->sales_weight * $s->sales_rate;
                                 $total_sale_qty += $s->sales_qty;
+                                $total_mohajon_commission += $s->mohajon_commission;
                             }
 
-                            $total_cost = $v->labour_cost + $v->truck_cost +
+                            $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
                                     $v->van_cost + $v->other_cost +$v->tohori_cost;
                             $kacha_sales = $total_sale - $total_cost;
 
@@ -332,7 +336,7 @@ class MohajonLedgerController extends Controller
                         $record[$i] = array(
                             'table' => 1,
                             'id' => $v->id,
-                            'reference' => 'পন্য গ্রহণ',
+                            'reference' => 'পন্য গ্রহণ / নিজ খরিদ',
                             'payment' => '-',
                             'marfot' => '-',
                             'joma'=> ($v->weight * $v->rate),

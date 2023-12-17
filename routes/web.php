@@ -49,6 +49,7 @@ use App\Http\Controllers\Report\MohajonLedgerController;
 use App\Http\Controllers\Report\KretaShortReportController;
 use App\Http\Controllers\Report\ShortReportController;
 use App\Http\Controllers\Report\BikroyMarfotReportController;
+use App\Http\Controllers\Report\CashReportController;
 
 
 /*
@@ -63,13 +64,8 @@ use App\Http\Controllers\Report\BikroyMarfotReportController;
 */
 
 Route::get('/', function () {
-    if (Auth::guard('admin')->check()) {
-        return redirect('/admin/dashboard'); // Redirect to the dashboard if the user is already authenticated
-    }
-    else{
-        return redirect('/dashboard');
-    }
-    return view('auth.login');
+    
+    return redirect('/dashboard');
 });
 
 // Route::get('/dashboard', function () {
@@ -86,7 +82,7 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::get('logout', function ()
     {
         auth()->logout();
-        Session()->flush();
+       
 
         return Redirect::to('/');
     })->name('logout');
@@ -211,6 +207,11 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::get('bikroy_marfot_report',[BikroyMarfotReportController::class,'index'])->name('bikroy_marfot_report.index');
     Route::post('bikroy_marfot_report_search',[BikroyMarfotReportController::class,'search'])->name('bikroy_marfot_report.search');
 
+    Route::get('cash_report',[CashReportController::class,'index'])->name('cash_report.index');
+    Route::post('cash_report_search',[CashReportController::class,'search'])->name('cash_report.search');
+    Route::get('cash_joma_report/{entry_date}',[CashReportController::class,'searchByJoma'])->name('cash_report.all_joma');
+    Route::get('cash_khoroc_report/{entry_date}',[CashReportController::class,'searchByKhoroc'])->name('cash_report.all_khoroc');
+    Route::post('cash_report_transfer',[CashReportController::class,'cash_transfer'])->name('cash_report.transfer');
 
 
 
@@ -250,5 +251,16 @@ Route::group(['middleware' => 'admin'], function() {
     Route::get('/admin', [HomeController::class, 'index'])->name('admin.dashboard');
 
     Route::post('/admin/logout', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
+
+    /*************** Admin Panel Routes *******************/
+
+    Route::get('mohajon_setup_admin',[MohajonSetupController::class,'admin'])->name('mohajon_setup.admin');
+    Route::get('ponno_setup_admin',[PonnoSetupController::class,'admin'])->name('ponno_setup.admin');
+    Route::get('ponno_size_setup_admin',[PonnoSizeSetupController::class,'admin'])->name('ponno_size_setup.admin');
+    Route::get('ponno_marka_setup_admin',[PonnoMarkaSetupController::class,'admin'])->name('ponno_marka_setup.admin');
+    Route::get('kreta_setup_admin',[KretaSetupController::class,'admin'])->name('kreta_setup.admin');
+    Route::get('bikroy_marfot_setup_admin',[BikroyMarfotSetupController::class,'admin'])->name('bikroy_marfot_setup.admin');
+    Route::get('bank_setup_admin',[BankSetupController::class,'admin'])->name('bank_setup.admin');
+
 
 });

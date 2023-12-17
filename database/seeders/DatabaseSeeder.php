@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         $this->call(PonnoSalesInfosTableSeeder::class);
         $this->call(PonnoSalesEntriesTableSeeder::class);
+        $this->call(ArodChothaEntriesTableSeeder::class);
     }
 }

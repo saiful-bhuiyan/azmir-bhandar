@@ -207,17 +207,26 @@
             </div>
             <div class="text-left bg-sky-200">
               <p class="p-1 text-xs text-gray-800">বিক্রি সংখ্যা : {{$total_sale_qty}}</p>
+              @if($purchase->purchase_type == 2)
               <p class="p-1 text-xs text-gray-800">মহাজন কমিশন : {{$total_mohajon_commission}}</p>
+              @endif
               <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost}}</p>
               <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost}}</p>
               <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost}}</p>
               <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">তহরি : {{$purchase->tohori_cost}}</p>
               @php 
-                $total_cost = $total_mohajon_commission + $purchase->labour_cost + $purchase->truck_cost +
-                            $purchase->van_cost + $purchase->other_cost;
+                $total_cost = $purchase->labour_cost + $purchase->truck_cost +
+                            $purchase->van_cost + $purchase->other_cost + $purchase->tohori_cost;
+                if($purchase->purchase_type == 2){
+                  $total_cost += $total_mohajon_commission;
+                }
                 $kacha_sales = $total_sale - $total_cost;
                 
               @endphp
+              @if($purchase->purchase_type == 1)
+              <p class="p-1 text-xs text-gray-800">মোট ক্রয় : {{$purchase->weight * $purchase->rate}}</p>
+              @endif
               <p class="p-1 text-xs text-gray-800">মোট খরচ : {{$total_cost}}</p>
               <p class="p-1 text-xs text-gray-800">কাচা বিক্রি : {{$kacha_sales}}</p>
               <p class="p-1 text-xs text-gray-800">নগদ বিক্রি : {{$total_sale}}</p>

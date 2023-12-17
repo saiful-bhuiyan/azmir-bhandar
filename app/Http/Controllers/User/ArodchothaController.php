@@ -85,6 +85,14 @@ class ArodchothaController extends Controller
                 'sales_rate'=>$request->sales_rate,
             );
 
+            $ponno = ponno_purchase_entry::where('purchase_id',$request->purchase_id)->first();
+
+            $mohajon_commission = $ponno->ponno_setup->mohajon_commission_setup->commission_amount;
+            $kreta_commission = $ponno->ponno_setup->kreta_commission_setup->commission_amount;
+
+            $data['mohajon_commission'] = $mohajon_commission;
+            $data['kreta_commission'] = $kreta_commission;
+
             $insert = arod_chotha_entry::create($data);
             if($insert)
             {

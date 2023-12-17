@@ -20,6 +20,8 @@ return new class extends Migration
             $table->double('sales_qty');
             $table->double('sales_weight');
             $table->double('sales_rate');
+            $table->double('mohajon_commission')->nullable();
+            $table->double('kreta_commission')->nullable();
             $table->timestamps();
         });
     }

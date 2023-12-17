@@ -462,7 +462,7 @@
 
       $.ajax({
         type :  'POST',
-        url : '{{url('getPurchaseDetail')}}',
+        url : '{{url("getPurchaseDetail")}}',
         data : {
           purchase_id : purchase_id,
       },
@@ -494,7 +494,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getkretaAddressByArea')}}',
+                url : '{{url("getkretaAddressByArea")}}',
                 data : {
                     area : area,
                 },
@@ -515,7 +515,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getKretaNameByAddress')}}',
+                url : '{{url("getKretaNameByAddress")}}',
                 data : {
                     address : address,
                 },
@@ -565,7 +565,7 @@
       {
         $.ajax({
           type : 'GET',
-          url : '{{url('getAmountByKreta')}}',
+          url : '{{url("getAmountByKreta")}}',
  
           success : function(response)
           {
@@ -582,7 +582,7 @@
         {
           $.ajax({
             type : 'GET',
-            url : '{{url('getAmountByKreta')}}',
+            url : '{{url("getAmountByKreta")}}',
       
             success : function(response)
             {
@@ -616,5 +616,20 @@
       $('#final_data').submit();
 
     });
+    
   </script>
+
+<script>
+    @if(session('invoice'))
+    var left = (screen.width - 800) / 2;
+    var top = (screen.height - 700) / 4;
+
+    var url = "{{route('ponno_sales_report.memo',session('invoice') )}}";
+
+    var myWindow = window.open(url, url,
+        'resizable=yes, width=' + '800' +
+        ', height=' + '700' + ', top=' +
+        top + ', left=' + left);
+  @endif
+</script>
   @endsection

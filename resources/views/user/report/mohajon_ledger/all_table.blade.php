@@ -1,7 +1,7 @@
 @extends('user.layout.report_layout')
 @section('report_body')
 
-<div class="container mx-auto max-w-screen ">
+<div class=" mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white md:p-8">
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
       <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>

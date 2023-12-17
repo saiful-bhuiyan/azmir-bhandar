@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ponno_setup;
 use App\Models\ponno_sales_info;
-use App\Models\ponno_sales_entry;
-use App\Models\ponno_purchase_entry;
+use App\Models\kreta_joma_entry;
+use App\Models\kreta_koifiyot_entry;
 use Brian2694\Toastr\Facades\Toastr;
 
 class PonnoSaleReportController extends Controller
@@ -102,7 +102,18 @@ class PonnoSaleReportController extends Controller
     public function sales_memo($id)
     {
         $sales = ponno_sales_info::where('id',$id)->first();
-        
-        return view('user.report.ponno_sales_report.sales_memo',compact('sales'));
+        $kreta_setup_id = $sales->kreta_setup->id;
+        $kreta_old_amount = $sales->kreta_setup->old_amount;
+                $total_taka = 0;
+
+                $old_sales = ponno_sales_info::with('ponno_sales_entry')->whereHas('ponno_sales_entry',function($query) use($kreta_setup_id){
+                    $query->whereHas('ponno_purchase_entry',function($query2) use($kreta_setup_id){
+                        $query2->whereIn('kreta_setup_id',[$kreta_setup_id]);
+                    });
+                })->where('sales_type',2)->sum('total_taka');
+
+                $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+                $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+        return view('user.report.ponno_sales_report.sales_memo',compact('sales','old_sales','joma','koifiyot','kreta_old_amount'));
     }
 }

@@ -62,6 +62,7 @@
                 <tbody id="table_body">
                     @php
                     $countRow = count($sales);
+                    $total = 0;
                     @endphp
                     @if($countRow > 0)
                     @foreach($sales as $s)
@@ -80,18 +81,18 @@
                         @endif
                         <td class="px-6 py-3">{{$s->discount}}</td>
                         <td class="px-6 py-3">{{$s->bikroy_marfot_setup->marfot_name}}</td>
-                        @php
-                        $total_taka = 0;
-                        $entry = DB::table('ponno_sales_entries')->where('sales_invoice',$s->id)->get();
-                        foreach($entry as $v)
-                        {
-                        $total_taka += ($v->sales_weight * $v->sales_rate) + $v->other + $v->labour + $v->kreta_commission - $s->discount;
-                        }
-                        @endphp
-                        <td class="px-6 py-3">{{$total_taka}}</td>
+                        <td class="px-6 py-3">{{$s->total_taka}}</td>
                         <td class="px-6 py-3">{{$s->entry_date}}</td>
+                        @php
+                        $total += $s->total_taka;
+                        @endphp
                     </tr>
                     @endforeach
+                    <tr class="border border-collapse odd:bg-white even:bg-gray-100">
+                        <td colspan="5" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
+                        <td class="px-6 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
+                        <td class="px-6 py-3 text-base font-bold text-red-600 text-left"></td>
+                    </tr>
                     @else
                     <tr class="border border-collapse">
                         <td colspan="12" class="px-6 py-3 text-center">রেকর্ড পাওয়া যায়নি</td>
