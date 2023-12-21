@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('check_book_page_setups', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('check_id');
-            $table->foreign('check_id')->references('id')->on('bank_check_book_setups');
+            $table->foreign('check_id')->references('id')->on('bank_check_book_setups')->onDelete('cascade');;
             $table->bigInteger('page');
             $table->date('deleted_at')->nullable();
             $table->timestamps();

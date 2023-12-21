@@ -100,10 +100,9 @@
                         @php
                         $sales = ponno_sales_entry::where('purchase_id',$p->id)->get(); 
                         $total_commission = 0;
-                        $mohajon_commission = 0;
+                        $mohajon_commission = $p->mohajon_commission;
                         $kreta_commission = 0;
                         foreach($sales as $s){
-                            $mohajon_commission += $s->mohajon_commission;
                             $kreta_commission += $s->kreta_commission;
                         }
                         $total_commission += $mohajon_commission;

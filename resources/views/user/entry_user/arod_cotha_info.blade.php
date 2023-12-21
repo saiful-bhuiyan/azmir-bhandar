@@ -54,6 +54,10 @@
                 $total_sale = 0;
                 $total_sale_qty = 0;
                 $total_mohajon_commission = 0;
+                if($purchase->purchase_type == 2)
+                {
+                  $total_mohajon_commission += $purchase->mohajon_commission;
+                }
                 @endphp
 
     
@@ -62,7 +66,6 @@
                 @php
                 $total_sale += $s->sales_weight * $s->sales_rate;
                 $total_sale_qty += $s->sales_qty;
-                $total_mohajon_commission += $s->mohajon_commission;
                 @endphp
                 <tr>
                     <td class="border border-slate-500">{{$count++}}</td>

@@ -32,6 +32,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        return redirect('/admin');
+
         return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
 
     }
@@ -42,15 +44,17 @@ class AuthenticatedSessionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request)
+    public function destroy()
     {
         Auth::guard('admin')->logout();
 
-        $request->session()->invalidate();
+        // Request $request
 
-        $request->session()->regenerateToken();
+        // $request->session()->invalidate();
 
-        return redirect('/');
+        // $request->session()->regenerateToken();
+
+        return redirect('/admin');
 
     }
 }

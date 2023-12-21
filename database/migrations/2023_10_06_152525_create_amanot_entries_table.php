@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('amanot_entries', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(100);
             $table->unsignedBigInteger('amanot_setup_id');
             $table->foreign('amanot_setup_id')->references('id')->on('amanot_setups');
             $table->unsignedBigInteger('bank_setup_id')->nullable();

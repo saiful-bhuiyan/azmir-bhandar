@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('other_joma_khoroc_entries', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(100);
             $table->unsignedBigInteger('other_id');
             $table->foreign('other_id')->references('id')->on('other_joma_khoroc_setups');
             $table->unsignedBigInteger('bank_setup_id')->nullable();

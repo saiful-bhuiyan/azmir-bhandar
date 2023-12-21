@@ -1,8 +1,9 @@
 @extends('user.layout.master')
 @section('body')
 
-<form action="{{route('bank_check_book_setup.store')}}" id="form_data" method="POST">
+<form action="{{ isset($data) ? route('bank_check_book_setup.update',$data->id) : '' }}" id="form_data" method="POST">
 @csrf
+@method('PUT')
 
 <div class=" p-6 bg-gray-100 flex ">
   <div class="container max-w-screen-lg mx-auto">
@@ -22,11 +23,7 @@
                 <label for="shakha">শাখা :</label>
                 <select name="shakha" id="shakha" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getBankNameByShakha();" required>
                     <option value="" selected>সিলেক্ট</option>
-                    @if($bank_setup)
-                    @foreach($bank_setup as $b)
-                    <option value="{{$b->shakha}}">{{$b->shakha}}</option>
-                    @endforeach
-                    @endif
+                    
                 </select>
                 @if($errors->has('shakha'))
                 <span class="text-sm text-red-600">{{ $errors->first('shakha') }} </span>
@@ -81,11 +78,11 @@
                 @endif
               </div>
       
-              <div class="md:col-span-5 text-right">
+              <!-- <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
                   <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সেভ</button>
                 </div>
-              </div>
+              </div> -->
 
             </div>
           </div>
@@ -129,6 +126,9 @@
             <th scope="col" class="px-6 py-3">
                 স্টেটাস
             </th>
+            <th scope="col" class="px-6 py-3">
+                একশন
+            </th>
         </tr>
     </thead>
     <tbody id="table_body">
@@ -165,7 +165,7 @@
                   "previous":   "পুর্বে"
               },
             },
-            ajax: "{{ route('bank_check_book_setup.index') }}",
+            ajax: "{{ route('bank_check_book_setup.admin') }}",
             columns: [
                 {data: 'sl', name: 'sl'},
                 {data: 'bank_name', name: 'bank_name'},
@@ -174,6 +174,7 @@
                 {data: 'shakha', name: 'shakha'},
                 {data: 'total_page', name: 'total_page'},
                 {data: 'status', name: 'status'},
+                {data: 'action', name: 'action' , orderable: false, searchable: false},
             
             ]
         });

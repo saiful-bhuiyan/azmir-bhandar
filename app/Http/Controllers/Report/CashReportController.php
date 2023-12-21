@@ -17,6 +17,7 @@ use App\Models\other_joma_khoroc_entry;
 use App\Models\ponno_purchase_entry;
 use App\Models\ponno_sales_entry;
 use App\Models\cash_transfer;
+use App\Models\kreta_koifiyot_entry;
 
 class CashReportController extends Controller
 {
@@ -42,21 +43,42 @@ class CashReportController extends Controller
 
         $cash_sales = ponno_sales_info::where('entry_date',$entry_date)->where('sales_type',1)->sum('total_taka');
         $bank_uttolon = bank_entry::where('entry_date',$entry_date)->where('type',2)->sum('taka');
-        $kreta_joma = kreta_joma_entry::where('entry_date',$entry_date)->sum('taka');
-        $mohajon_return = mohajon_return_entry::where('entry_date',$entry_date)->sum('taka');
-        $amanot_joma = amanot_entry::where('entry_date',$entry_date)->where('type',1)->sum('taka');
-        $hawlat_joma = hawlat_entry::where('entry_date',$entry_date)->where('type',1)->sum('taka');
-        $other_joma = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',1)->sum('taka');
+
+        $kreta_joma_cash = kreta_joma_entry::where('entry_date',$entry_date)->where('payment_by',1)->sum('taka');
+        $kreta_joma_bank = kreta_joma_entry::where('entry_date',$entry_date)->where('payment_by',2)->sum('taka');
+
+        $mohajon_return_cash = mohajon_return_entry::where('entry_date',$entry_date)->where('payment_by',1)->sum('taka');
+        $mohajon_return_bank = mohajon_return_entry::where('entry_date',$entry_date)->where('payment_by',2)->sum('taka');
+
+        $amanot_joma_cash = amanot_entry::where('entry_date',$entry_date)->where('type',1)->where('payment_by',1)->sum('taka');
+        $amanot_joma_bank= amanot_entry::where('entry_date',$entry_date)->where('type',1)->where('payment_by',2)->sum('taka');
+
+        $hawlat_joma_cash = hawlat_entry::where('entry_date',$entry_date)->where('type',1)->where('payment_by',1)->sum('taka');
+        $hawlat_joma_bank = hawlat_entry::where('entry_date',$entry_date)->where('type',1)->where('payment_by',2)->sum('taka');
+
+        $other_joma_cash = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',1)->where('payment_by',1)->sum('taka');
+        $other_joma_bank = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',1)->where('payment_by',2)->sum('taka');
 
         /************* খরচ ***************/
 
-        $mohajon_payment = mohajon_payment_entry::where('entry_date',$entry_date)->sum('taka');
+        $mohajon_payment_cash = mohajon_payment_entry::where('entry_date',$entry_date)->where('payment_by',1)->sum('taka');
+        $mohajon_payment_bank = mohajon_payment_entry::where('entry_date',$entry_date)->where('payment_by',2)->sum('taka');
+
         $bank_joma = bank_entry::where('entry_date',$entry_date)->where('type',1)->sum('taka');
-        $amanot_khoroc = amanot_entry::where('entry_date',$entry_date)->where('type',2)->sum('taka');
-        $hawlat_khoroc = hawlat_entry::where('entry_date',$entry_date)->where('type',2)->sum('taka');
-        $other_khoroc = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',2)->sum('taka');
+
+        $amanot_khoroc_cash = amanot_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',1)->sum('taka');
+        $amanot_khoroc_bank = amanot_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',2)->sum('taka');
+
+        $hawlat_khoroc_cash = hawlat_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',1)->sum('taka');
+        $hawlat_khoroc_bank = hawlat_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',2)->sum('taka');
+
+        $other_khoroc_cash = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',1)->sum('taka');
+        $other_khoroc_bank = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',2)->sum('taka');
+
         $labour_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('labour_cost');
         $sales_costs = ponno_sales_info::where('entry_date',$entry_date)->get();
+
+
 
         $total_labour = 0;
         $total_other_cost = 0;
@@ -106,7 +128,7 @@ class CashReportController extends Controller
         $joma[$i] = array(
             'sl' => $count_joma++,
             'reference' => "ব্যাংক উত্তোলন",
-            'total_taka' => $bank_uttolon,
+            'total_taka' => $bank_uttolon + $amanot_khoroc_bank + $hawlat_khoroc_bank + $other_khoroc_bank + $mohajon_payment_bank,
         );
 
         /************* ক্রেতা জমা ***************/     
@@ -116,7 +138,7 @@ class CashReportController extends Controller
         $joma[$i] = array(
             'sl' => $count_joma++,
             'reference' => "ক্রেতা জমা",
-            'total_taka' => $kreta_joma,
+            'total_taka' => $kreta_joma_cash + $kreta_joma_bank,
         );
 
         /************* মহাজন ফেরত ***************/     
@@ -126,7 +148,7 @@ class CashReportController extends Controller
         $joma[$i] = array(
             'sl' => $count_joma++,
             'reference' => "মহাজন ফেরত",
-            'total_taka' => $mohajon_return,
+            'total_taka' => $mohajon_return_cash + $mohajon_return_bank,
         );
 
         /************* আমানত জমা ***************/     
@@ -136,7 +158,7 @@ class CashReportController extends Controller
         $joma[$i] = array(
             'sl' => $count_joma++,
             'reference' => "আমানত জমা",
-            'total_taka' => $amanot_joma,
+            'total_taka' => $amanot_joma_cash + $amanot_joma_bank,
         );
 
         /************* হাওলাত জমা ***************/     
@@ -146,7 +168,7 @@ class CashReportController extends Controller
         $joma[$i] = array(
             'sl' => $count_joma++,
             'reference' => "হাওলাত জমা",
-            'total_taka' => $hawlat_joma,
+            'total_taka' => $hawlat_joma_cash + $hawlat_joma_bank,
         );
 
         /************* অন্যান্য জমা ***************/     
@@ -156,7 +178,7 @@ class CashReportController extends Controller
         $joma[$i] = array(
             'sl' => $count_joma++,
             'reference' => "অন্যান্য জমা",
-            'total_taka' => $other_joma,
+            'total_taka' => $other_joma_cash + $other_joma_bank,
         );
         
 
@@ -170,7 +192,7 @@ class CashReportController extends Controller
         $khoroc[$j] = array(
             'sl' => $count_khoroc++,
             'reference' => "ব্যাংক জমা",
-            'total_taka' => $bank_joma,
+            'total_taka' => $bank_joma + $kreta_joma_bank + $amanot_joma_bank + $hawlat_joma_bank + $other_joma_bank + $mohajon_return_bank ,
         );
 
         /************* মহাজন পেমেন্ট ***************/     
@@ -180,7 +202,7 @@ class CashReportController extends Controller
         $khoroc[$j] = array(
             'sl' => $count_khoroc++,
             'reference' => "মহাজন পেমেন্ট",
-            'total_taka' => $mohajon_payment,
+            'total_taka' => $mohajon_payment_cash + $mohajon_payment_bank,
         );
 
 
@@ -191,7 +213,7 @@ class CashReportController extends Controller
         $khoroc[$j] = array(
             'sl' => $count_khoroc++,
             'reference' => "আমানত খরচ",
-            'total_taka' => $amanot_khoroc,
+            'total_taka' => $amanot_khoroc_cash + $amanot_khoroc_bank,
         );
 
         /************* হাওলাত খরচ ***************/     
@@ -201,7 +223,7 @@ class CashReportController extends Controller
         $khoroc[$j] = array(
             'sl' => $count_khoroc++,
             'reference' => "হাওলাত খরচ",
-            'total_taka' => $hawlat_khoroc,
+            'total_taka' => $hawlat_khoroc_cash + $hawlat_khoroc_bank,
         );
 
         /************* অন্যান্য খরচ ***************/     
@@ -211,7 +233,7 @@ class CashReportController extends Controller
         $khoroc[$j] = array(
             'sl' => $count_khoroc++,
             'reference' => "অন্যান্য খরচ",
-            'total_taka' => $other_khoroc,
+            'total_taka' => $other_khoroc_cash + $other_khoroc_bank,
         );
 
         /************* লেবার খরচ ***************/     
@@ -245,6 +267,7 @@ class CashReportController extends Controller
     {
         $entry_date = Carbon::createFromFormat('d-m-Y', $search_date)->format('Y-m-d');
 
+        $cash_transfer = cash_transfer::where('date',$entry_date)->get();
         $cash_sales = ponno_sales_info::where('entry_date',$entry_date)->where('sales_type',1)->get();
         $bank_uttolon = bank_entry::where('entry_date',$entry_date)->where('type',2)->get();
         $kreta_joma = kreta_joma_entry::where('entry_date',$entry_date)->get();
@@ -253,7 +276,7 @@ class CashReportController extends Controller
         $hawlat_joma = hawlat_entry::where('entry_date',$entry_date)->where('type',1)->get();
         $other_joma = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',1)->get();
 
-        return view('user.report.cash_report.all_joma',compact('cash_sales','bank_uttolon','kreta_joma','mohajon_return','amanot_joma','hawlat_joma','other_joma','search_date'));
+        return view('user.report.cash_report.all_joma',compact('cash_sales','bank_uttolon','kreta_joma','mohajon_return','amanot_joma','hawlat_joma','other_joma','cash_transfer','search_date'));
     }
 
     public function searchByKhoroc($search_date)

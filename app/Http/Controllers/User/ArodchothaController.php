@@ -87,12 +87,6 @@ class ArodchothaController extends Controller
 
             $ponno = ponno_purchase_entry::where('purchase_id',$request->purchase_id)->first();
 
-            $mohajon_commission = $ponno->ponno_setup->mohajon_commission_setup->commission_amount;
-            $kreta_commission = $ponno->ponno_setup->kreta_commission_setup->commission_amount;
-
-            $data['mohajon_commission'] = $mohajon_commission;
-            $data['kreta_commission'] = $kreta_commission;
-
             $insert = arod_chotha_entry::create($data);
             if($insert)
             {
@@ -171,7 +165,11 @@ class ArodchothaController extends Controller
     public function getPurchaseIdByMohajonId(Request $request)
     {
 
-        $data = ponno_purchase_entry::where('mohajon_setup_id', $request->mohajon_setup_id)->where('purchase_type',2)->orderBy('entry_date','DESC')->get(); 
+        $data = ponno_purchase_entry::where('mohajon_setup_id', $request->mohajon_setup_id)->where('purchase_type',2)->orderBy('entry_date','DESC')
+                ->whereIn('ponno_purchase_entries.id', function ($query) {
+                    $query->select('purchase_id')
+                        ->from('stocks')->where('quantity',0);
+                })->get();
 
         $select = "<option value='' selected>সিলেক্ট</option>";
 
@@ -192,8 +190,13 @@ class ArodchothaController extends Controller
 
     public function loadArodChothaTable(Request $request)
     {
+        $purchase = ponno_purchase_entry::where('id', $request->purchase_id)
+                ->whereIn('ponno_purchase_entries.id', function ($query) {
+                    $query->select('purchase_id')
+                        ->from('stocks')->where('quantity',0);
+                })->first();
 
-        $purchase = ponno_purchase_entry::where('id', $request->purchase_id)->first(); 
+       
 
         $arod_chotha = arod_chotha_entry::where('purchase_id',$purchase->id)->count();
 
@@ -209,5 +212,16 @@ class ArodchothaController extends Controller
         }
 
         
+    }
+
+
+
+    public function arod_chotha_memo($id)
+    {
+        $purchase = ponno_purchase_entry::where('id',$id)->first();
+
+        $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+        
+        return view('user.entry_user.arod_chotha_memo',compact('purchase','sales'));
     }
 }

@@ -106,7 +106,7 @@
                     @if($data['table'] == 1)
                     <td class="px-2 py-3 font-bold text-blue-700 "><a href="{{route('ponno_purchase_report.memo',$data['id'])}}" class="url" onclick="return false;">{{ $data['id'] }}</a></td>
                     @elseif($data['table'] == 4)
-                    <td class="px-2 py-3 font-bold text-blue-700 "><a href="{{route('ponno_purchase_report.memo',$data['id'])}}" class="url" onclick="return false;">{{ $data['id'] }}</a></td>
+                    <td class="px-2 py-3 font-bold text-blue-700 "><a href="{{route('arod_chotha.memo',$data['id'])}}" class="url" onclick="return false;">{{ $data['id'] }}</a></td>
                     @else
                     <td class="px-2 py-3">{{ $data['id'] }}</td>
                     @endif

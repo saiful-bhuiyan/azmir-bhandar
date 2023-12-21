@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('mohajon_payment_entries', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(100);
             $table->unsignedBigInteger('mohajon_setup_id');
             $table->foreign('mohajon_setup_id')->references('id')->on('mohajon_setups');
             $table->unsignedBigInteger('bank_setup_id')->nullable();

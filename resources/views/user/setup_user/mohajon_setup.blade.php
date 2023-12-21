@@ -37,7 +37,7 @@
 
               <div class="md:col-span-3">
                 <label for="mobile">মোবাইল নাম্বার :</label>
-                <input type="text" name="mobile" id="mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" />
+                <input type="text" name="mobile" id="mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="00" />
                 @if($errors->has('mobile'))
                 <span class="text-sm text-red-600">{{ $errors->first('mobile') }} </span>
                 @endif

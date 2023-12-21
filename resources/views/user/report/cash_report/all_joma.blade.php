@@ -17,9 +17,18 @@
         </div>
       </div>
 
+      @php 
+        $total_amount = 0;
+        if(count($cash_transfer) > 0)
+        {
+            $total_amount += $cash_transfer->amount; 
+        }
+      @endphp
+
     <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-2">
         <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-800">ক্যাশ জমা রিপোর্ট</p>
         <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-600">তারিখ : {{$search_date}}</p>
+        <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-600">সাবেক ক্যাশ :@if(count($cash_transfer) > 0) {{$cash_transfer->amount}} - {{$cash_transfer->reference_date}} @endif</p>
         <div class="w-full p-2">
         <hr>
         </div>
@@ -86,6 +95,9 @@
                     <td colspan="6" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
@@ -160,6 +172,9 @@
                     <td colspan="9" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
@@ -228,6 +243,9 @@
                     <td colspan="7" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
@@ -295,6 +313,9 @@
                     <td colspan="7" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
@@ -363,6 +384,9 @@
                     <td colspan="7" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
@@ -431,6 +455,9 @@
                     <td colspan="7" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
@@ -495,10 +522,17 @@
                     <td colspan="6" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 </tr>
+                @php
+                $total_amount +=$total;
+                @endphp
                 @endif
             </tbody>
             
         </table>
+    </div>
+
+    <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
+        <h1 class="text-2xl font-bold text-green-700">সর্বমোট জমা : {{$total_amount}}</h1>
     </div>
 
     

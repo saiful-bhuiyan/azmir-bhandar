@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\mohajon_commission_setup;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
@@ -183,6 +184,12 @@ class PonnoPurchaseEntryController extends Controller
 
                 $data['rate'] = $request->rate;
             }
+            else
+            {
+                $mohajon = mohajon_commission_setup::where('ponno_setup_id',$request->ponno_setup_id)->first();
+                $mohajon_commission = intval($mohajon->commission_amount * $request->weight);
+                $data['mohajon_commission'] = $mohajon_commission;
+            }
 
             $insert = ponno_purchase_entry::create($data);
 
@@ -244,6 +251,7 @@ class PonnoPurchaseEntryController extends Controller
             'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
             'van_cost'=>$request->van_cost ? $request->van_cost : 0,
             'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
+            'mohajon_commission'=>$request->mohajon_commission ? $request->mohajon_commission : 0,
         );
 
         $update = ponno_purchase_entry::where('id',$id)->update($data);

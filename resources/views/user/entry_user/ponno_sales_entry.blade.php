@@ -24,7 +24,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($stock)
                     @foreach($stock as $v)
-                    <option value="{{$v->purchase_id}}">{{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
+                    <option value="{{$v->purchase_id}}">ই - {{$v->purchase_id}} / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
                        {{$v->ponno_purchase_entry->ponno_size_setup->ponno_size}} / {{$v->ponno_purchase_entry->ponno_marka_setup->ponno_marka}} /
                         @if($v->ponno_purchase_entry->purchase_type == 1) নিজ খরিদ @else কমিশন @endif</option>
                     @endforeach
@@ -133,7 +133,7 @@
 
                 <div class="md:col-span-1">
                   <label for="kreta_commission">ক্রেতা কমিশন :</label>
-                  <input type="text" id="kreta_commission" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
+                  <input type="text" id="kreta_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""  />
                   <input type="hidden" id="kreta_com_per_kg" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
                 </div>
 

@@ -54,14 +54,14 @@
                 $total_sale = 0;
                 $total_sale_qty = 0;
                 $total_mohajon_commission = 0;
+                if($purchase->purchase_type == 2)
+                {
+                  $total_mohajon_commission += $purchase->mohajon_commission;
+                }
                 @endphp
-
     
                 @foreach($sales as $s)
-                
                 @php
-                $total_mohajon_commission += $s->sales_weight * $s->ponno_purchase_entry->ponno_setup->mohajon_commission_setup->commission_amount;
-
                 $total_sale += $s->sales_weight * $s->sales_rate;
                 $total_sale_qty += $s->sales_qty;
                 @endphp

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ponno_sales_infos', function (Blueprint $table) {
-            $table->id()->from(1000)->comment('Sales Invoices');
+            $table->id()->from(100000)->comment('Sales Invoices');
             $table->integer('sales_type')->comment('1 = Cash & 2 = Due');
             $table->unsignedBigInteger('kreta_setup_id')->nullable();
             $table->foreign('kreta_setup_id')->references('id')->on('kreta_setups');

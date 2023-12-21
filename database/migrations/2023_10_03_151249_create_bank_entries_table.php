@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('bank_entries', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(100);
             $table->integer('type')->comment("1 = জমা  & 2 = উত্তোলন");
             $table->unsignedBigInteger('bank_setup_id')->nullable();
             $table->foreign('bank_setup_id')->references('id')->on('bank_setups');

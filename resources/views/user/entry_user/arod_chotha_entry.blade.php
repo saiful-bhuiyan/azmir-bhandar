@@ -274,6 +274,14 @@
                   @endif
                 </div>
 
+                <div class="md:col-span-1">
+                  <label for="mohajon_commission">মহাজন কমিশন :</label>
+                  <input type="number" step="any" name="mohajon_commission" id="mohajon_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->mohajon_commission}}" onkeyup="return getTotalTaka()" />
+                  @if($errors->has('mohajon_commission'))
+                  <span class="text-sm text-red-600">{{ $errors->first('mohajon_commission') }} </span>
+                  @endif
+                </div>
+
                 <div class="md:col-span-2" id="total_taka_div">
                   <label for="total_cost">সর্বমোট টাকা :</label>
                   <input type="text" id="total_cost" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly/>
@@ -333,8 +341,9 @@
       var truck_cost = parseFloat($('#truck_cost').val()) || 0;
       var van_cost = parseFloat($('#van_cost').val()) || 0;
       var tohori_cost = parseFloat($('#tohori_cost').val()) || 0;
+      var mohajon_commission = parseFloat($('#mohajon_commission').val()) || 0;
 
-      var all_total = labour_cost + other_cost + truck_cost + van_cost + tohori_cost;
+      var all_total = labour_cost + other_cost + truck_cost + van_cost + tohori_cost +mohajon_commission;
       $('#total_cost').val(all_total.toFixed(2));
       
     }

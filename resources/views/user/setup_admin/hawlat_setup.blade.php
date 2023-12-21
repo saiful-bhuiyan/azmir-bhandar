@@ -1,8 +1,9 @@
 @extends('user.layout.master')
 @section('body')
 
-<form action="{{route('hawlat_setup.store')}}" id="form_data" method="POST">
+<form action="{{ isset($data) ? route('hawlat_setup.update',$data->id) : '' }}" id="form_data" method="POST">
 @csrf
+@method('PUT')
 
 <div class=" p-6 bg-gray-100 flex ">
   <div class="container max-w-screen-lg mx-auto">
@@ -11,7 +12,7 @@
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 mb-2 text-center">
-            <p class="font-medium text-lg">হাওলাত সেটাপ</p>
+            <p class="font-medium text-lg">হাওলাত সেটাপ এডমিন</p>
           </div>
 
           
@@ -19,7 +20,7 @@
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
               <div class="md:col-span-2">
                 <label for="name">হাওলাতকারীর নাম :</label>
-                <input type="text" name="name" id="name" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
+                <input type="text" name="name" id="name" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->name : '' }}" required/>
                 @if($errors->has('name'))
                 <span class="text-sm text-red-600">{{ $errors->first('name') }} </span>
                 @endif
@@ -28,7 +29,7 @@
 
               <div class="md:col-span-3">
                 <label for="address">ঠিকানা :</label>
-                <input type="text" name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""  required/>
+                <input type="text" name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->address : '' }}" required />
                 @if($errors->has('address'))
                 <span class="text-sm text-red-600">{{ $errors->first('address') }} </span>
                 @endif
@@ -36,7 +37,7 @@
 
               <div class="md:col-span-3">
                 <label for="mobile">মোবাইল নাম্বার :</label>
-                <input type="text" name="mobile" id="mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""  />
+                <input type="text" name="mobile" id="mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->mobile : '' }}" required />
                 @if($errors->has('mobile'))
                 <span class="text-sm text-red-600">{{ $errors->first('mobile') }} </span>
                 @endif
@@ -44,7 +45,7 @@
       
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
-                  <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সেভ</button>
+                  <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                 </div>
               </div>
 
@@ -84,6 +85,9 @@
                 <th scope="col" class="px-6 py-3">
                     স্টেটাস
                 </th>
+                <th scope="col" class="px-6 py-3 text-center">
+                    একশন
+                </th>
             </tr>
         </thead>
         <tbody id="table_body">
@@ -119,13 +123,14 @@
                   "previous":   "পুর্বে"
               },
             },
-            ajax: "{{ route('hawlat_setup.index') }}",
+            ajax: "{{ route('hawlat_setup.admin') }}",
             columns: [
                 {data: 'sl', name: 'sl'},
                 {data: 'name', name: 'name'},
                 {data: 'address', name: 'address'},
                 {data: 'mobile', name: 'mobile'},
                 {data: 'status', name: 'status'},
+                {data: 'action', name: 'action' , orderable: false, searchable: false},
             
             ]
         });
@@ -147,7 +152,7 @@
             'X-CSRF-TOKEN' : '{{ csrf_token() }}'
           },
 
-          url : '{{url('hawlatSetupStatusChange')}}/'+id,
+          url : '{{url("hawlatSetupStatusChange")}}/'+id,
           type : 'GET',
           success:function(data)
           {

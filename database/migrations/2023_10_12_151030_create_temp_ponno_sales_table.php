@@ -22,7 +22,6 @@ return new class extends Migration
             $table->double('sales_rate');
             $table->double('labour')->nullable();
             $table->double('other')->nullable();
-            $table->double('mohajon_commission')->nullable();
             $table->double('kreta_commission')->nullable();
             $table->timestamps();
         });

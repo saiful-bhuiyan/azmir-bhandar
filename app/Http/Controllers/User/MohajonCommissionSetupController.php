@@ -62,13 +62,13 @@ class MohajonCommissionSetupController extends Controller
         $validated = $request->validate(
             [
                 'ponno_setup_id' => 'required|unique:mohajon_commission_setups',
-                'commission_amount' => 'required|max:12|numeric',
+                'commission_amount' => 'required|max:4|numeric',
             ],
             [
                 'ponno_setup_id.required'=>'দয়া করে পন্যের নাম সিলেক্ট করুন',
                 'ponno_setup_id.unique'=>'এই পন্যের নাম পুর্বে ব্যবহার করা হয়েছে',
                 'commission_amount.required'=>'দয়া করে মহাজন কমিশন ইনপুট করুন',
-                'commission_amount.max'=>'১২টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
+                'commission_amount.max'=>'৪টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
                 'commission_amount.numeric'=>'দয়া করে সংখ্যা ইনপুট করুন',
             ]);
     
@@ -109,7 +109,8 @@ class MohajonCommissionSetupController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = mohajon_commission_setup::find($id);
+        return view('user.setup_admin.mohajon_commission_setup',compact('data'));
     }
 
     /**
@@ -121,7 +122,34 @@ class MohajonCommissionSetupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate(
+            [
+                'ponno_setup_id' => 'required',
+                'commission_amount' => 'required|max:4|numeric',
+            ],
+            [
+                'ponno_setup_id.required'=>'দয়া করে পন্যের নাম সিলেক্ট করুন',
+                'commission_amount.required'=>'দয়া করে মহাজন কমিশন ইনপুট করুন',
+                'commission_amount.max'=>'৪টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
+                'commission_amount.numeric'=>'দয়া করে সংখ্যা ইনপুট করুন',
+            ]);
+    
+            $data = array(
+                'ponno_setup_id'=>$request->ponno_setup_id,
+                'commission_amount'=>$request->commission_amount,
+            );
+
+            $update = mohajon_commission_setup::find($id)->update($data);
+            if($update)
+            {
+                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+            }
+    
+            return redirect()->back();
     }
 
     /**
@@ -133,5 +161,33 @@ class MohajonCommissionSetupController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function admin(Request $request)
+    {
+         if ($request->ajax()) {
+            $data = mohajon_commission_setup::all();
+            return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('sl',function($row){
+                return $this->sl = $this->sl +1;
+            })
+            ->addColumn('ponno_name',function($v){
+                return $v->ponno_setup->ponno_name;
+            })
+            ->addColumn('commission_amount',function($v){
+                return number_format($v->commission_amount, 2);
+            })
+            ->addColumn('action',function($v){
+
+                return '<a href="'.route('mohajon_commission_setup.edit', $v->id).'" class="bg-blue-500 hover:bg-blue-700 text-white font-bold my-1 py-1 px-4 rounded">
+                ইডিট</a>';
+            })
+            
+            ->rawColumns(['sl','ponno_name','commission_amount','action'])
+            ->make(true);
+        }
+       
+        return view('user.setup_admin.mohajon_commission_setup');
     }
 }

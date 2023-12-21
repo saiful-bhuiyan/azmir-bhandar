@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Admin Panel</title>
     <!-- <link rel="stylesheet" href="./output/tailwind.css" /> -->
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +32,7 @@
                 <!-- Online users -->
             </div>
             <div class="flex items-center justify-center h-20">
-                <a href="{{route('logout')}}" class="bg-red-600 shadow-md hover:bg-blue-700 text-center text-white font-bold py-1 px-4 rounded mt-2">Logout</a>
+                <a href="{{route('admin.logout')}}" class="bg-red-600 shadow-md hover:bg-blue-700 text-center text-white font-bold py-1 px-4 rounded mt-2">Logout</a>
                 <!-- <a href="logout.php">Logout<i class='fa fa-log-out' ></i></a> -->
             </div>
 
@@ -80,29 +80,33 @@
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ব্যাংক সেটাপ</p>
                 </a>
-                <a href="{{route('bank_check_book_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('bank_check_book_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ব্যাংকের চেক বই সেটাপ</p>
                 </a>
-                <a href="{{route('amanot_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('amanot_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/other_cost.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">আমানত সেটাপ</p>
                 </a>
-                <a href="{{route('hawlat_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('hawlat_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/borrow.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">হাওলাত সেটাপ</p>
                 </a>
-                <a href="{{route('other_joma_khoroc_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('other_joma_khoroc_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/budget.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">অন্যান্য জমা খরচ সেটাপ</p>
                 </a>
-                <a href="{{route('mohajon_commission_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('mohajon_commission_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission_product.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">মহাজন কমিশন সেটাপ</p>
                 </a>
-                <a href="{{route('kreta_commission_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('kreta_commission_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission_product.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার কমিশন সেটাপ</p>
+                </a>
+                <a href="{{route('user_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                    <img src="{{asset('frontend')}}/image/supplier.png" alt="" class="w-8 h-8 mx-auto">
+                    <p class="text-center mt-2">ইউজার সেটাপ এডমিন</p>
                 </a>
             </div>
 
@@ -119,7 +123,7 @@
                     <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">আড়ৎ চৌথা</p>
                 </a>
-                <a href="{{route('kreta_joma_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('kreta_joma_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার জমা</p>
                 </a>

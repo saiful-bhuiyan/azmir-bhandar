@@ -94,8 +94,8 @@
                 var url = $(this).attr('href');
 
                 var myWindow = window.open(url, url,
-                    'resizable=yes, width=' + '800' +
-                    ', height=' + '700' + ', top=' +
+                    'resizable=yes, width=' + '400' +
+                    ', height=' + '1200' + ', top=' +
                     top + ', left=' + left);
             })
         </script>

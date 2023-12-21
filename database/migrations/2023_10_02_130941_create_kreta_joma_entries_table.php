@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('kreta_joma_entries', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(100);
             $table->unsignedBigInteger('kreta_setup_id');
             $table->foreign('kreta_setup_id')->references('id')->on('kreta_setups');
             $table->unsignedBigInteger('bank_setup_id')->nullable();

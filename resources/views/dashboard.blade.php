@@ -21,7 +21,7 @@
         <p class="text-xs sm:text-sm md:text-base lg:text-lg text-white leading-5">আবু বক্কর সড়ক,ইসলামপুর রোড,ফেনী</p>
     </div>
     <div class="mx-[.4rem] my-2 py-1 bg-gray-200 rounded-b-lg">
-        <p class="text-sm pl-4 sm:text-sm md:text-base lg:text-lg font-bold leading-5"><a href="#">Home /</a> <a href="#">Saiful</a></p>
+    <a href="{{route('logout')}}" class="bg-red-600 shadow-md hover:bg-blue-700 text-center text-white font-bold py-1 px-4 rounded mt-2">Logout</a>
     </div>
     <div class="w-auto lg:flex pb-12">
         <div class="lg:w-3/12 m-3 border-solid border-2">
@@ -30,8 +30,23 @@
             <div class="m-3" id="online_user">
                 <!-- Online users -->
             </div>
-            <div class="flex items-center justify-center h-20">
-                <a href="{{route('logout')}}" class="bg-red-600 shadow-md hover:bg-blue-700 text-center text-white font-bold py-1 px-4 rounded mt-2">Logout</a>
+            <div class="min-h-20 font-sans">
+                @php
+                use App\Models\User;
+
+                $users = User::select('name','email')->get();
+                @endphp
+                @foreach($users as $user)
+                <div class="w-auto my-1">
+                    <p class="mx-4 font-bold text-base">Name : {{$user->name}}</p>
+                    <p class="mx-4 font-bold text-base">Email : {{$user->email}}</p>
+                    <p class="mx-4 font-bold text-base">Last Active : </p>
+                    <span class="mx-4 inline-flex items-center rounded-md bg-green-700 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10">Active</span>
+                    <hr class="py-2 w-auto bg-gray-100 mt-1">
+                    </hr>
+                </div>
+                @endforeach
+              
                 <!-- <a href="logout.php">Logout<i class='fa fa-log-out' ></i></a> -->
             </div>
 
@@ -51,7 +66,7 @@
                         <button id="reportBtn" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">রিপোর্ট</button>
                     </li>
                     <li class="mr-2 md:ml-20 lg:30">
-                        <button id="AdminBtn" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Admin Panel</button>
+                        <a href="{{route('admin.dashboard')}}" target="_blank" id="AdminBtn" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Admin Panel</a>
                     </li>
                 </ul>
             </div>

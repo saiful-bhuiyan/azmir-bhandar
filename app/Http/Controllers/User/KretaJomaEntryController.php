@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\bank_setup;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
@@ -157,7 +158,10 @@ class KretaJomaEntryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $bank_setup = bank_setup::get();
+        $kreta_setup = kreta_setup::select('area')->groupBy('area')->get();
+        $data = kreta_joma_entry::find($id);
+        return view('user.entry_admin.kreta_joma_entry',compact('data','kreta_setup','bank_setup'));
     }
 
     /**
@@ -181,6 +185,74 @@ class KretaJomaEntryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function admin(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = kreta_joma_entry::orderBy('entry_date','DESC')->get();
+            return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('sl',function($row){
+                return $this->sl = $this->sl +1;
+            })
+            ->addColumn('area',function($v){
+                return $v->kreta_setup->area;
+            })
+            ->addColumn('address',function($v){
+                return $v->kreta_setup->address;
+            })
+            ->addColumn('name',function($v){
+                return $v->kreta_setup->name;
+            })
+            ->addColumn('payment_by',function($v){
+                if($v->payment_by == 1)
+                {
+                    return 'Cash';
+                }
+                else
+                {
+                    return 'Bank';
+                }
+            })
+            ->addColumn('bank_info',function($v){
+                if($v->bank_setup_id == "" or null)
+                {
+                    return '-';
+                }
+                else
+                {
+                    return $v->bank_setup->bank_name .'/'.$v->bank_setup->account_name;
+                }
+            })
+            ->addColumn('marfot',function($v){
+                return $v->marfot;
+            })
+            ->addColumn('taka',function($v){
+                return $v->taka;
+            })
+            ->addColumn('action',function($v){
+
+                return '<div class="flex gap-x-2">
+                    <a href="'.route('kreta_joma_entry.edit', $v->id).'" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ইডিট</a>
+
+                    <form method="post" action="'.route('kreta_joma_entry.destroy',$v->id).'" id="deleteForm">
+                    '.csrf_field().'
+                    '.method_field('DELETE').'
+                        <button onclick="return confirmation();" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" type="submit">
+                        ডিলিট</button>
+                    </form>
+                  
+                    </div>';
+            })
+
+            ->rawColumns(['sl','area','address','name','payment_by','bank_info','marfot','taka','action'])
+            ->make(true);
+        }
+
+        $bank_setup = bank_setup::get();
+        $kreta_setup = kreta_setup::select('area')->groupBy('area')->get();
+        return view('user.entry_admin.kreta_joma_entry',compact('kreta_setup','bank_setup'));
     }
 
     

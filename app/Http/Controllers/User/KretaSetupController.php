@@ -86,7 +86,7 @@ class KretaSetupController extends Controller
             [
                 'name' => 'required|max:50',
                 'address' => 'required|max:50',
-                'mobile' => 'required|unique:kreta_setups|max:15|min:3',
+                'mobile' => 'required|max:15|min:1',
                 'area' => 'required|max:50',
                 'old_amount' => 'required|max:20|regex:/^\d+(\.\d{1,2})?$/',
             ],
@@ -95,9 +95,8 @@ class KretaSetupController extends Controller
                 'name.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
                 'address.required'=>'দয়া করে ঠিকানা ইনপুট করুন',
                 'address.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
-                'mobile.required'=>'দয়া করে মোবাইল নাম্বার ইনপুট করুন',
                 'mobile.unique'=>'এই নাম্বার পুর্বে ব্যবহার করা হয়েছে',
-                'mobile.min'=>'কমপক্ষে ৩টি সংখ্যা বাধ্যতামুলক',
+                'mobile.min'=>'কমপক্ষে ১টি সংখ্যা বাধ্যতামুলক',
                 'mobile.max'=>'১৫টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
                 'area.required'=>'দয়া করে এরিয়া ইনপুট করুন',
                 'area.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
@@ -113,16 +112,23 @@ class KretaSetupController extends Controller
                 'area'=>$request->area,
                 'old_amount'=>$request->old_amount,
             );
-    
-            $insert = kreta_setup::create($data);
-            if($insert)
+
+            $check_kreta = kreta_setup::where('name',$request->name)->where('address',$request->address)->where('area',$request->area)->count();
+            if($check_kreta == 0)
             {
-                Toastr::success(__('এড কার্ট সফল হয়েছে'), __('সফল'));
+                $insert = kreta_setup::create($data);
+                if($insert)
+                {
+                    Toastr::success(__('এড কার্ট সফল হয়েছে'), __('সফল'));
+                }
+                else
+                {
+                    Toastr::error(__('এড কার্ট সফল হয়নি'), __('ব্যর্থ'));
+                }
+            }else{
+                Toastr::error(__('একি নাম ঠিকানা এরিয়া গ্রহণযোগ্য নয়'), __('ব্যর্থ'));
             }
-            else
-            {
-                Toastr::error(__('এড কার্ট সফল হয়নি'), __('ব্যর্থ'));
-            }
+            
     
             return redirect()->back();
     }
@@ -163,7 +169,7 @@ class KretaSetupController extends Controller
             [
                 'name' => 'required|max:50',
                 'address' => 'required|max:50',
-                'mobile' => 'required|max:15|min:3',
+                'mobile' => 'required|max:15|min:1',
                 'area' => 'required|max:50',
                 'old_amount' => 'required|max:20|regex:/^\d+(\.\d{1,2})?$/',
             ],
@@ -173,7 +179,7 @@ class KretaSetupController extends Controller
                 'address.required'=>'দয়া করে ঠিকানা ইনপুট করুন',
                 'address.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
                 'mobile.required'=>'দয়া করে মোবাইল নাম্বার ইনপুট করুন',
-                'mobile.min'=>'কমপক্ষে ৩টি সংখ্যা বাধ্যতামুলক',
+                'mobile.min'=>'কমপক্ষে ১টি সংখ্যা বাধ্যতামুলক',
                 'mobile.max'=>'১৫টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
                 'area.required'=>'দয়া করে এরিয়া ইনপুট করুন',
                 'area.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
@@ -189,17 +195,23 @@ class KretaSetupController extends Controller
                 'area'=>$request->area,
                 'old_amount'=>$request->old_amount,
             );
-    
-            $update = kreta_setup::find($id)->update($data);
-            if($update)
+
+            $check_kreta = kreta_setup::where('name',$request->name)->where('address',$request->address)->where('area',$request->area)->count();
+            
+            if($check_kreta == 0)
             {
-                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+                $update = kreta_setup::find($id)->update($data);
+                if($update)
+                {
+                    Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+                }
+                else
+                {
+                    Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+                }
+            }else{
+                Toastr::error(__('একি নাম ঠিকানা এরিয়া গ্রহণযোগ্য নয়'), __('ব্যর্থ'));
             }
-            else
-            {
-                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
-            }
-    
             return redirect()->back();
     }
 

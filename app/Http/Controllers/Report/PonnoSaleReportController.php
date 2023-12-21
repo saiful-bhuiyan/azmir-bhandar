@@ -102,18 +102,28 @@ class PonnoSaleReportController extends Controller
     public function sales_memo($id)
     {
         $sales = ponno_sales_info::where('id',$id)->first();
-        $kreta_setup_id = $sales->kreta_setup->id;
-        $kreta_old_amount = $sales->kreta_setup->old_amount;
-                $total_taka = 0;
+        if($sales->sales_type == 2)
+        {
+            $kreta_setup_id = $sales->kreta_setup->id;
+            $kreta_old_amount = $sales->kreta_setup->old_amount;
+                    $total_taka = 0;
 
-                $old_sales = ponno_sales_info::with('ponno_sales_entry')->whereHas('ponno_sales_entry',function($query) use($kreta_setup_id){
-                    $query->whereHas('ponno_purchase_entry',function($query2) use($kreta_setup_id){
-                        $query2->whereIn('kreta_setup_id',[$kreta_setup_id]);
-                    });
-                })->where('sales_type',2)->sum('total_taka');
+                    $old_sales = ponno_sales_info::with('ponno_sales_entry')->whereHas('ponno_sales_entry',function($query) use($kreta_setup_id){
+                        $query->whereHas('ponno_purchase_entry',function($query2) use($kreta_setup_id){
+                            $query2->whereIn('kreta_setup_id',[$kreta_setup_id]);
+                        });
+                    })->where('sales_type',2)->sum('total_taka');
 
-                $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
-                $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
-        return view('user.report.ponno_sales_report.sales_memo',compact('sales','old_sales','joma','koifiyot','kreta_old_amount'));
+                    $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+                    $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+            $kreta_old_amount += $old_sales ? $old_sales : 0;
+            $kreta_old_amount += $joma ? $joma : 0;
+            $kreta_old_amount += $koifiyot ? $koifiyot : 0;
+           
+        }else{
+            $kreta_old_amount = 0;
+
+        }
+        return view('user.report.ponno_sales_report.sales_memo',compact('sales','kreta_old_amount'));
     }
 }

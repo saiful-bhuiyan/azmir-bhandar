@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PonnoSalesInfosTableSeeder::class);
         $this->call(PonnoSalesEntriesTableSeeder::class);
         $this->call(ArodChothaEntriesTableSeeder::class);
+        $this->call(CheckBookPageSetupsTableSeeder::class);
     }
 }

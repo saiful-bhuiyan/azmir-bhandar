@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ponno_purchase_entries', function (Blueprint $table) {
-            $table->id();
+            $table->id()->from(1000)->comment('Purchase Invoices');
             $table->integer('purchase_type')->comment("1 = নিজ খরিদ & 2 = কমিশন");
             $table->unsignedBigInteger('mohajon_setup_id');
             $table->foreign('mohajon_setup_id')->references('id')->on('mohajon_setups');
@@ -33,6 +33,7 @@ return new class extends Migration
             $table->double('truck_cost' ,10 ,2)->nullable();
             $table->double('van_cost' ,10 ,2)->nullable();
             $table->double('tohori_cost' ,10 ,2)->nullable();
+            $table->double('mohajon_commission' ,10 ,2)->nullable();
             $table->date('entry_date')->nullable();
             $table->timestamps();
         });

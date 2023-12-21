@@ -8,7 +8,6 @@ use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
 use App\Models\kreta_setup;
 use App\Models\bikroy_marfot_setup;
-use App\Models\mohajon_commission_setup;
 use App\Models\kreta_commission_setup;
 use App\Models\ponno_purchase_entry;
 use App\Models\temp_ponno_sale;
@@ -137,14 +136,11 @@ class PonnoSalesEntryController extends Controller
 
                 $purchase = ponno_purchase_entry::where('id',$request->purchase_id)->first();
 
-                $mohajon = mohajon_commission_setup::where('ponno_setup_id',$purchase->ponno_setup->id)->first();
 
                 $kreta = kreta_commission_setup::where('ponno_setup_id',$purchase->ponno_setup->id)->first();
 
-                $mohajon_commission = intval($mohajon->commission_amount * $request->sales_weight);
                 $kreta_commission = intval($kreta->commission_amount * $request->sales_weight);
 
-                $data['mohajon_commission'] = $mohajon_commission;
                 $data['kreta_commission'] = $kreta_commission;
 
 
@@ -249,7 +245,6 @@ class PonnoSalesEntryController extends Controller
                     'sales_rate'=>$t->sales_rate,
                     'labour'=>$t->labour,
                     'other'=>$t->other,
-                    'mohajon_commission'=>$t->mohajon_commission,
                     'kreta_commission'=>$t->kreta_commission,
                 );
                 ponno_sales_entry::create($sales_data);

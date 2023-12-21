@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\HomeController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\UserSetupController;
+
 use App\Http\Controllers\User\CommonAjaxController;
 use App\Http\Controllers\User\MohajonSetupController;
 use App\Http\Controllers\User\PonnoSetupController;
@@ -83,7 +85,6 @@ Route::group(['middleware' => 'auth'],  function() {
     {
         auth()->logout();
        
-
         return Redirect::to('/');
     })->name('logout');
 
@@ -156,6 +157,8 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::post('getPurchaseIdByMohajonId',[ArodchothaController::class,'getPurchaseIdByMohajonId']);
     Route::post('loadArodChothaTable',[ArodchothaController::class,'loadArodChothaTable']);
     Route::get('arod_chotha_entry/{purchase_id}',[ArodchothaController::class,'arod_chotha_entry']);
+    Route::get('arod_chotha_memo/{id}',[ArodchothaController::class,'arod_chotha_memo'])->name('arod_chotha.memo');
+
 
 
     /************ Report Routes *******************/
@@ -250,9 +253,12 @@ Route::group(['middleware' => 'admin'], function() {
 
     Route::get('/admin', [HomeController::class, 'index'])->name('admin.dashboard');
 
-    Route::post('/admin/logout', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
+    Route::get('/admin/logout', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
 
     /*************** Admin Panel Routes *******************/
+
+    Route::resource('user_setup' ,UserSetupController::class);
+
 
     Route::get('mohajon_setup_admin',[MohajonSetupController::class,'admin'])->name('mohajon_setup.admin');
     Route::get('ponno_setup_admin',[PonnoSetupController::class,'admin'])->name('ponno_setup.admin');
@@ -261,6 +267,17 @@ Route::group(['middleware' => 'admin'], function() {
     Route::get('kreta_setup_admin',[KretaSetupController::class,'admin'])->name('kreta_setup.admin');
     Route::get('bikroy_marfot_setup_admin',[BikroyMarfotSetupController::class,'admin'])->name('bikroy_marfot_setup.admin');
     Route::get('bank_setup_admin',[BankSetupController::class,'admin'])->name('bank_setup.admin');
+    Route::get('bank_check_book_setup_admin',[BankCheckBookSetupController::class,'admin'])->name('bank_check_book_setup.admin');
+    Route::get('amanot_setup_admin',[AmanotSetupController::class,'admin'])->name('amanot_setup.admin');
+    Route::get('hawlat_setup_admin',[HawlatSetupController::class,'admin'])->name('hawlat_setup.admin');
+    Route::get('other_joma_khoroc_setup_admin',[OtherJomaKhorocSetupController::class,'admin'])->name('other_joma_khoroc_setup.admin');
+    Route::get('mohajon_commission_setup_admin',[MohajonCommissionSetupController::class,'admin'])->name('mohajon_commission_setup.admin');
+    Route::get('kreta_commission_setup_admin',[KretaCommissionSetupController::class,'admin'])->name('kreta_commission_setup.admin');
+
+
+    Route::get('kreta_joma_entry_admin',[KretaJomaEntryController::class,'admin'])->name('kreta_joma_entry.admin');
+
+
 
 
 });

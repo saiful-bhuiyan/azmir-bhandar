@@ -113,6 +113,7 @@
             <div class="w-full border border-collapse px-2 py-3">
                 <p class="text-green-600 font-bold text-lg">মোট ক্যাশ : {{ $total }}</p>
             </div>
+            @if(date("Y-m-d") > date("Y-m-d", strtotime($search_date)))
             <div class="w-full border border-collapse px-2 py-3">
                 <form action="{{route('cash_report.transfer')}}" id="form_data" method="POST">
                 @csrf
@@ -121,6 +122,7 @@
                     <button type="submit" id="search" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ক্যাশ ট্রান্সফার</button>
                 </form>
             </div>
+            @endif
         </div>
 
         <script>

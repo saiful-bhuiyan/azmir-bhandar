@@ -9,6 +9,7 @@ use DataTables;
 use App\Models\bank_setup;
 use App\Models\bank_check_book_setup;
 use App\Models\check_book_page_setup;
+use Illuminate\Database\QueryException;
 
 class BankCheckBookSetupController extends Controller
 {
@@ -183,7 +184,25 @@ class BankCheckBookSetupController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $check = check_book_page_setup::where('check_id',$id)->onlyTrashed()->count();
+
+        if($check == 0)
+        {
+            try {
+            bank_check_book_setup::destroy($id);
+                Toastr::success(__('ডিলিট সফল হয়েছে'), __('সফল'));
+            } catch (QueryException $e) {
+                if ($e->errorInfo[1] == 1451) {
+                    Toastr::error(__('ডিলিট সফল হয়নি'), __('ব্যর্থ'));
+                }
+            }
+        }
+        else
+        {
+            Toastr::error(__('এই চেক ব্যবহার হয়েছে'), __('ব্যর্থ'));
+        }
+        
+        return redirect()->back();
     }
 
     public function getBankNameByShakha(Request $request)
@@ -226,5 +245,62 @@ class BankCheckBookSetupController extends Controller
         }
 
         return $select;
+    }
+
+    public function admin(Request $request)
+    {
+         if ($request->ajax()) {
+            $data = bank_check_book_setup::all();
+            return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('sl',function($row){
+                return $this->sl = $this->sl +1;
+            })
+            ->addColumn('bank_name',function($v){
+                return $v->bank_setup->bank_name;
+            })
+            ->addColumn('account_name',function($v){
+                return $v->bank_setup->account_name;
+            })
+            ->addColumn('account_no',function($v){
+                return $v->bank_setup->account_no;
+            })
+            ->addColumn('shakha',function($v){
+                return $v->bank_setup->shakha;
+            })
+            ->addColumn('status',function($v){
+                if($v->status == 1)
+                {
+                    $check = 'checked';
+                }
+                else
+                {
+                    $check = '';
+                }
+
+                return '<label class="switch">
+                    <input type="checkbox" class="checkbox" id="bankSetupStatus" '.$check.' onclick="return bankSetupStatusChange('.$v->id.')">
+                    <div class="slider"></div>
+                </label>';
+            })
+            ->addColumn('action',function($v){
+
+                return '<div class="flex gap-x-2">
+                    <a href="'.route('bank_check_book_setup.edit', $v->id).'" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ইডিট</a>
+
+                    <form method="post" action="'.route('bank_check_book_setup.destroy',$v->id).'" id="deleteForm">
+                    '.csrf_field().'
+                    '.method_field('DELETE').'
+                        <button onclick="return confirmation();" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" type="submit">
+                        ডিলিট</button>
+                    </form>
+                  
+                    </div>';
+            })
+
+            ->rawColumns(['sl','bank_name','account_name','account_no','shakha','status','action'])
+            ->make(true);
+        }
+        return view('user.setup_admin.bank_check_book_setup');
     }
 }
