@@ -1,7 +1,7 @@
 @extends('user.layout.master')
 @section('body')
 
-<form action="{{route('ponno_purchase_entry.store')}}" id="form_data" method="POST">
+<form action="{{ isset($data) ? route('ponno_purchase_entry.ponno_purchase_update',$data->id) : '' }}" id="form_data" method="POST">
 @csrf
 
 <div class=" p-6 bg-gray-100 flex ">
@@ -11,9 +11,8 @@
       <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
         <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
           <div class="text-gray-600 mb-2 text-center">
-            <p class="font-medium text-lg">পন্য গ্রহণ</p>
+            <p class="font-medium text-lg">পন্য গ্রহণ এডমিন</p>
           </div>
-
           
           <div class="lg:col-span-2">
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
@@ -22,8 +21,8 @@
                 <label for="purchase_type">ধরণ :</label>
                 <select name="purchase_type" id="purchase_type" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getPurchaseType()" required>
                     <option value="" selected>সিলেক্ট</option>
-                    <option value="1">নিজ খরিদ</option>
-                    <option value="2">কমিশন</option>
+                    <option value="1" {{ isset($data) && $data->purchase_type == 1 ? 'selected' : '' }}>নিজ খরিদ</option>
+                    <option value="2" {{ isset($data) && $data->purchase_type == 2 ? 'selected' : '' }}>কমিশন</option>
                 </select>
                 @if($errors->has('purchase_type'))
                 <span class="text-sm text-red-600">{{ $errors->first('purchase_type') }} </span>
@@ -36,7 +35,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($mohajon_setup)
                     @foreach($mohajon_setup as $v)
-                    <option value="{{$v->id}}">{{$v->area}} / {{$v->address}} / {{$v->name}}</option>
+                    <option value="{{$v->id}}" {{ isset($data) && $data->mohajon_setup->id == $v->id ? 'selected' : '' }}>{{$v->area}} / {{$v->address}} / {{$v->name}}</option>
                     @endforeach
                     @endif
                 </select>
@@ -51,7 +50,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($ponno_setup)
                     @foreach($ponno_setup as $v)
-                    <option value="{{$v->id}}">{{$v->ponno_name}}</option>
+                    <option value="{{$v->id}}" {{ isset($data) && $data->ponno_setup->id == $v->id ? 'selected' : '' }}>{{$v->ponno_name}}</option>
                     @endforeach
                     @endif
                 </select>
@@ -66,7 +65,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($ponno_size_setup)
                     @foreach($ponno_size_setup as $v)
-                    <option value="{{$v->id}}">{{$v->ponno_size}}</option>
+                    <option value="{{$v->id}}" {{ isset($data) && $data->ponno_size_setup->id == $v->id ? 'selected' : '' }}>{{$v->ponno_size}}</option>
                     @endforeach
                     @endif
                 </select>
@@ -81,7 +80,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($ponno_marka_setup)
                     @foreach($ponno_marka_setup as $v)
-                    <option value="{{$v->id}}">{{$v->ponno_marka}}</option>
+                    <option value="{{$v->id}}" {{ isset($data) && $data->ponno_marka_setup->id == $v->id ? 'selected' : '' }}>{{$v->ponno_marka}}</option>
                     @endforeach
                     @endif
                 </select>
@@ -92,7 +91,7 @@
 
               <div class="md:col-span-2">
                 <label for="gari_no">গাড়ি নং :</label>
-                <input type="text" name="gari_no" id="gari_no" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
+                <input type="text" name="gari_no" id="gari_no" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->gari_no : '' }}" required/>
                 @if($errors->has('gari_no'))
                 <span class="text-sm text-red-600">{{ $errors->first('gari_no') }} </span>
                 @endif
@@ -100,7 +99,7 @@
 
               <div class="md:col-span-1">
                 <label for="quantity">সংখ্যা :</label>
-                <input type="number" step="any" name="quantity" id="quantity" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka();" required/>
+                <input type="number" step="any" name="quantity" id="quantity" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->quantity : '' }}" onkeyup="return getTotalTaka();" required/>
                 @if($errors->has('quantity'))
                 <span class="text-sm text-red-600">{{ $errors->first('quantity') }} </span>
                 @endif
@@ -108,7 +107,7 @@
 
               <div class="md:col-span-1">
                 <label for="weight">ওজন :</label>
-                <input type="number" step="any" name="weight" id="weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka();" required/>
+                <input type="number" step="any" name="weight" id="weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->weight : '' }}" onkeyup="return getTotalTaka();" required/>
                 @if($errors->has('weight'))
                 <span class="text-sm text-red-600">{{ $errors->first('weight') }} </span>
                 @endif
@@ -116,7 +115,7 @@
 
               <div class="md:col-span-1" id="rate_div">
                 <label for="rate">দর :</label>
-                <input type="number" step="any" name="rate" id="rate" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka();"/>
+                <input type="number" step="any" name="rate" id="rate" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->rate : '' }}" onkeyup="return getTotalTaka();"/>
                 @if($errors->has('rate'))
                 <span class="text-sm text-red-600">{{ $errors->first('rate') }} </span>
                 @endif
@@ -129,7 +128,7 @@
 
               <div class="md:col-span-1">
                 <label for="labour_cost">লেবার :</label>
-                <input type="number" step="any" step="any" name="labour_cost" id="labour_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                <input type="number" step="any" step="any" name="labour_cost" id="labour_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->labour_cost : '' }}" onkeyup="return getTotalTaka()"/>
                 @if($errors->has('labour_cost'))
                 <span class="text-sm text-red-600">{{ $errors->first('labour_cost') }} </span>
                 @endif
@@ -137,7 +136,7 @@
 
               <div class="md:col-span-1">
                 <label for="other_cost">অন্যান্য খরচ :</label>
-                <input type="number" step="any" name="other_cost" id="other_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                <input type="number" step="any" name="other_cost" id="other_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->other_cost : '' }}" onkeyup="return getTotalTaka()"/>
                 @if($errors->has('other_cost'))
                 <span class="text-sm text-red-600">{{ $errors->first('other_cost') }} </span>
                 @endif
@@ -145,7 +144,7 @@
 
               <div class="md:col-span-1">
                 <label for="truck_cost">ট্রাক ভাড়া :</label>
-                <input type="number" step="any" name="truck_cost" id="truck_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                <input type="number" step="any" name="truck_cost" id="truck_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->truck_cost : '' }}" onkeyup="return getTotalTaka()"/>
                 @if($errors->has('truck_cost'))
                 <span class="text-sm text-red-600">{{ $errors->first('truck_cost') }} </span>
                 @endif
@@ -153,7 +152,7 @@
 
               <div class="md:col-span-1">
                 <label for="van_cost">ভ্যান ভাড়া :</label>
-                <input type="number" step="any" name="van_cost" id="van_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                <input type="number" step="any" name="van_cost" id="van_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->van_cost : '' }}" onkeyup="return getTotalTaka()"/>
                 @if($errors->has('van_cost'))
                 <span class="text-sm text-red-600">{{ $errors->first('van_cost') }} </span>
                 @endif
@@ -161,7 +160,7 @@
 
               <div class="md:col-span-1">
                 <label for="tohori_cost">তহরী :</label>
-                <input type="number" step="any" name="tohori_cost" id="tohori_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return getTotalTaka()"/>
+                <input type="number" step="any" name="tohori_cost" id="tohori_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->tohori_cost : '' }}" onkeyup="return getTotalTaka()"/>
                 @if($errors->has('tohori_cost'))
                 <span class="text-sm text-red-600">{{ $errors->first('tohori_cost') }} </span>
                 @endif
@@ -179,7 +178,7 @@
       
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
-                  <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সেভ</button>
+                  <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                 </div>
               </div>
 
@@ -199,13 +198,16 @@
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 
-<div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto shadow-lg sm:rounded-lg bg-white mb-6">
+<div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto shadow-lg sm:rounded-lg bg-white mb-12">
   <p class="text-lg text-gray-700 uppercase px-6 py-3 font-bold text-center barlow">এড কার্ট</p>
   <table id="" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 data-table purchase_table">
   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
             <th>
                 নং
+            </th>
+            <th>
+                ইনভোয়েস
             </th>
             <th scope="col" class="px-6 py-3 whitespace-nowrap">
                 মহাজন ইনফরমেশন
@@ -252,6 +254,7 @@
 
 </div>
 
+</div>
 </div>
 
 
@@ -304,9 +307,10 @@
                   "previous":   "পুর্বে"
               },
             },
-            ajax: "{{ route('ponno_purchase_entry.index') }}",
+            ajax: "{{ route('ponno_purchase_entry.admin') }}",
             columns: [
                 {data: 'sl', name: 'sl'},
+                {data: 'invoice', name: 'invoice'},
                 {data: 'mohajon', name: 'mohajon'},
                 {data: 'purchase_type', name: 'purchase_type'},
                 {data: 'ponno_name', name: 'ponno_name'},

@@ -1,9 +1,9 @@
 @extends('user.layout.master')
 @section('body')
 
-<form action="{{route('ponno_sales_entry.store')}}" id="form_data" method="POST">
-  @csrf
-
+<form action="{{ isset($data) ? route('ponno_sales_entry.update',$data->id) : '' }}" id="form_data" method="POST">
+@csrf
+@method('PUT')
   <div class=" p-6 bg-gray-100 flex ">
     <div class="container max-w-screen-lg mx-auto">
       <div>
@@ -11,7 +11,7 @@
         <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
           <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
             <div class="text-gray-600 mb-2 text-center">
-              <p class="font-medium text-lg">পন্য বিক্রয়</p>
+              <p class="font-medium text-lg">পন্য বিক্রয় এডমিন</p>
             </div>
 
 
@@ -24,7 +24,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($stock)
                     @foreach($stock as $v)
-                    <option value="{{$v->purchase_id}}">ই - {{$v->purchase_id}} / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
+                    <option value="{{$v->purchase_id}}" {{ isset($data) && $data->ponno_purchase_entry->id == $v->purchase_id ? 'selected <script>getPurchaseDetail() </script>' : '' }} >{{$v->ponno_purchase_entry->id}} / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
                        {{$v->ponno_purchase_entry->ponno_size_setup->ponno_size}} / {{$v->ponno_purchase_entry->ponno_marka_setup->ponno_marka}} /
                         @if($v->ponno_purchase_entry->purchase_type == 1) নিজ খরিদ @else কমিশন @endif</option>
                     @endforeach
@@ -104,7 +104,7 @@
 
                 <div class="md:col-span-1">
                   <label for="sales_qty">বিক্রয় সংখ্যা :</label>
-                  <input type="number" step="any" name="sales_qty" id="sales_qty" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
+                  <input type="number" step="any" name="sales_qty" id="sales_qty" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->sales_qty : '' }}" required/>
                   @if($errors->has('sales_qty'))
                   <span class="text-sm text-red-600">{{ $errors->first('sales_qty') }} </span>
                   @endif
@@ -112,7 +112,7 @@
 
                 <div class="md:col-span-1">
                   <label for="sales_weight">বিক্রয় ওজন :</label>
-                  <input type="number" step="any" name="sales_weight" id="sales_weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup=" sumTotalSale();" required/>
+                  <input type="number" step="any" name="sales_weight" id="sales_weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->sales_weight : '' }}" onkeyup=" sumTotalSale();" required/>
                   @if($errors->has('sales_weight'))
                   <span class="text-sm text-red-600">{{ $errors->first('sales_weight') }} </span>
                   @endif
@@ -120,7 +120,7 @@
 
                 <div class="md:col-span-1">
                   <label for="sales_rate">বিক্রয় দর :</label>
-                  <input type="number" step="any" name="sales_rate" id="sales_rate" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup=" sumTotalSale();" required/>
+                  <input type="number" step="any" name="sales_rate" id="sales_rate" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->sales_rate : '' }}" onkeyup=" sumTotalSale();" required/>
                   @if($errors->has('sales_rate'))
                   <span class="text-sm text-red-600">{{ $errors->first('sales_rate') }} </span>
                   @endif
@@ -134,12 +134,12 @@
                 <div class="md:col-span-1">
                   <label for="kreta_commission">ক্রেতা কমিশন :</label>
                   <input type="text" id="kreta_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""  />
-                  <input type="hidden" id="kreta_com_per_kg" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
+                  <input type="hidden" id="kreta_com_per_kg" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="{{ isset($data) ? $data->ponno_purchase_entry->ponno_setup->kreta_commission_setup->commission_amount : ''}}" readonly />
                 </div>
 
                 <div class="md:col-span-1">
                   <label for="labour">লেবার :</label>
-                  <input type="number" step="any" name="labour" id="labour" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup=" sumTotalSale();"/>
+                  <input type="number" step="any" name="labour" id="labour" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->labour : '' }}" onkeyup=" sumTotalSale();"/>
                   @if($errors->has('labour'))
                   <span class="text-sm text-red-600">{{ $errors->first('labour') }} </span>
                   @endif
@@ -147,7 +147,7 @@
 
                 <div class="md:col-span-1">
                   <label for="other">অন্যান্য খরচ :</label>
-                  <input type="number" step="any" name="other" id="other" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return sumTotalSale();"/>
+                  <input type="number" step="any" name="other" id="other" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->other : '' }}" onkeyup="return sumTotalSale();"/>
                   @if($errors->has('other'))
                   <span class="text-sm text-red-600">{{ $errors->first('other') }} </span>
                   @endif
@@ -160,7 +160,7 @@
 
                 <div class="md:col-span-5 text-right">
                   <div class="inline-flex items-end">
-                    <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সেভ</button>
+                    <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                   </div>
                 </div>
 
@@ -171,13 +171,13 @@
                 </div>
                 
                 <div class="md:col-span-1">
-                <form action="{{url('storePonnoSales')}}" id="final_data" method="POST">
+                <form action="#" id="final_data" method="POST">
                   @csrf
 
                   <label for="sales_type">বিক্রির ধরণ :</label>
                   <select name="sales_type" id="sales_type" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getSalesType()" required>
-                      <option value="1" selected>নগদ</option>
-                      <option value="2">বাকী</option>
+                      <option value="1" {{ isset($sales_info) && $sales_info->sales_type == 1 ? 'selected' : '' }}>নগদ</option>
+                      <option value="2" {{ isset($sales_info) && $sales_info->sales_type == 2 ? 'selected' : '' }}>বাকী</option>
                   </select>
                   @if($errors->has('sales_type'))
                   <span class="text-sm text-red-600">{{ $errors->first('sales_type') }} </span>
@@ -188,7 +188,7 @@
 
                 <div class="md:col-span-1 cash_sale">
                   <label for="cash_kreta_address">ঠিকানা :</label>
-                  <input type="text" name="cash_kreta_address" id="cash_kreta_address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return totalWithDiscount();" />
+                  <input type="text" name="cash_kreta_address" id="cash_kreta_address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($sales_info) ? $sales_info->cash_kreta_address : '' }}" onkeyup="return totalWithDiscount();" />
                   @if($errors->has('cash_kreta_address'))
                   <span class="text-sm text-red-600">{{ $errors->first('cash_kreta_address') }} </span>
                   @endif
@@ -196,7 +196,7 @@
 
                 <div class="md:col-span-1 cash_sale">
                   <label for="cash_kreta_name">ক্রেতার নাম :</label>
-                  <input type="text" name="cash_kreta_name" id="cash_kreta_name" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return totalWithDiscount();" />
+                  <input type="text" name="cash_kreta_name" id="cash_kreta_name" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($sales_info) ? $sales_info->cash_kreta_name : '' }}" onkeyup="return totalWithDiscount();" />
                   @if($errors->has('cash_kreta_name'))
                   <span class="text-sm text-red-600">{{ $errors->first('cash_kreta_name') }} </span>
                   @endif
@@ -204,7 +204,7 @@
 
                 <div class="md:col-span-1 cash_sale">
                   <label for="cash_kreta_mobile">মোবাইল নাম্বার :</label>
-                  <input type="text" name="cash_kreta_mobile" id="cash_kreta_mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return totalWithDiscount();" />
+                  <input type="text" name="cash_kreta_mobile" id="cash_kreta_mobile" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($sales_info) ? $sales_info->cash_kreta_mobile : '' }}" onkeyup="return totalWithDiscount();" />
                   @if($errors->has('cash_kreta_mobile'))
                   <span class="text-sm text-red-600">{{ $errors->first('cash_kreta_mobile') }} </span>
                   @endif
@@ -218,7 +218,7 @@
                       <option value="" selected>সিলেক্ট</option>
                       @if($kreta_area)
                       @foreach($kreta_area as $v)
-                      <option value="{{$v->area}}">{{$v->area}}</option>
+                      <option value="{{$v->area}}" {{ isset($sales_info->kreta_setup_id) && $sales_info->kreta_setup->area == $v->area ? 'selected' : '' }}>{{$v->area}}</option>
                       @endforeach
                       @endif
                   </select>
@@ -230,7 +230,7 @@
                 <div class="md:col-span-2 due_sale">
                   <label for="address">ঠিকানা :</label>
                   <select name="address" id="address" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getKretaNameByAddress();" required>
-                      <option value="" selected>সিলেক্ট</option>
+                      <option value="{{ isset($sales_info->kreta_setup_id) ? $sales_info->kreta_setup->address : '' }}" selected>{{ isset($sales_info->kreta_setup_id) ? $sales_info->kreta_setup->address : '' }}</option>
                   </select>
                   @if($errors->has('address'))
                   <span class="text-sm text-red-600">{{ $errors->first('address') }} </span>
@@ -240,7 +240,7 @@
                 <div class="md:col-span-1 due_sale">
                   <label for="kreta_setup_id">ক্রেতার নাম :</label>
                   <select name="kreta_setup_id" id="kreta_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getAmountByKreta();" required>
-                      <option value="" selected>সিলেক্ট</option>
+                      <option value="{{ isset($sales_info->kreta_setup_id) ? $sales_info->kreta_setup->id : '' }}" selected>{{ isset($sales_info->kreta_setup_id) ? $sales_info->kreta_setup->name : '' }}</option>
                   </select>
                   @if($errors->has('kreta_setup_id'))
                   <span class="text-sm text-red-600">{{ $errors->first('kreta_setup_id') }} </span>
@@ -259,7 +259,7 @@
 
                 <div class="md:col-span-1">
                   <label for="discount">ছাড় :</label>
-                  <input type="number" step="any" name="discount" id="discount" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return totalWithDiscount();"/>
+                  <input type="number" step="any" name="discount" id="discount" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($sales_info) ? $sales_info->discount : '' }}" onkeyup="return totalWithDiscount();"/>
                   @if($errors->has('discount'))
                   <span class="text-sm text-red-600">{{ $errors->first('discount') }} </span>
                   @endif
@@ -276,7 +276,7 @@
                       <option value="" selected>সিলেক্ট</option>
                       @if($marfot)
                       @foreach($marfot as $v)
-                      <option value="{{$v->id}}">{{$v->marfot_name}}</option>
+                      <option value="{{$v->id}}"  {{ isset($sales_info) && $sales_info->marfot_id == $v->id ? 'selected' : '' }}>{{$v->marfot_name}}</option>
                       @endforeach
                       @endif
                   </select>
@@ -287,7 +287,7 @@
 
                 <div class="md:col-span-5 text-right">
                   <div class="inline-flex items-end">
-                    <button type="button" id="final_button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">বিক্রি করুন</button>
+                    <button type="button" id="final_button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">ক্রেতা আপডেট</button>
                   </div>
                 </div>
 
@@ -317,40 +317,104 @@
             <th>
               নং
             </th>
-            <th scope="col" class="px-6 py-3 whitespace-nowrap">
+            <th scope="col" class="px-2 py-3 whitespace-nowrap">
               এরিয়া / ঠিকানা
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               মহাজনের নাম
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               পন্যের নাম
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               সাইজ
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               মার্কা
             </th>
-            <th scope="col" class="px-6 py-3">
-              গ্রহণ সংখ্যা
+            <th scope="col" class="px-2 py-3">
+              গ্রহন সংখ্যা
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               বিক্রয় সংখ্যা
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               ওজন
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
+              দর
+            </th>
+            <th scope="col" class="px-2 py-3">
               মোট টাকা
             </th>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-2 py-3">
               একশন
             </th>
           </tr>
         </thead>
         <tbody id="table_body">
+        @php
+        $count = 1;
+        $total_sale = 0;
+        $total_sale_qty = 0;
+        $total_sale_weight = 0;
+        $total_kreta_commission = 0;
+        $labour = 0;
+        $other = 0;
+        $countRow = count($sales_entry);
+        $total = 0;
+        @endphp
 
+        @if($countRow > 0)
+          @foreach($sales_entry as $s)
+            @php
+            $total_sale += $s->sales_weight * $s->sales_rate;
+            $total_sale_qty += $s->sales_qty;
+            $total_sale_weight += $s->sales_weight;
+            $total_kreta_commission +=  $s->kreta_commission;
+            $labour += $s->labour;
+            $other += $s->other;
+            @endphp
+            <tr class="border border-collapse">
+                <td class="px-2 py-3">{{$count++}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->mohajon_setup->area}}/{{$s->ponno_purchase_entry->mohajon_setup->address}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->mohajon_setup->name}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->ponno_setup->ponno_name}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->ponno_size_setup->ponno_size}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->ponno_marka_setup->ponno_marka}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->quantity}}</td>
+                <td class="px-2 py-3">{{$s->sales_qty}}</td>
+                <td class="px-2 py-3">{{$s->sales_weight}}</td>
+                <td class="px-2 py-3">{{$s->sales_rate}}</td>
+                <td class="px-2 py-3">{{$s->sales_weight * $s->sales_rate}}</td>
+                <td>
+                  <div class="flex gap-x-2">
+                  <a href="{{route('ponno_sales_entry.edit', $s->id)}}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ইডিট</a>
+
+                  <form method="get" action="{{url('ponno_sales_entry_delete',$s->id)}}" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                      <button onclick="return confirmation();" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" type="submit">
+                      ডিলিট</button>
+                  </form>
+                  
+                  </div>
+                </td>
+                @php
+                $total += $s->total_taka;
+                @endphp
+            </tr>
+            @endforeach
+            <tr class="border border-collapse odd:bg-white even:bg-gray-100">
+                <td colspan="10" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
+                <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
+                <td class="px-2 py-3 text-base font-bold text-red-600 text-left"></td>
+            </tr>
+          @else
+          <tr class="border border-collapse">
+              <td colspan="12" class="px-6 py-3 text-center">রেকর্ড পাওয়া যায়নি</td>
+          </tr>
+          @endif
         </tbody>
       </table>
 
@@ -411,79 +475,39 @@
 
 
 
-    function loadCurrentData()
-    {
-      $(function () {
-
-        var table = $('.data-table').DataTable({
-            processing: true,
-            serverSide: true,
-            "language": {
-              "emptyTable": "ডাটা পাওয়া যায়নি",
-              "search": "সার্চ করুন : ",
-              "info":  "",
-              "infoEmpty":   "",
-              "infoFiltered":   "",
-              "lengthMenu":     "_MENU_টি এন্ট্রি দেখুন",
-              "loadingRecords": "লোড হচ্ছে...",
-              "zeroRecords":    "রেকর্ড পাওয়া যায়নি",
-              "paginate": {
-                  "first":      "প্রথম",
-                  "last":       "শেষ",
-                  "next":       "পরবর্তি",
-                  "previous":   "পুর্বে"
-              },
-            },
-            ajax: "{{ route('ponno_sales_entry.index') }}",
-            columns: [
-                {data: 'sl', name: 'sl'},
-                {data: 'mohajon_address', name: 'mohajon_address'},
-                {data: 'mohajon_name', name: 'mohajon_name'},
-                {data: 'ponno_name', name: 'ponno_name'},
-                {data: 'size', name: 'size'},
-                {data: 'marka', name: 'marka'},
-                {data: 'purchase_qty', name: 'purchase_qty'},
-                {data: 'sales_qty', name: 'sales_qty'},
-                {data: 'sales_weight', name: 'sales_weight'},
-                {data: 'total_taka', name: 'total_taka'},
-                {data: 'action', name: 'action' , orderable: "false", searchable: "false"},
-
-            ]
-        });
-
-        });
-    }
-
-    loadCurrentData();
 
     function getPurchaseDetail()
     {
       var purchase_id = $('#purchase_id').val();
 
-      $.ajax({
+      if(purchase_id != "")
+      {
+        $.ajax({
         type :  'POST',
         url : '{{url("getPurchaseDetail")}}',
         data : {
           purchase_id : purchase_id,
-      },
-      success : function(response)
-      {
-        var purchase_data = $.parseJSON(response);
-        $('#mohajon_setup_id').val(purchase_data.mohajon_area +' / '+ purchase_data.mohajon_address +' / '+ purchase_data.mohajon_name);
-        $('#ponno_name').val(purchase_data.ponno_name);
-        $('#size').val(purchase_data.ponno_size);
-        $('#marka').val(purchase_data.ponno_marka);
-        $('#gari_no').val(purchase_data.gari_no);
-        $('#purchase_qty').val(purchase_data.purchase_qty);
-        $('#purchase_weight').val(purchase_data.purchase_weight);
-        $('#read_rate').val(purchase_data.read_rate);
-        $('#read_sales_qty').val(purchase_data.read_sales_qty);
-        $('#read_sales_weight').val(purchase_data.read_sales_weight);
-        $('#read_current_qty').val(purchase_data.read_current_qty);
-        $('#read_current_weight').val(purchase_data.read_current_weight);
-        $('#kreta_com_per_kg').val(purchase_data.kreta_com_per_kg);
+        },
+        success : function(response)
+        {
+          var purchase_data = $.parseJSON(response);
+          $('#mohajon_setup_id').val(purchase_data.mohajon_area +' / '+ purchase_data.mohajon_address +' / '+ purchase_data.mohajon_name);
+          $('#ponno_name').val(purchase_data.ponno_name);
+          $('#size').val(purchase_data.ponno_size);
+          $('#marka').val(purchase_data.ponno_marka);
+          $('#gari_no').val(purchase_data.gari_no);
+          $('#purchase_qty').val(purchase_data.purchase_qty);
+          $('#purchase_weight').val(purchase_data.purchase_weight);
+          $('#read_rate').val(purchase_data.read_rate);
+          $('#read_sales_qty').val(purchase_data.read_sales_qty);
+          $('#read_sales_weight').val(purchase_data.read_sales_weight);
+          $('#read_current_qty').val(purchase_data.read_current_qty);
+          $('#read_current_weight').val(purchase_data.read_current_weight);
+          $('#kreta_com_per_kg').val(purchase_data.kreta_com_per_kg);
+        }
+      })
       }
-    })
+      
    }
 
    function getkretaAddressByArea()
@@ -620,16 +644,10 @@
   </script>
 
 <script>
-    @if(session('invoice'))
-    var left = (screen.width - 800) / 2;
-    var top = (screen.height - 700) / 4;
-
-    var url = "{{route('ponno_sales_report.memo',session('invoice') )}}";
-
-    var myWindow = window.open(url, url,
-        'resizable=yes, width=' + '400' +
-        ', height=' + '700' + ', top=' +
-        top + ', left=' + left);
-  @endif
+    $(document).ready(function(){
+      getPurchaseDetail();
+      sumTotalSale();
+      totalWithDiscount();
+    })
 </script>
   @endsection

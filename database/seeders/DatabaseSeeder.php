@@ -19,9 +19,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
-        $this->call(PonnoSalesInfosTableSeeder::class);
-        $this->call(PonnoSalesEntriesTableSeeder::class);
-        $this->call(ArodChothaEntriesTableSeeder::class);
-        $this->call(CheckBookPageSetupsTableSeeder::class);
+        $this->call(KretaSetupsTableSeeder::class);
+        $this->call(MohajonSetupsTableSeeder::class);
+        $this->call(OtherJomaKhorocSetupsTableSeeder::class);
+        $this->call(BankSetupsTableSeeder::class);
     }
 }

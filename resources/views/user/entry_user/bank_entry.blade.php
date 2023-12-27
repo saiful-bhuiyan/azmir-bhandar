@@ -18,7 +18,7 @@
           <div class="lg:col-span-2">
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
 
-              <div class="md:col-span-1">
+              <div class="md:col-span-2">
                 <label for="type">ব্যাংক জমা/উত্তোলন :</label>
                 <select name="type" id="type" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
                     <option value="" selected>সিলেক্ট</option>

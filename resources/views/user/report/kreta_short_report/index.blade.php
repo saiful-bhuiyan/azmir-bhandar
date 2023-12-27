@@ -45,33 +45,44 @@
                 </tr>
             </thead>
             <tbody id="table_body">
-                @php
-                $total = 0;
-                $count = 1;
-                @endphp
-
-                @if($record)
-                @foreach($record as $data)
-                @php
-                $total += $data['total_taka'];
-                @endphp
-                <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td class="px-2 py-3">{{ $count++ }}</td>
-                    <td class="px-2 py-3">{{ $data['area'] }}</td>
-                    <td class="px-2 py-3">{{ $data['address'] }}</td>
-                    <td class="px-2 py-3">{{ $data['name'] }}</td>
-                    <td class="px-2 py-3">{{ $data['mobile'] }}</td>
-                    <td class="px-2 py-3">{{ $data['total_taka'] }}</td>
-                </tr>
-                @endforeach
-                <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td colspan="5" class="px-2 py-3 text-lg font-bold text-red-600 text-center">মোট পাওনা : </td>
-                    <td class="px-2 py-3 text-lg font-bold text-red-600 text-left">{{$total}}</td>
-                </tr>
-                @endif
+               
             </tbody>
             
         </table>
     </div>
+
+    <script>
+         $(document).ready(function () {
+            $('.data-table').DataTable({
+                processing: true,
+                serverSide: false,
+                "language": {
+                "emptyTable": "ডাটা পাওয়া যায়নি",
+                "search": "সার্চ করুন : ",
+                "info":  "",
+                "infoEmpty":   "",
+                "infoFiltered":   "",
+                "lengthMenu":     "_MENU_টি এন্ট্রি দেখুন",
+                "loadingRecords": "লোড হচ্ছে...",
+                "zeroRecords":    "রেকর্ড পাওয়া যায়নি",
+                "paginate": {
+                    "first":      "প্রথম",
+                    "last":       "শেষ",
+                    "next":       "পরবর্তি",
+                    "previous":   "পুর্বে"
+                },
+                },
+                ajax: "{{ route('kreta_short_report.index') }}",
+                columns: [
+                    { data: 'sl' },
+                    { data: 'area' },
+                    { data: 'address' },
+                    { data: 'name' },
+                    { data: 'mobile' },
+                    { data: 'total_taka' },
+                ]
+            });
+        });
+    </script>
 
 @endsection

@@ -175,7 +175,7 @@
             'X-CSRF-TOKEN' : '{{ csrf_token() }}'
           },
 
-          url : '{{url('mohajonSetupStatusChange')}}/'+id,
+          url : '{{url("mohajonSetupStatusChange")}}/'+id,
           type : 'GET',
           success:function(data)
           {

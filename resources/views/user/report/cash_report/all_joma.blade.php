@@ -70,6 +70,7 @@
                 @if($cash_sales)
                     @php
                     $total = 0;
+                    $total_bank = 0;
                     $count = 1;
                     @endphp
                 @foreach($cash_sales as $v)
@@ -168,6 +169,91 @@
                         <td class="px-2 py-3">{{ $v->taka }}</td>
                     </tr>
                 @endforeach
+
+                @foreach($mohajon_payment as $v)
+                    @if($v->payment_by == 2)
+                    @php
+                    $total += $v->taka;
+                    @endphp
+                    <tr class="border border-collapse odd:bg-white even:bg-gray-100 text-xs">
+                        <td class="px-2 py-3">{{ $count++ }}</td>
+                        <td class="px-2 py-3">মহাজন পেমেন্ট</td>
+                        <td class="px-2 py-3">{{ $v->mohajon_setup->area }}</td>
+                        <td class="px-2 py-3">{{ $v->mohajon_setup->address }}</td>
+                        <td class="px-2 py-3">{{ $v->mohajon_setup->name }}</td>
+                        <td class="px-2 py-3">@if($v->payment_by == 1) ক্যাশ @else ব্যাংক @endif</td>
+                        <td class="px-2 py-3">@if($v->bank_setup_id == "" or null) - @else {{$v->bank_setup->bank_name .'/'.$v->bank_setup->account_name}} @endif</td>
+                        <td class="px-2 py-3">-</td>
+                        <td class="px-2 py-3">{{ $v->marfot }}</td>
+                        <td class="px-2 py-3">{{ $v->taka }}</td>
+                    </tr>
+                    @endif
+                @endforeach
+
+                @foreach($amanot as $v)
+                    @if($v->payment_by == 2)
+                    @if($v->type == 2)
+                    <!-- amanot khoroc -->
+                    @php
+                    $total += $v->taka;
+                    @endphp
+                    <tr class="border border-collapse odd:bg-white even:bg-gray-100 text-xs">
+                        <td class="px-2 py-3">{{ $count++ }}</td>
+                        <td colspan="2" class="px-2 py-3">আমানত খরচ</td>
+                        <td class="px-2 py-3">{{ $v->amanot_setup->address }}</td>
+                        <td class="px-2 py-3">{{ $v->amanot_setup->name }}</td>
+                        <td class="px-2 py-3">@if($v->payment_by == 1) ক্যাশ @else ব্যাংক @endif</td>
+                        <td class="px-2 py-3">@if($v->bank_setup_id == "" or null) - @else {{$v->bank_setup->bank_name .'/'.$v->bank_setup->account_name}} @endif</td>
+                        <td class="px-2 py-3">@if($v->check_id == null or "") - @else {{$v->check_book_page_setup->page}} @endif</td>
+                        <td class="px-2 py-3">{{ $v->marfot }}</td>
+                        <td class="px-2 py-3">{{ $v->taka }}</td>
+                    </tr>
+                    @endif
+                    @endif
+                @endforeach
+
+                @foreach($hawlat as $v)
+                @if($v->payment_by == 2)
+                @if($v->type == 2)
+                    <!-- hawlat khoroc -->
+                    @php
+                    $total += $v->taka;
+                    @endphp
+                    <tr class="border border-collapse odd:bg-white even:bg-gray-100 text-xs">
+                        <td class="px-2 py-3">{{ $count++ }}</td>
+                        <td colspan="2" class="px-2 py-3">হাওলাত খরচ</td>
+                        <td class="px-2 py-3">{{ $v->hawlat_setup->address }}</td>
+                        <td class="px-2 py-3">{{ $v->hawlat_setup->name }}</td>
+                        <td class="px-2 py-3">@if($v->payment_by == 1) ক্যাশ @else ব্যাংক @endif</td>
+                        <td class="px-2 py-3">@if($v->bank_setup_id == "" or null) - @else {{$v->bank_setup->bank_name .'/'.$v->bank_setup->account_name}} @endif</td>
+                        <td class="px-2 py-3">@if($v->check_id == null or "") - @else {{$v->check_book_page_setup->page}} @endif</td>
+                        <td class="px-2 py-3">{{ $v->marfot }}</td>
+                        <td class="px-2 py-3">{{ $v->taka }}</td>
+                    </tr>
+                    @endif
+                    @endif
+                @endforeach
+
+                @foreach($other as $v)
+                    @if($v->payment_by == 2)
+                    @if($v->type == 2)
+                    <!-- other khoroc -->
+                    @php
+                    $total += $v->taka;
+                    @endphp
+                    <tr class="border border-collapse odd:bg-white even:bg-gray-100 text-xs">
+                        <td class="px-2 py-3">{{ $count++ }}</td>
+                        <td colspan="2" class="px-2 py-3">অন্যান্য খরচ</td>
+                        <td colspan="2" class="px-2 py-3">{{ $v->other_joma_khoroc_setup->name }}</td>
+                        <td class="px-2 py-3">@if($v->payment_by == 1) ক্যাশ @else ব্যাংক @endif</td>
+                        <td class="px-2 py-3">@if($v->bank_setup_id == "" or null) - @else {{$v->bank_setup->bank_name .'/'.$v->bank_setup->account_name}} @endif</td>
+                        <td class="px-2 py-3">@if($v->check_id == null or "") - @else {{$v->check_book_page_setup->page}} @endif</td>
+                        <td class="px-2 py-3">{{ $v->marfot }}</td>
+                        <td class="px-2 py-3">{{ $v->taka }}</td>
+                    </tr>
+                    @endif
+                    @endif
+                @endforeach
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
                     <td colspan="9" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                     <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
@@ -218,7 +304,6 @@
             </thead>
             <tbody id="table_body">
                 
-
                 @if($kreta_joma)
                     @php
                     $total = 0;
@@ -360,12 +445,13 @@
             <tbody id="table_body">
                 
 
-                @if($amanot_joma)
+                @if($amanot)
                     @php
                     $total = 0;
                     $count = 1;
                     @endphp
-                @foreach($amanot_joma as $v)
+                @foreach($amanot as $v)
+                    @if($v->type == 1)
                     @php
                     $total += $v->taka;
                     @endphp
@@ -379,6 +465,7 @@
                         <td class="px-2 py-3">{{ $v->marfot }}</td>
                         <td class="px-2 py-3">{{ $v->taka }}</td>
                     </tr>
+                    @endif
                 @endforeach
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
                     <td colspan="7" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
@@ -431,12 +518,13 @@
             <tbody id="table_body">
                 
 
-                @if($hawlat_joma)
+                @if($hawlat)
                     @php
                     $total = 0;
                     $count = 1;
                     @endphp
-                @foreach($hawlat_joma as $v)
+                @foreach($hawlat as $v)
+                @if($v->type == 1)
                     @php
                     $total += $v->taka;
                     @endphp
@@ -450,6 +538,7 @@
                         <td class="px-2 py-3">{{ $v->marfot }}</td>
                         <td class="px-2 py-3">{{ $v->taka }}</td>
                     </tr>
+                    @endif
                 @endforeach
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
                     <td colspan="7" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
@@ -499,12 +588,13 @@
             <tbody id="table_body">
                 
 
-                @if($other_joma)
+                @if($other)
                     @php
                     $total = 0;
                     $count = 1;
                     @endphp
-                @foreach($other_joma as $v)
+                @foreach($other as $v)
+                    @if($v->type == 1)
                     @php
                     $total += $v->taka;
                     @endphp
@@ -517,6 +607,7 @@
                         <td class="px-2 py-3">{{ $v->marfot }}</td>
                         <td class="px-2 py-3">{{ $v->taka }}</td>
                     </tr>
+                    @endif
                 @endforeach
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
                     <td colspan="6" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>

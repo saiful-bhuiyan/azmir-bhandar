@@ -104,10 +104,15 @@ class CashReportController extends Controller
         /************* সাবেক ক্যাশ ***************/     
         
         $i++;
-
+        if($cash_transfer){
+            $ref_date = $cash_transfer->reference_date;
+        }else{
+            $ref_date = "";
+        }
+        
         $joma[$i] = array(
             'sl' => $count_joma++,
-            'reference' => "সাবেক",
+            'reference' => "সাবেক (".$ref_date.")",
             'total_taka' => $old_cash_amount,
         );
 
@@ -271,12 +276,13 @@ class CashReportController extends Controller
         $cash_sales = ponno_sales_info::where('entry_date',$entry_date)->where('sales_type',1)->get();
         $bank_uttolon = bank_entry::where('entry_date',$entry_date)->where('type',2)->get();
         $kreta_joma = kreta_joma_entry::where('entry_date',$entry_date)->get();
+        $mohajon_payment = mohajon_payment_entry::where('entry_date',$entry_date)->get();
         $mohajon_return = mohajon_return_entry::where('entry_date',$entry_date)->get();
-        $amanot_joma = amanot_entry::where('entry_date',$entry_date)->where('type',1)->get();
-        $hawlat_joma = hawlat_entry::where('entry_date',$entry_date)->where('type',1)->get();
-        $other_joma = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',1)->get();
+        $amanot = amanot_entry::where('entry_date',$entry_date)->get();
+        $hawlat = hawlat_entry::where('entry_date',$entry_date)->get();
+        $other = other_joma_khoroc_entry::where('entry_date',$entry_date)->get();
 
-        return view('user.report.cash_report.all_joma',compact('cash_sales','bank_uttolon','kreta_joma','mohajon_return','amanot_joma','hawlat_joma','other_joma','cash_transfer','search_date'));
+        return view('user.report.cash_report.all_joma',compact('cash_sales','bank_uttolon','kreta_joma','mohajon_return','amanot','hawlat','other','cash_transfer','mohajon_payment','search_date'));
     }
 
     public function searchByKhoroc($search_date)
@@ -284,10 +290,12 @@ class CashReportController extends Controller
         $entry_date = Carbon::createFromFormat('d-m-Y', $search_date)->format('Y-m-d');
 
         $bank_joma = bank_entry::where('entry_date',$entry_date)->where('type',1)->get();
+        $kreta_joma = kreta_joma_entry::where('entry_date',$entry_date)->get();
         $mohajon_payment = mohajon_payment_entry::where('entry_date',$entry_date)->get();
-        $amanot_khoroc = amanot_entry::where('entry_date',$entry_date)->where('type',2)->get();
-        $hawlat_khoroc = hawlat_entry::where('entry_date',$entry_date)->where('type',2)->get();
-        $other_khoroc = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',2)->get();
+        $mohajon_return = mohajon_return_entry::where('entry_date',$entry_date)->get();
+        $amanot = amanot_entry::where('entry_date',$entry_date)->get();
+        $hawlat = hawlat_entry::where('entry_date',$entry_date)->get();
+        $other = other_joma_khoroc_entry::where('entry_date',$entry_date)->get();
         $labour_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('labour_cost');
         $sales_costs = ponno_sales_info::where('entry_date',$entry_date)->get();
 
@@ -301,7 +309,7 @@ class CashReportController extends Controller
             $total_other_cost += ponno_sales_entry::where('sales_invoice',$v->id)->sum('other');
         }
 
-        return view('user.report.cash_report.all_khoroc',compact('bank_joma','mohajon_payment','amanot_khoroc','hawlat_khoroc','other_khoroc','search_date'));
+        return view('user.report.cash_report.all_khoroc',compact('bank_joma','kreta_joma','mohajon_payment','mohajon_return','amanot','hawlat','other','search_date'));
     }
 
     public function cash_transfer(Request $request)

@@ -207,6 +207,9 @@
             <th>
                 নং
             </th>
+            <th>
+                ইনভোয়েস
+            </th>
             <th scope="col" class="px-6 py-3 whitespace-nowrap">
                 মহাজন ইনফরমেশন
             </th>
@@ -239,9 +242,6 @@
             </th>
             <th scope="col" class="px-6 py-3">
                 মোট টাকা
-            </th>
-            <th scope="col" class="px-6 py-3">
-                একশন
             </th>
         </tr>
     </thead>
@@ -307,6 +307,7 @@
             ajax: "{{ route('ponno_purchase_entry.index') }}",
             columns: [
                 {data: 'sl', name: 'sl'},
+                {data: 'invoice', name: 'invoice'},
                 {data: 'mohajon', name: 'mohajon'},
                 {data: 'purchase_type', name: 'purchase_type'},
                 {data: 'ponno_name', name: 'ponno_name'},
@@ -318,7 +319,6 @@
                 {data: 'rate', name: 'rate'},
                 {data: 'total_cost', name: 'total_cost'},
                 {data: 'total_taka', name: 'total_taka'},
-                {data: 'action', name: 'action' , orderable: "false", searchable: "false"},
             
             ]
         });

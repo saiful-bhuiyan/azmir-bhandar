@@ -276,6 +276,14 @@ Route::group(['middleware' => 'admin'], function() {
 
 
     Route::get('kreta_joma_entry_admin',[KretaJomaEntryController::class,'admin'])->name('kreta_joma_entry.admin');
+    Route::get('ponno_purchase_entry_admin',[PonnoPurchaseEntryController::class,'admin'])->name('ponno_purchase_entry.admin');
+    Route::post('ponno_purchase_update/{id}',[PonnoPurchaseEntryController::class,'ponno_purchase_update'])->name('ponno_purchase_entry.ponno_purchase_update');
+
+    Route::get('ponno_sales_entry_admin',[PonnoSalesEntryController::class,'admin'])->name('ponno_sales_entry.admin');
+    Route::get('ponno_sales_entry_update_admin/{id}',[PonnoSalesEntryController::class,'update_sales']);
+    Route::get('ponno_sales_entry_delete/{id}',[PonnoSalesEntryController::class,'entry_delete']);
+
+
 
 
 

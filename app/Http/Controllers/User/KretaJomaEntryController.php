@@ -173,7 +173,52 @@ class KretaJomaEntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate(
+            [
+                'kreta_setup_id' => 'required',
+                'marfot' => 'required',
+                'taka' => 'required|numeric',
+                'payment_by' => 'required',
+            ],
+            [
+                'kreta_setup_id.required'=>'দয়া করে ক্রেতার তথ্য সিলেক্ট করুন',
+                'marfot.required'=>'দয়া করে মারফত ইনপুট করুন',
+                'taka.required'=>'দয়া করে টাকা ইনপুট করুন',
+                'taka.numeric'=>'সংখ্যা ইনপুট করুন',
+                'payment_by.required'=>'দয়া করে পেমেন্ট মাধ্যম সিলেক্ট করুন',
+            ]);
+            
+            if($request->payment_by == 2)
+            {
+                $bank_validated = $request->validate(
+                [
+                    'bank_setup_id' => 'required',
+                ],
+                [
+                    'bank_setup_id.required'=>'দয়া করে ব্যাংক তথ্য সিলেক্ট করুন',
+                ]);
+            }
+    
+            $data = array(
+                'kreta_setup_id'=>$request->kreta_setup_id,
+                'bank_setup_id'=>$request->bank_setup_id,
+                'marfot'=>$request->marfot,
+                'taka'=>$request->taka,
+                'payment_by'=>$request->payment_by,
+                'entry_date'=> Carbon::now(),
+            );
+    
+            $update = kreta_joma_entry::find($id)->update($data);
+            if($update)
+            {
+                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+            }
+    
+            return redirect()->back();
     }
 
     /**

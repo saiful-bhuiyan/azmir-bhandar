@@ -80,16 +80,15 @@ class AmanotSetupController extends Controller
             [
                 'name' => 'required|max:50',
                 'address' => 'required|max:50',
-                'mobile' => 'required|unique:amanot_setups|max:15|min:3',
+                'mobile' => 'required|max:15|min:1',
             ],
             [
                 'name.required'=>'দয়া করে আমানতদারের নাম ইনপুট করুন',
                 'name.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
                 'address.required'=>'দয়া করে ঠিকানা ইনপুট করুন',
                 'address.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
-                'mobile.required'=>'দয়া করে মোবাইল নাম্বার ইনপুট করুন',
                 'mobile.unique'=>'এই নাম্বার পুর্বে ব্যবহার করা হয়েছে',
-                'mobile.min'=>'কমপক্ষে ৩টি সংখ্যা বাধ্যতামুলক',
+                'mobile.min'=>'কমপক্ষে ১টি সংখ্যা বাধ্যতামুলক',
                 'mobile.max'=>'১৫টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
             ]);
     
@@ -148,7 +147,7 @@ class AmanotSetupController extends Controller
             [
                 'name' => 'required|max:50',
                 'address' => 'required|max:50',
-                'mobile' => 'required|max:15|min:3',
+                'mobile' => 'required|max:15|min:1',
             ],
             [
                 'name.required'=>'দয়া করে আমানতদারের নাম ইনপুট করুন',
@@ -156,7 +155,7 @@ class AmanotSetupController extends Controller
                 'address.required'=>'দয়া করে ঠিকানা ইনপুট করুন',
                 'address.max'=>'৫০টি অক্ষর এর অধিক গ্রহনযোগ্য নয়',
                 'mobile.required'=>'দয়া করে মোবাইল নাম্বার ইনপুট করুন',
-                'mobile.min'=>'কমপক্ষে ৩টি সংখ্যা বাধ্যতামুলক',
+                'mobile.min'=>'কমপক্ষে ১টি সংখ্যা বাধ্যতামুলক',
                 'mobile.max'=>'১৫টি সংখ্যার অধিক গ্রহনযোগ্য নয়',
             ]);
     

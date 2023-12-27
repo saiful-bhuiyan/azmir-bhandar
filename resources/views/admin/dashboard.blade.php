@@ -111,11 +111,11 @@
             </div>
 
             <div id="entryDiv" class="grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-2 border-solid">
-                <a href="{{route('ponno_purchase_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('ponno_purchase_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/import.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য গ্রহন</p>
                 </a>
-                <a href="{{route('ponno_sales_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('ponno_sales_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য বিক্রয়</p>
                 </a>

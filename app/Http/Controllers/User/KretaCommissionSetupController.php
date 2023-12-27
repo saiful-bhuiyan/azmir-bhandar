@@ -37,7 +37,11 @@ class KretaCommissionSetupController extends Controller
             ->rawColumns(['sl','ponno_name','commission_amount'])
             ->make(true);
         }
-        $ponno_setup = ponno_setup::all();
+
+        $ponno_setup = ponno_setup::whereNotIn('id',function($query) {
+            $query->select('ponno_setup_id')->from('kreta_commission_setups');
+        })->get();
+
         return view('user.setup_user.kreta_commission_setup',compact('ponno_setup'));
     }
 

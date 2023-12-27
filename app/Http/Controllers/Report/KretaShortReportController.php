@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Report;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Yajra\DataTables\DataTables;
 use App\Models\kreta_setup;
 use App\Models\kreta_joma_entry;
 use App\Models\kreta_koifiyot_entry;
@@ -12,9 +13,11 @@ use App\Models\ponno_sales_info;
 
 class KretaShortReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
         $i = 0;
+        $count = 1;
         $record = array();
         $kreta = kreta_setup::get();
             
@@ -41,17 +44,23 @@ class KretaShortReportController extends Controller
 
                 $i++;
                 $record[$i] = array(
-                    'id' => $v->id,
+                    'sl' => $count++,
                     'area' => $v->area,
                     'address' => $v->address,
                     'name'=> $v->name,
                     'mobile'=> $v->mobile,
                     'total_taka' => $total_taka,
                 );
+
+            }
+                $dataTable = DataTables::of($record);
+                return $dataTable->toJson();
                 
             }
 
-            return view('user.report.kreta_short_report.index', compact('kreta'))->with('record', $record);
+            
+
+            return view('user.report.kreta_short_report.index');
 
     }
 }
