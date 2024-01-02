@@ -24,7 +24,7 @@ class BankSetupController extends Controller
             $data = bank_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('bank_name',function($v){
@@ -231,7 +231,7 @@ class BankSetupController extends Controller
             $data = bank_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('bank_name',function($v){

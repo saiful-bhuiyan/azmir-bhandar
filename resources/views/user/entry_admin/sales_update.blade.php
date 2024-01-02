@@ -158,20 +158,23 @@
                   <input type="text" id="read_total_taka" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
                 </div>
 
+                @if(isset($data))
                 <div class="md:col-span-5 text-right">
                   <div class="inline-flex items-end">
                     <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                   </div>
                 </div>
-
+                @endif
                 </form>
 
                 <div class="md:col-span-5 p-1">
                 <hr>
                 </div>
+
+                <!--------------------- Sales Info Form ------------------------->
                 
                 <div class="md:col-span-1">
-                <form action="#" id="final_data" method="POST">
+                <form action="{{route('ponno_sales_entry.info_update',$sales_info->id)}}" id="final_data" method="POST">
                   @csrf
 
                   <label for="sales_type">বিক্রির ধরণ :</label>
@@ -267,7 +270,7 @@
 
                 <div class="md:col-span-1">
                   <label for="all_total_taka">মোট টাকা :</label>
-                  <input type="text" id="all_total_taka" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
+                  <input type="text" id="all_total_taka" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="{{ isset($sales_info) ? $sales_info->total_taka : '' }}" readonly />
                 </div>
 
                 <div class="md:col-span-1">
@@ -285,6 +288,15 @@
                   @endif
                 </div>
 
+                <div class="md:col-span-2 ">
+                  <label for="entry_date">তারিখ :</label>
+                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($sales_info) ? date('d-m-Y',strtotime($sales_info->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                  @if($errors->has('entry_date'))
+                  <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                  @endif
+                </div>
+
+                
                 <div class="md:col-span-5 text-right">
                   <div class="inline-flex items-end">
                     <button type="button" id="final_button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">ক্রেতা আপডেট</button>
@@ -620,6 +632,15 @@
       }
       
     }
+
+    $( function() {
+      $( "#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
 
     getAmountByKreta();
 

@@ -24,7 +24,7 @@ class PonnoMarkaSetupController extends Controller
             $data = ponno_marka_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('ponno_marka',function($v){
@@ -164,7 +164,7 @@ class PonnoMarkaSetupController extends Controller
             $data = ponno_marka_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('ponno_marka',function($v){

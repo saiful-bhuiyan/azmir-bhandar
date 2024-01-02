@@ -24,7 +24,7 @@ class OtherJomaKhorocSetupController extends Controller
             $data = other_joma_khoroc_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('name',function($v){
@@ -218,7 +218,7 @@ class OtherJomaKhorocSetupController extends Controller
             $data = other_joma_khoroc_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('name',function($v){

@@ -175,12 +175,22 @@
                 <label for="avg">মুল্য (প্রতি কেজি) :</label>
                 <input type="text" id="avg" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly/>
               </div>
+
+              <div class="md:col-span-2 ">
+                <label for="entry_date">তারিখ :</label>
+                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                @if($errors->has('entry_date'))
+                <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                @endif
+              </div>
       
+              @if(isset($data))
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
                   <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                 </div>
               </div>
+              @endif
 
             </div>
           </div>
@@ -241,6 +251,9 @@
             </th>
             <th scope="col" class="px-6 py-3">
                 মোট টাকা
+            </th>
+            <th scope="col" class="px-2 py-3">
+                তারিখ
             </th>
             <th scope="col" class="px-6 py-3">
                 একশন
@@ -322,6 +335,7 @@
                 {data: 'rate', name: 'rate'},
                 {data: 'total_cost', name: 'total_cost'},
                 {data: 'total_taka', name: 'total_taka'},
+                {data: 'entry_date', name: 'entry_date'},
                 {data: 'action', name: 'action' , orderable: "false", searchable: "false"},
             
             ]
@@ -362,6 +376,15 @@
       }
 
     }
+
+    $( function() {
+      $( "#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
 
     $('#save').on('submit',function(e){
 

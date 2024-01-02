@@ -32,7 +32,7 @@ class PonnoPurchaseEntryController extends Controller
             $data = ponno_purchase_entry::orderBy('entry_date','DESC')->get();;
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('invoice',function($v){
@@ -280,6 +280,7 @@ class PonnoPurchaseEntryController extends Controller
                 'marka_id' => 'required',
                 'quantity' => 'required|numeric',
                 'weight' => 'required|numeric',
+                'entry_date' => 'required',
             ],
             [
                 'purchase_type.required'=>'দয়া করে ধরণ সিলেক্ট করুন',
@@ -291,6 +292,7 @@ class PonnoPurchaseEntryController extends Controller
                 'quantity.numeric'=>'সংখ্যা ইনপুট করুন',
                 'weight.required'=>'দয়া করে ওজন ইনপুট করুন',
                 'weight.numeric'=>'সংখ্যা ইনপুট করুন',
+                'entry_date.required'=>'দয়া তারিখ সিলেক্ট করুন',
             ]);
 
             $data = array(
@@ -307,7 +309,7 @@ class PonnoPurchaseEntryController extends Controller
                 'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
                 'van_cost'=>$request->van_cost ? $request->van_cost : 0,
                 'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
-                'entry_date'=> Carbon::now(),
+                'entry_date'=> Carbon::createFromFormat('d-m-Y', $request->entry_date)->format('Y-m-d'),
             );
             
             if($request->purchase_type == 1)
@@ -343,12 +345,22 @@ class PonnoPurchaseEntryController extends Controller
                 {
                     $sales_weight = 0;
                 }
-                
-                $stock = array(
-                    'purchase_id'=>$id,
-                    'quantity'=>$request->quantity - $sales_qty,
-                    'weight'=>$request->weight -  $sales_weight,
-                );
+
+                $purchase = ponno_purchase_entry::find($id);
+
+                if($purchase->purchase_type == 1){
+                    $stock = array(
+                        'purchase_id'=>$id,
+                        'quantity'=>$request->quantity - $sales_qty,
+                        'weight'=>$request->weight -  $sales_weight,
+                    );
+                }else if($purchase->purchase_type == 2){
+                    $stock = array(
+                        'purchase_id'=>$id,
+                        'quantity'=>$request->quantity - $sales_qty,
+                        'weight'=>0,
+                    ); 
+                }
 
                 stock::where('purchase_id',$id)->update($stock);
 
@@ -396,10 +408,10 @@ class PonnoPurchaseEntryController extends Controller
     public function admin(Request $request)
     {
         if ($request->ajax()) {
-        $data = ponno_purchase_entry::all();
+        $data = ponno_purchase_entry::orderBy('entry_date','DESC')->get();
         return Datatables::of($data)
         ->addIndexColumn()
-        ->addColumn('sl',function($row){
+        ->addColumn('sl',function($v){
             return $this->sl = $this->sl +1;
         })
         ->addColumn('invoice',function($v){
@@ -460,6 +472,9 @@ class PonnoPurchaseEntryController extends Controller
                 return '-';
             }
         })
+        ->addColumn('entry_date',function($v){
+            return Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y');
+        })
         ->addColumn('action',function($v){
 
             return '<div class="flex gap-x-2">
@@ -476,7 +491,7 @@ class PonnoPurchaseEntryController extends Controller
         })
         
             ->rawColumns(['sl','invoice','mohajon','purchase_type','ponno_name','ponno_size','ponno_marka','gari_no','quantity',
-            'weight','rate','total_cost','total_taka','action'])
+            'weight','rate','total_cost','total_taka','entry_date','action'])
             ->make(true);
         }
  

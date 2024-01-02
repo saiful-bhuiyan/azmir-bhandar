@@ -26,7 +26,7 @@ class KretaJomaEntryController extends Controller
             $data = kreta_joma_entry::whereDay('entry_date', now()->day)->get();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('area',function($v){
@@ -179,6 +179,7 @@ class KretaJomaEntryController extends Controller
                 'marfot' => 'required',
                 'taka' => 'required|numeric',
                 'payment_by' => 'required',
+                'entry_date' => 'required',
             ],
             [
                 'kreta_setup_id.required'=>'দয়া করে ক্রেতার তথ্য সিলেক্ট করুন',
@@ -186,7 +187,18 @@ class KretaJomaEntryController extends Controller
                 'taka.required'=>'দয়া করে টাকা ইনপুট করুন',
                 'taka.numeric'=>'সংখ্যা ইনপুট করুন',
                 'payment_by.required'=>'দয়া করে পেমেন্ট মাধ্যম সিলেক্ট করুন',
+                'entry_date.required'=>'দয়া তারিখ সিলেক্ট করুন',
+
             ]);
+
+            $data = array(
+                'kreta_setup_id'=>$request->kreta_setup_id,
+                'bank_setup_id'=>$request->bank_setup_id,
+                'marfot'=>$request->marfot,
+                'taka'=>$request->taka,
+                'payment_by'=>$request->payment_by,
+                'entry_date'=> Carbon::createFromFormat('d-m-Y', $request->entry_date)->format('Y-m-d'),
+            );
             
             if($request->payment_by == 2)
             {
@@ -197,16 +209,10 @@ class KretaJomaEntryController extends Controller
                 [
                     'bank_setup_id.required'=>'দয়া করে ব্যাংক তথ্য সিলেক্ট করুন',
                 ]);
+            }else if($request->payment_by == 1)
+            {
+                $data['bank_setup_id'] = null;
             }
-    
-            $data = array(
-                'kreta_setup_id'=>$request->kreta_setup_id,
-                'bank_setup_id'=>$request->bank_setup_id,
-                'marfot'=>$request->marfot,
-                'taka'=>$request->taka,
-                'payment_by'=>$request->payment_by,
-                'entry_date'=> Carbon::now(),
-            );
     
             $update = kreta_joma_entry::find($id)->update($data);
             if($update)
@@ -238,7 +244,7 @@ class KretaJomaEntryController extends Controller
             $data = kreta_joma_entry::orderBy('entry_date','DESC')->get();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('area',function($v){
@@ -276,6 +282,9 @@ class KretaJomaEntryController extends Controller
             ->addColumn('taka',function($v){
                 return $v->taka;
             })
+            ->addColumn('entry_date',function($v){
+                return Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y');
+            })
             ->addColumn('action',function($v){
 
                 return '<div class="flex gap-x-2">
@@ -291,7 +300,7 @@ class KretaJomaEntryController extends Controller
                     </div>';
             })
 
-            ->rawColumns(['sl','area','address','name','payment_by','bank_info','marfot','taka','action'])
+            ->rawColumns(['sl','area','address','name','payment_by','bank_info','marfot','taka','entry_date','action'])
             ->make(true);
         }
 

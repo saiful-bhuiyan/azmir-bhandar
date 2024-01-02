@@ -24,7 +24,7 @@ class BikroyMarfotSetupController extends Controller
             $data = bikroy_marfot_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('marfot_name',function($v){
@@ -164,7 +164,7 @@ class BikroyMarfotSetupController extends Controller
             $data = bikroy_marfot_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('marfot_name',function($v){

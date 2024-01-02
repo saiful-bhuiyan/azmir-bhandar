@@ -1,7 +1,7 @@
 @extends('user.layout.report_layout')
 @section('report_body')
 
-<div class="container mx-auto max-w-screen ">
+<div class=" mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white md:p-8">
         <span class="p-1 text-white bg-blue-600">পণ্য গ্রহণ</span>
         <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
@@ -31,6 +31,9 @@
                     <tr>
                         <th scope="col" class="px-2 py-3">
                             নং
+                        </th>
+                        <th scope="col" class="px-2 py-3">
+                            ইনভয়েস
                         </th>
                         <th scope="col" class="px-2 py-3">
                             ধরণ
@@ -76,7 +79,8 @@
                     @if($countRow > 0)
                     @foreach($purchase as $p)
                     <tr class="border border-collapse">
-                        <td class="px-2 py-3 font-bold text-blue-700"><a href="{{route('ponno_purchase_report.memo',$p->id)}}" class="url" onclick="return false;">{{$count++}}</a></td>
+                        <td class="px-2 py-3">{{$count++}}</a></td>
+                        <td class="px-2 py-3 font-bold text-blue-700"><a href="{{route('ponno_purchase_report.memo',$p->id)}}" class="url" onclick="return false;">{{$p->id}}</a></td>
                         <td class="px-2 py-3">@if($p->purchase_type == 1) নিজ খরিদ @elseif($p->purchase_type == 2) কমিশন @endif</td>
                         <td class="px-2 py-3">{{$p->mohajon_setup->area}}</td>
                         <td class="px-2 py-3">{{$p->mohajon_setup->address}}</td>

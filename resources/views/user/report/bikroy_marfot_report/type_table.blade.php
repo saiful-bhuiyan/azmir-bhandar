@@ -80,15 +80,7 @@
                         @endif
                         <td class="px-6 py-3">{{$s->discount}}</td>
                         <td class="px-6 py-3">{{$s->bikroy_marfot_setup->marfot_name}}</td>
-                        @php
-                        $total_taka = 0;
-                        $entry = DB::table('ponno_sales_entries')->where('sales_invoice',$s->id)->get();
-                        foreach($entry as $v)
-                        {
-                        $total_taka += ($v->sales_weight * $v->sales_rate) + $v->other + $v->labour + $v->kreta_commission - $s->discount;
-                        }
-                        @endphp
-                        <td class="px-6 py-3">{{$total_taka}}</td>
+                        <td class="px-6 py-3">{{$s->total_taka}}</td>
                         <td class="px-6 py-3">{{$s->entry_date}}</td>
                     </tr>
                     @endforeach

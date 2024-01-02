@@ -275,13 +275,28 @@ Route::group(['middleware' => 'admin'], function() {
     Route::get('kreta_commission_setup_admin',[KretaCommissionSetupController::class,'admin'])->name('kreta_commission_setup.admin');
 
 
-    Route::get('kreta_joma_entry_admin',[KretaJomaEntryController::class,'admin'])->name('kreta_joma_entry.admin');
     Route::get('ponno_purchase_entry_admin',[PonnoPurchaseEntryController::class,'admin'])->name('ponno_purchase_entry.admin');
     Route::post('ponno_purchase_update/{id}',[PonnoPurchaseEntryController::class,'ponno_purchase_update'])->name('ponno_purchase_entry.ponno_purchase_update');
 
     Route::get('ponno_sales_entry_admin',[PonnoSalesEntryController::class,'admin'])->name('ponno_sales_entry.admin');
     Route::get('ponno_sales_entry_update_admin/{id}',[PonnoSalesEntryController::class,'update_sales']);
     Route::get('ponno_sales_entry_delete/{id}',[PonnoSalesEntryController::class,'entry_delete']);
+    Route::post('ponno_sales_entry_info_update/{id}',[PonnoSalesEntryController::class,'info_update'])->name('ponno_sales_entry.info_update');
+
+    Route::get('kreta_joma_entry_admin',[KretaJomaEntryController::class,'admin'])->name('kreta_joma_entry.admin');
+
+    Route::get('amanot_entry_admin',[AmanotEntryController::class,'admin'])->name('amanot_entry.admin');
+
+    Route::get('hawlat_entry_admin',[HawlatEntryController::class,'admin'])->name('hawlat_entry.admin');
+
+    Route::get('other_joma_khoroc_entry_admin',[OtherJomaKhorocEntryController::class,'admin'])->name('other_joma_khoroc_entry.admin');
+
+    Route::get('mohajon_payment_entry_admin',[MohajonPaymentEntryController::class,'admin'])->name('mohajon_payment_entry.admin');
+
+    Route::get('mohajon_return_entry_admin',[MohajonReturnEntryController::class,'admin'])->name('mohajon_return_entry.admin');
+
+
+
 
 
 

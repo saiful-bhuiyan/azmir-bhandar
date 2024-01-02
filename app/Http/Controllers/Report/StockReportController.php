@@ -21,7 +21,7 @@ class StockReportController extends Controller
     {
         if($request->ponno_setup_id == 0)
         {
-            $stock = stock::all();
+            $stock = stock::where('quantity','!=',0)->get();
             $viewContent = view('user.report.stock_report.all_table', compact('stock'))->render();
             return response()->json(['viewContent' => $viewContent]);
 
@@ -32,7 +32,7 @@ class StockReportController extends Controller
             $stock = stock::with('ponno_purchase_entry')
             ->whereHas('ponno_purchase_entry',function($query) use($id){
                 $query->whereIn('ponno_setup_id',[$id]);
-                })->get();
+                })->where('quantity','!=',0)->get();
                 
             $viewContent = view('user.report.stock_report.all_table', compact('stock'))->render();
             return response()->json(['viewContent' => $viewContent]);

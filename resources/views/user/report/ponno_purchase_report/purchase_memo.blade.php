@@ -88,7 +88,7 @@
 @if($purchase)
   <div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white rounded shadow-lg md:p-8">
-      <span class="p-1 text-white bg-blue-600">পন্য গ্রহণ মেমো</span>
+      <span class="p-1 text-white bg-blue-600">পন্যের বিবরনী</span>
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
       <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>
       <p class="text-lg font-bold text-red-600">সাথী মার্কেট ইসলামপুর রোড,ফেনী</p>
@@ -107,31 +107,7 @@
           <p class="text-base font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
         </div>
         <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">তারিখ : {{$purchase->entry_date}}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">মহাজনের নাম : {{$purchase->mohajon_setup->name}}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">ঠিকানা : {{$purchase->mohajon_setup->address}}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">এরিয়া : {{$purchase->mohajon_setup->area}}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">মোবাইল নাম্বার : {{$purchase->mohajon_setup->mobile}}</p>
-        </div>
-        <div class="col-span-2">
           <p class="text-base font-bold text-red-600">ধরণ : @if($purchase->purchase_type == 1) নিজ খরিদ @elseif($purchase->purchase_type == 2) কমিশন @endif</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">পন্যের নাম : {{$purchase->ponno_setup->ponno_name}}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">মার্কা : {{$purchase->ponno_marka_setup->ponno_marka}}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-base font-bold text-red-600">সাইজ : {{$purchase->ponno_size_setup->ponno_size}}</p>
         </div>
       </div>
       <div class="flex mt-4">
@@ -188,8 +164,11 @@
               <p class="text-white">পন্যের বিবরনী</p>
             </div>
             <div class="text-left bg-sky-200">
-              <p class="p-1 text-xs text-gray-800">আমদানী তারিখ : {{$purchase->entry_date}}</p>
+              <p class="p-1 text-xs text-gray-800">আমদানী তারিখ : {{date('d-m-Y', strtotime($purchase->entry_date))}}</p>
               <p class="p-1 text-xs text-gray-800">ট্রাক নং : {{$purchase->gari_no}}</p>
+              <p class="p-1 text-xs text-gray-800">মহাজনের নাম : {{$purchase->mohajon_setup->name}}</p>
+              <p class="p-1 text-xs text-gray-800">ঠিকানা : {{$purchase->mohajon_setup->address}}</p>
+              <p class="p-1 text-xs text-gray-800">এরিয়া : {{$purchase->mohajon_setup->area}}</p>
               <p class="p-1 text-xs text-gray-800">পন্যের নাম : {{$purchase->ponno_setup->ponno_name}}</p>
               <p class="p-1 text-xs text-gray-800">মার্কা : {{$purchase->ponno_marka_setup->ponno_marka}}</p>
               <p class="p-1 text-xs text-gray-800">সাইজ : {{$purchase->ponno_size_setup->ponno_size}}</p>

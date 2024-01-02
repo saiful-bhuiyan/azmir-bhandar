@@ -58,51 +58,51 @@
                 </a>
                 <a href="{{route('ponno_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/product.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">পন্য সেটাপ</p>
+                    <p class="text-center mt-2">পন্য সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('ponno_size_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/medal.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">পন্য়ের সাইজ সেটাপ</p>
+                    <p class="text-center mt-2">পন্য়ের সাইজ সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('ponno_marka_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/medal.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">পন্য়ের মার্কা সেটাপ</p>
+                    <p class="text-center mt-2">পন্য়ের মার্কা সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('kreta_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/buyer.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ক্রেতার সেটাপ</p>
+                    <p class="text-center mt-2">ক্রেতার সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('bikroy_marfot_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">বিক্রয় মারফত সেটাপ</p>
+                    <p class="text-center mt-2">বিক্রয় মারফত সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('bank_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ব্যাংক সেটাপ</p>
+                    <p class="text-center mt-2">ব্যাংক সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('bank_check_book_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ব্যাংকের চেক বই সেটাপ</p>
+                    <p class="text-center mt-2">ব্যাংকের চেক বই সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('amanot_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/other_cost.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">আমানত সেটাপ</p>
+                    <p class="text-center mt-2">আমানত সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('hawlat_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/borrow.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">হাওলাত সেটাপ</p>
+                    <p class="text-center mt-2">হাওলাত সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('other_joma_khoroc_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/budget.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">অন্যান্য জমা খরচ সেটাপ</p>
+                    <p class="text-center mt-2">অন্যান্য জমা খরচ সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('mohajon_commission_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission_product.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">মহাজন কমিশন সেটাপ</p>
+                    <p class="text-center mt-2">মহাজন কমিশন সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('kreta_commission_setup.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/commission_product.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ক্রেতার কমিশন সেটাপ</p>
+                    <p class="text-center mt-2">ক্রেতার কমিশন সেটাপ এডমিন</p>
                 </a>
                 <a href="{{route('user_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/supplier.png" alt="" class="w-8 h-8 mx-auto">
@@ -113,47 +113,47 @@
             <div id="entryDiv" class="grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-2 border-solid">
                 <a href="{{route('ponno_purchase_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/import.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">পন্য গ্রহন</p>
+                    <p class="text-center mt-2">পন্য গ্রহন এডমিন</p>
                 </a>
                 <a href="{{route('ponno_sales_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">পন্য বিক্রয়</p>
+                    <p class="text-center mt-2">পন্য বিক্রয় এডমিন</p>
                 </a>
-                <a href="{{route('arod_chotha.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">আড়ৎ চৌথা</p>
+                    <p class="text-center mt-2">আড়ৎ চৌথা এডমিন</p>
                 </a>
                 <a href="{{route('kreta_joma_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ক্রেতার জমা</p>
+                    <p class="text-center mt-2">ক্রেতার জমা এডমিন</p>
                 </a>
-                <a href="{{route('bank_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ব্যাংক উত্তোলন/জমা</p>
+                    <p class="text-center mt-2">ব্যাংক উত্তোলন/জমা এডমিন</p>
                 </a>
-                <a href="{{route('mohajon_payment_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('mohajon_payment_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/postman.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">মহাজন পেমেন্ট</p>
+                    <p class="text-center mt-2">মহাজন পেমেন্ট এডমিন</p>
                 </a>
-                <a href="{{route('mohajon_return_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('mohajon_return_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/postman.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">মহাজন ফেরত</p>
+                    <p class="text-center mt-2">মহাজন ফেরত এডমিন</p>
                 </a>
-                <a href="{{route('amanot_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('amanot_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/postman.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">আমানতী জমা/খরচ</p>
+                    <p class="text-center mt-2">আমানতী জমা/খরচ এডমিন</p>
                 </a>
-                <a href="{{route('hawlat_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('hawlat_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/postman.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">হাওলাত জমা/খরচ</p>
+                    <p class="text-center mt-2">হাওলাত জমা/খরচ এডমিন</p>
                 </a>
-                <a href="{{route('other_joma_khoroc_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('other_joma_khoroc_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/postman.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">অন্যান্য জমা/খরচ</p>
+                    <p class="text-center mt-2">অন্যান্য জমা/খরচ এডমিন</p>
                 </a>
-                <a href="{{route('kreta_koifiyot_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/cost.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">ক্রেতার কৈফিয়ত খরচ</p>
+                    <p class="text-center mt-2">ক্রেতার কৈফিয়ত খরচ এডমিন</p>
                 </a>
             </div>
         </div>
@@ -200,13 +200,13 @@
 
 
         $('.url').click(function(){
-            var left = (screen.width - 800) / 2;
+            var left = (screen.width - 1000) / 2;
             var top = (screen.height - 700) / 4;
 
             var url = $(this).attr('href');
 
             var myWindow = window.open(url, url,
-            'resizable=yes, width=' + '800'
+            'resizable=yes, width=' + '1000'
             + ', height=' + '700' + ', top='
             + top + ', left=' + left);
         })

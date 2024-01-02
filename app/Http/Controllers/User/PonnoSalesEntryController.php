@@ -31,7 +31,7 @@ class PonnoSalesEntryController extends Controller
             $data = temp_ponno_sale::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('mohajon_address',function($v){
@@ -65,11 +65,11 @@ class PonnoSalesEntryController extends Controller
                     $total +=$v->other;
                     $total +=$v->kreta_commission;
 
-                    return $total;
+                    return number_format($total,2);
  
             })
-            ->addColumn('action',function($row){
-                return '<form action="'.route('ponno_sales_entry.destroy',$row->id).'" method="POST" id="DeleteForm">
+            ->addColumn('action',function($v){
+                return '<form action="'.route('ponno_sales_entry.destroy',$v->id).'" method="POST" id="DeleteForm">
                 '.csrf_field().'
                 '.method_field('DELETE').'
                  <button onclick="return confirmation();" type="submit" class="bg-red-500 hover:bg-red-700 text-white
@@ -122,8 +122,9 @@ class PonnoSalesEntryController extends Controller
                 'sales_weight.numeric'=>'সংখ্যা ইনপুট করুন',
                 'sales_rate.numeric'=>'সংখ্যা ইনপুট করুন',
             ]);
+            $purchase = ponno_purchase_entry::where('id',$request->purchase_id)->first();
 
-            if($request->read_current_qty >= $request->sales_qty && $request->read_current_weight >= $request->sales_weight)
+            if($request->read_current_qty >= $request->sales_qty)
             {
                 $data = array(
                     'purchase_id'=>$request->purchase_id,
@@ -134,14 +135,8 @@ class PonnoSalesEntryController extends Controller
                     'other'=>$request->other ? $request->other : 0,
                 );
 
-                $purchase = ponno_purchase_entry::where('id',$request->purchase_id)->first();
-
-
-                $kreta = kreta_commission_setup::where('ponno_setup_id',$purchase->ponno_setup->id)->first();
-
-                $kreta_commission = intval($kreta->commission_amount * $request->sales_weight);
-
-                $data['kreta_commission'] = $kreta_commission;
+                
+                $data['kreta_commission'] = $request->kreta_commission ? $request->kreta_commission : 0;
 
 
                 $insert = temp_ponno_sale::create($data);
@@ -150,11 +145,20 @@ class PonnoSalesEntryController extends Controller
                 {
                     $stock = stock::where('purchase_id',$request->purchase_id)->first();
                     $update_qty = $stock->quantity - $request->sales_qty;
-                    $update_weight = $stock->weight - $request->sales_weight;
-                    $update_stock = array(
-                        'quantity'=>$update_qty,
-                        'weight'=>$update_weight,
-                    );
+                    if($purchase->purchase_type == 1)
+                    {
+                        $update_weight = $stock->weight - $request->sales_weight;
+                        $update_stock = array(
+                            'quantity'=>$update_qty,
+                            'weight'=>$update_weight,
+                        );
+                    }else if($purchase->purchase_type == 2)
+                    {
+                        $update_stock = array(
+                            'quantity'=>$update_qty,
+                        );
+                    }
+                    
                     stock::where('purchase_id',$request->purchase_id)->update($update_stock);
 
                     Toastr::success(__('এড কার্ট সফল হয়েছে'), __('সফল'));
@@ -327,7 +331,7 @@ class PonnoSalesEntryController extends Controller
                 'sales_rate.numeric'=>'সংখ্যা ইনপুট করুন',
             ]);
 
-            if($request->read_current_qty >= $request->sales_qty && $request->read_current_weight >= $request->sales_weight)
+            if($request->read_current_qty >= $request->sales_qty)
             {
                 $data = array(
                     'purchase_id'=>$request->purchase_id,
@@ -351,20 +355,90 @@ class PonnoSalesEntryController extends Controller
 
                 $update = ponno_sales_entry::find($id)->update($data);
 
+                $new_data = ponno_sales_entry::find($id);
+
                 if($update)
                 {
-                    $stock = stock::where('purchase_id',$request->purchase_id)->first();
-                    $update_qty =  $stock->quantity + $old_data->sales_qty; 
-                    $update_qty -= $request->sales_qty;
-                    $update_weight =  $stock->weight + $old_data->sales_weight; 
-                    $update_weight -= $request->sales_weight;
-                    $update_stock = array(
-                        'quantity'=>$update_qty,
-                        'weight'=>$update_weight,
-                    );
-                    stock::where('purchase_id',$request->purchase_id)->update($update_stock);
+                    if($old_data->purchase_id == $new_data->purchase_id)
+                    {
+                        $stock = stock::where('purchase_id',$request->purchase_id)->first();
+                        $update_qty =  $stock->quantity + $old_data->sales_qty; 
+                        $update_qty -= $request->sales_qty;
+                        if($old_data->ponno_purchase_entry->purchase_type == 1){
+                            $update_weight =  $stock->weight + $old_data->sales_weight; 
+                            $update_weight -= $request->sales_weight;
+                            $update_stock = array(
+                                'quantity'=>$update_qty,
+                                'weight'=>$update_weight,
+                            );
+                        }else if($old_data->ponno_purchase_entry->purchase_type == 2){
+                            $update_stock = array(
+                                'quantity'=>$update_qty,
+                            );
+                        }
+                        
+                        stock::where('purchase_id',$request->purchase_id)->update($update_stock);
 
-                    Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+                        $sales_infos = ponno_sales_entry::where('sales_invoice',$old_data->sales_invoice)->get();
+                        $total_sale_amount = 0;
+                        foreach($sales_infos as $s)
+                        {
+                            $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission;
+                        }
+                        $sales = ponno_sales_info::find($old_data->sales_invoice);
+                        $total_sale_amount -= $sales->discount ? $sales->discount : 0;
+                        ponno_sales_info::find($sales->id)->update(['total_taka' => $total_sale_amount]); 
+
+                        Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+                    }else
+                    {
+                        //for new data
+                        $stock = stock::where('purchase_id',$request->purchase_id)->first();
+                        $update_qty =  $stock->quantity - $request->sales_qty; 
+
+                        if($new_data->ponno_purchase_entry->purchase_type == 1){
+                            $update_weight =  $stock->weight - $request->sales_weight; 
+                            $update_stock = array(
+                                'quantity'=>$update_qty,
+                                'weight'=>$update_weight,
+                            );
+                        }else if($new_data->ponno_purchase_entry->purchase_type == 2){
+                            $update_stock = array(
+                                'quantity'=>$update_qty,
+                            );
+                        }
+                        stock::where('purchase_id',$request->purchase_id)->update($update_stock);
+
+                        //for old data
+                        $old_stock = stock::where('purchase_id',$old_data->purchase_id)->first();
+                        $update_qty =  $old_stock->quantity + $old_data->sales_qty; 
+                        if($old_data->ponno_purchase_entry->purchase_type == 1){
+                            $update_weight =  $old_stock->weight + $old_data->sales_weight; 
+                            $old_update_stock = array(
+                                'quantity'=>$update_qty,
+                                'weight'=>$update_weight,
+                            );
+                        }else if($old_data->ponno_purchase_entry->purchase_type == 2){
+                            $old_update_stock = array(
+                                'quantity'=>$update_qty,
+                            );
+                        }
+                        stock::where('purchase_id',$old_data->purchase_id)->update($old_update_stock);
+
+                        $sales_infos = ponno_sales_entry::where('sales_invoice',$old_data->sales_invoice)->get();
+                        $total_sale_amount = 0;
+                        foreach($sales_infos as $s)
+                        {
+                            $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission;
+                        }
+                        
+                        $sales = ponno_sales_info::find($old_data->sales_invoice);
+                        $total_sale_amount -= $sales->discount ? $sales->discount : 0;
+                        ponno_sales_info::find($sales->id)->update(['total_taka' => $total_sale_amount]); 
+
+                        Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+                    }
+                    
                 }
                 else
                 {
@@ -387,18 +461,25 @@ class PonnoSalesEntryController extends Controller
      */
     public function destroy($id)
     {
-        $temp_sale = temp_ponno_sale::find($id)->first();
+        $temp_sale = temp_ponno_sale::find($id);
 
         $stock = stock::where('purchase_id',$temp_sale->purchase_id)->first();
 
         $update_qty = $stock->quantity + $temp_sale->sales_qty;
-        $update_weight = $stock->weight + $temp_sale->sales_weight;
 
-        $update_stock = array(
-            'quantity'=>$update_qty,
-            'weight'=>$update_weight,
-        );
-
+        if($stock->ponno_purchase_entry->purchase_type == 1){
+            $update_weight = $stock->weight + $temp_sale->sales_weight;
+            $update_stock = array(
+                'quantity'=>$update_qty,
+                'weight'=>$update_weight,
+            );
+        }else if($stock->ponno_purchase_entry->purchase_type == 2){
+            $update_stock = array(
+                'quantity'=>$update_qty,
+            );
+        }
+        
+        
         $update = stock::where('purchase_id',$temp_sale->purchase_id)->update($update_stock);
 
         if($update)
@@ -507,13 +588,21 @@ class PonnoSalesEntryController extends Controller
          $stock = stock::where('purchase_id',$sales->purchase_id)->first();
  
          $update_qty = $stock->quantity + $sales->sales_qty;
-         $update_weight = $stock->weight + $sales->sales_weight;
- 
-         $update_stock = array(
-             'quantity'=>$update_qty,
-             'weight'=>$update_weight,
-         );
- 
+
+         if($stock->ponno_purchase_entry->purchase_type == 1){
+            $update_weight = $stock->weight + $sales->sales_weight;
+            $update_stock = array(
+                'quantity'=>$update_qty,
+                'weight'=>$update_weight,
+            );
+         }else if($stock->ponno_purchase_entry->purchase_type == 2){
+            $update_stock = array(
+                'quantity'=>$update_qty,
+            );
+         }
+
+         
+         
          $update = stock::where('purchase_id',$sales->purchase_id)->update($update_stock);
  
          if($update)
@@ -523,8 +612,22 @@ class PonnoSalesEntryController extends Controller
              if($count == 0)
              {
                  ponno_sales_info::find($sales->sales_invoice)->delete();
+                 Toastr::success(__('ডিলিট সফল হয়েছে'), __('সফল'));
                  return redirect('ponno_sales_entry_admin');
              }
+
+             $sales = ponno_sales_info::find($id);
+                 if($sales)
+                 {
+                    $sales_entry = ponno_sales_entry::where('sales_invoice',$sales->id)->get();
+                    $total_sale_amount = 0;
+                    foreach($sales_entry as $s)
+                    {
+                        $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission;
+                    }
+                    $total_sale_amount -= $sales->discount ? $sales->discount : 0;
+                    $data['total_taka'] = $total_sale_amount;
+                 }
              
              Toastr::success(__('ডিলিট সফল হয়েছে'), __('সফল'));
          }
@@ -534,6 +637,89 @@ class PonnoSalesEntryController extends Controller
          }
  
          return redirect()->back();
+     }
+
+
+
+     public function info_update(Request $request, $id)
+     {
+        $validated = $request->validate(
+            [
+                'sales_type' => 'required',
+                'marfot_id' => 'required',
+            ],
+            [
+                'sales_type.required'=>'দয়া করে বিক্রির ধরণ সিলেক্ট করুন',
+                'marfot_id.required'=>'দয়া করে মারফতের নাম সিলেক্ট করুন',
+            ]);
+    
+            $data = array(
+                'sales_type'=>$request->sales_type,
+                'marfot_id'=>$request->marfot_id,
+                'discount'=>$request->discount ? $request->discount : 0,
+                'entry_date'=> Carbon::createFromFormat('d-m-Y', $request->entry_date)->format('Y-m-d'),
+            );
+    
+            if($request->sales_type == 1)
+            {
+                $request->validate(
+                [
+                    'cash_kreta_address' => 'required',
+                    'cash_kreta_name' => 'required',
+                    'cash_kreta_mobile' => 'required',
+                ],
+                [
+                    'cash_kreta_address.required'=>'দয়া করে ক্রেতার ঠিকানা ইনপুট করুন',
+                    'cash_kreta_name.required'=>'দয়া করে ক্রেতার নাম ইনপুট করুন',
+                    'cash_kreta_mobile.required'=>'দয়া করে ক্রেতার মোবাইল ইনপুট করুন',
+                ]);
+                
+                $data['kreta_setup_id'] = null;
+                $data['cash_kreta_address'] = $request->cash_kreta_address;
+                $data['cash_kreta_name'] = $request->cash_kreta_name;
+                $data['cash_kreta_mobile'] = $request->cash_kreta_mobile;
+            }
+            else
+            {
+                $request->validate(
+                [
+                    'kreta_setup_id' => 'required',
+                ],
+                [
+                    'kreta_setup_id.required'=>'দয়া করে ক্রেতার নাম সিলেক্ট করুন',
+                ]);
+    
+                $data['kreta_setup_id'] = $request->kreta_setup_id;
+                $data['cash_kreta_address'] = null;
+                $data['cash_kreta_name'] = null;
+                $data['cash_kreta_mobile'] = null;
+    
+            }
+
+            if($request->discount > 0)
+            {
+                $sales = ponno_sales_info::find($id);
+                $sales_entry = ponno_sales_entry::where('sales_invoice',$sales->id)->get();
+                    $total_sale_amount = 0;
+                    foreach($sales_entry as $s)
+                    {
+                        $total_sale_amount += ($s->sales_weight * $s->sales_rate) + $s->labour + $s->other + $s->kreta_commission;
+                    }
+                    $total_sale_amount -= $request->discount;
+                    $data['total_taka'] = $total_sale_amount;
+            }
+    
+            $update = ponno_sales_info::find($id)->update($data);
+
+            if($update)
+            {
+               Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+            }
+        return redirect()->back();
      }
 
 }

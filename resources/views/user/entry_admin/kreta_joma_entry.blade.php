@@ -101,13 +101,22 @@
                 <span class="text-sm text-red-600">{{ $errors->first('bank_setup_id') }} </span>
                 @endif
               </div>
-      
+
+              <div class="md:col-span-2 ">
+                  <label for="entry_date">তারিখ :</label>
+                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                  @if($errors->has('entry_date'))
+                  <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                  @endif
+                </div>
+
+              @if(isset($data))
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
                   <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                 </div>
               </div>
-
+              @endif
             </div>
           </div>
        
@@ -153,6 +162,9 @@
             <th scope="col" class="px-6 py-3">
                 টাকা
             </th>
+            <th scope="col" class="px-6 py-3">
+                তারিখ
+            </th>
             <th scope="col" class="px-6 py-3 text-center">
                 একশন
             </th>
@@ -170,7 +182,9 @@
 
 <script type="text/javascript">
 
-   
+$('#payment_by').change(function(){
+     $('#bank_setup_id').val("");
+ })
  
     function loadCurrentData()
     {
@@ -205,6 +219,7 @@
                 {data: 'bank_info', name: 'bank_info'},
                 {data: 'marfot', name: 'marfot'},
                 {data: 'taka', name: 'taka'},
+                {data: 'entry_date', name: 'entry_date'},
                 {data: 'action', name: 'action' , orderable: false, searchable: false},
             
             ]
@@ -281,6 +296,15 @@
             $('#bank_setup_id').html('<option value="" selected>সিলেক্ট</option>');
         }
     }
+
+    $( function() {
+      $( "#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
 
     $('#save').on('submit',function(e){
 

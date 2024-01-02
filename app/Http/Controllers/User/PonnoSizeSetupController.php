@@ -25,7 +25,7 @@ class PonnoSizeSetupController extends Controller
             $data = ponno_size_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('ponno_size',function($v){
@@ -163,7 +163,7 @@ class PonnoSizeSetupController extends Controller
             $data = ponno_size_setup::all();
             return Datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('sl',function($row){
+            ->addColumn('sl',function($v){
                 return $this->sl = $this->sl +1;
             })
             ->addColumn('ponno_size',function($v){

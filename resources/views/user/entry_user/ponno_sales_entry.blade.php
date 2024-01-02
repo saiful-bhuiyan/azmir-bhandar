@@ -24,7 +24,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($stock)
                     @foreach($stock as $v)
-                    <option value="{{$v->purchase_id}}">ই - {{$v->purchase_id}} / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
+                    <option value="{{$v->purchase_id}}">ই - {{$v->purchase_id}} / @if($v->ponno_purchase_entry->purchase_type == 2){{$v->ponno_purchase_entry->mohajon_setup->name}}@else AB মার্কা @endif / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
                        {{$v->ponno_purchase_entry->ponno_size_setup->ponno_size}} / {{$v->ponno_purchase_entry->ponno_marka_setup->ponno_marka}} /
                         @if($v->ponno_purchase_entry->purchase_type == 1) নিজ খরিদ @else কমিশন @endif</option>
                     @endforeach
@@ -112,7 +112,7 @@
 
                 <div class="md:col-span-1">
                   <label for="sales_weight">বিক্রয় ওজন :</label>
-                  <input type="number" step="any" name="sales_weight" id="sales_weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup=" sumTotalSale();" required/>
+                  <input type="number" step="any" name="sales_weight" id="sales_weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup=" sumCommissionAmount();" required/>
                   @if($errors->has('sales_weight'))
                   <span class="text-sm text-red-600">{{ $errors->first('sales_weight') }} </span>
                   @endif
@@ -133,7 +133,7 @@
 
                 <div class="md:col-span-1">
                   <label for="kreta_commission">ক্রেতা কমিশন :</label>
-                  <input type="text" id="kreta_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""  />
+                  <input type="text" id="kreta_commission" name="kreta_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup=" sumTotalSale();" />
                   <input type="hidden" id="kreta_com_per_kg" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
                 </div>
 
@@ -401,11 +401,11 @@
     if(discount > 0)
     {
        all_total_taka = current_amount - discount;
-      $('#all_total_taka').val(all_total_taka);
+      $('#all_total_taka').val(all_total_taka.toFixed(2));
     }
     else
     {
-      $('#all_total_taka').val(current_amount);
+      $('#all_total_taka').val(current_amount.toFixed(2));
     }
    }
 
@@ -535,16 +535,14 @@
       var sales_rate = parseFloat($('#sales_rate').val() || 0);
       var labour = parseFloat($('#labour').val() || 0);
       var other = parseFloat($('#other').val() || 0);
-      var kreta_com_per_kg = parseFloat($('#kreta_com_per_kg').val() || 0);
+      var kreta_commission = parseFloat($('#kreta_commission').val() || 0);
 
       if(sales_weight > 0  && sales_rate > 0)
       {
         var total = sales_weight *  sales_rate;
-        var kreta_com = sales_weight * kreta_com_per_kg;
-        var num_kreta_com = parseFloat(kreta_com);
+        var num_kreta_com = parseFloat(kreta_commission);
         var all_total = total + labour + other +num_kreta_com;
         $('#read_taka').val(total.toFixed(2));
-        $('#kreta_commission').val(kreta_com.toFixed(2));
         $('#read_total_taka').val(all_total.toFixed(2));
       }
       else
@@ -553,6 +551,18 @@
         $('#read_total_taka').val("");
       }
 
+    }
+
+    function sumCommissionAmount()
+    {
+      var sales_weight = parseFloat($('#sales_weight').val() || 0);
+      var kreta_com_per_kg = parseFloat($('#kreta_com_per_kg').val() || 0);
+      if(sales_weight > 0)
+      {
+        var kreta_com = sales_weight * kreta_com_per_kg;
+        var num_kreta_com = parseFloat(kreta_com);
+        $('#kreta_commission').val(kreta_com.toFixed(2));
+      }
     }
 
     function getAmountByKreta()
@@ -571,7 +581,7 @@
           {
             var amount = $.parseJSON(response);
 
-            $('#current_amount').val(amount.current_amount);
+            $('#current_amount').val(amount.current_amount.toFixed(2));
           }
         });
         
@@ -589,7 +599,7 @@
               var amount = $.parseJSON(response);
 
               $('#old_amount').val(amount.old_amount);
-              $('#current_amount').val(amount.current_amount);
+              $('#current_amount').val(amount.current_amount.toFixed(2));
             }
           });
         }
