@@ -113,6 +113,7 @@ class OtherJomaKhorocEntryController extends Controller
                 'marfot' => 'required',
                 'taka' => 'required|numeric',
                 'payment_by' => 'required',
+                'description' => 'max:300',
             ],
             [
                 'type.required'=>'দয়া করে ধরণ সিলেক্ট করুন',
@@ -121,6 +122,7 @@ class OtherJomaKhorocEntryController extends Controller
                 'taka.required'=>'দয়া করে টাকা ইনপুট করুন',
                 'taka.numeric'=>'সংখ্যা ইনপুট করুন',
                 'payment_by.required'=>'দয়া করে পেমেন্ট মাধ্যম সিলেক্ট করুন',
+                'description.max'=>'৩০০ এর অধিক অক্ষর গ্রহণযোগ্য নয়',
             ]);
 
             $data = array(
@@ -129,6 +131,7 @@ class OtherJomaKhorocEntryController extends Controller
                 'marfot'=>$request->marfot,
                 'taka'=>$request->taka,
                 'payment_by'=>$request->payment_by,
+                'description'=>$request->description ? $request->description : '',
                 'entry_date'=> Carbon::now(),
             );
             
@@ -221,6 +224,7 @@ class OtherJomaKhorocEntryController extends Controller
                 'taka' => 'required|numeric',
                 'payment_by' => 'required',
                 'entry_date' => 'required',
+                'description' => 'max:300',
             ],
             [
                 'type.required'=>'দয়া করে ধরণ সিলেক্ট করুন',
@@ -229,6 +233,7 @@ class OtherJomaKhorocEntryController extends Controller
                 'taka.required'=>'দয়া করে টাকা ইনপুট করুন',
                 'taka.numeric'=>'সংখ্যা ইনপুট করুন',
                 'payment_by.required'=>'দয়া করে পেমেন্ট মাধ্যম সিলেক্ট করুন',
+                'description.max'=>'৩০০ এর অধিক অক্ষর গ্রহণযোগ্য নয়',
                 'entry_date.required'=>'দয়া তারিখ সিলেক্ট করুন',
             ]);
 
@@ -238,6 +243,7 @@ class OtherJomaKhorocEntryController extends Controller
                 'marfot'=>$request->marfot,
                 'taka'=>$request->taka,
                 'payment_by'=>$request->payment_by,
+                'description'=>$request->description ? $request->description : '',
                 'entry_date'=> Carbon::createFromFormat('d-m-Y', $request->entry_date)->format('Y-m-d'),
             );
             

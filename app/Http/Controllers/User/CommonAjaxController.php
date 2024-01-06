@@ -10,7 +10,10 @@ use App\Models\check_book_page_setup;
 use App\Models\mohajon_setup;
 use App\Models\amanot_setup;
 use App\Models\hawlat_setup;
+use App\Models\kreta_joma_entry;
+use App\Models\kreta_koifiyot_entry;
 use App\Models\kreta_setup;
+use App\Models\ponno_sales_info;
 
 class CommonAjaxController extends Controller
 {
@@ -56,7 +59,7 @@ class CommonAjaxController extends Controller
 
     public function getMohajonAddressByArea(Request $request)
     {
-        $address = mohajon_setup::select('address')->where('area',$request->area)->groupBy('address')->get();
+        $address = mohajon_setup::select('address')->where('area',$request->area)->groupBy('address')->orderBy('address')->get();
 
         $select = '<option value="">সিলেক্ট</option>';
 
@@ -72,7 +75,7 @@ class CommonAjaxController extends Controller
 
     public function getMohajonNameByAddress(Request $request)
     {
-        $name = mohajon_setup::where('address',$request->address)->get();
+        $name = mohajon_setup::where('address',$request->address)->orderBy('name')->get();
 
         $select = '<option value="">সিলেক্ট</option>';
 
@@ -88,7 +91,7 @@ class CommonAjaxController extends Controller
 
     public function getAmanotNameByAddress(Request $request)
     {
-        $name = amanot_setup::where('address',$request->address)->get();
+        $name = amanot_setup::where('address',$request->address)->orderBy('name')->get();
 
         $select = '<option value="">সিলেক্ট</option>';
 
@@ -104,7 +107,7 @@ class CommonAjaxController extends Controller
 
      public function getHawlatNameByAddress(Request $request)
      {
-         $name = hawlat_setup::where('address',$request->address)->get();
+         $name = hawlat_setup::where('address',$request->address)->orderBy('name')->get();
  
          $select = '<option value="">সিলেক্ট</option>';
  
@@ -120,7 +123,7 @@ class CommonAjaxController extends Controller
 
     public function getkretaAddressByArea(Request $request)
     {
-        $address = kreta_setup::select('address')->where('area',$request->area)->groupBy('address')->get();
+        $address = kreta_setup::select('address')->where('area',$request->area)->groupBy('address')->orderBy('address')->get();
 
         $select = '<option value="">সিলেক্ট</option>';
 
@@ -136,7 +139,7 @@ class CommonAjaxController extends Controller
 
     public function getKretaNameByAddress(Request $request)
     {
-        $name = kreta_setup::where('address',$request->address)->get();
+        $name = kreta_setup::where('address',$request->address)->orderBy('name')->get();
 
         $select = '<option value="">সিলেক্ট</option>';
 
@@ -146,5 +149,28 @@ class CommonAjaxController extends Controller
         }
 
         return $select;
+    }
+
+    public function getKretaOldAmount(Request $request)
+    {
+        $kreta_setup_id = $request->kreta_setup_id;
+        $kreta_setup = kreta_setup::find($kreta_setup_id);
+        $total_taka = 0;
+
+        $sales = ponno_sales_info::with('ponno_sales_entry')->whereHas('ponno_sales_entry',function($query) use($kreta_setup_id){
+            $query->whereHas('ponno_purchase_entry',function($query2) use($kreta_setup_id){
+                $query2->whereIn('kreta_setup_id',[$kreta_setup_id]);
+            });
+        })->where('sales_type',2)->sum('total_taka');
+
+        $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+        $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+
+        $total_taka += $kreta_setup->old_amount;
+        $total_taka += $sales;
+        $total_taka -= $joma;
+        $total_taka -= $koifiyot;
+
+        return $total_taka;
     }
 }

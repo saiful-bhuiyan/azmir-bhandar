@@ -12,6 +12,7 @@ use App\Models\temp_ponno_sale;
 use App\Models\ponno_sales_entry;
 use App\Models\stock;
 use App\Models\arod_chotha_entry;
+use App\Models\arod_chotha_info;
 
 class ponno_purchase_entry extends Model
 {
@@ -57,5 +58,10 @@ class ponno_purchase_entry extends Model
     public function arod_chotha_entry()
     {
         return $this->hasMany(arod_chotha_entry::class,'purchase_id');
+    }
+
+    public function arod_chotha_info()
+    {
+        return $this->hasOne(arod_chotha_info::class,'purchase_id');
     }
 }

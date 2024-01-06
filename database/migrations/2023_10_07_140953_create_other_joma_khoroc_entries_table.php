@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('type')->comment("1 = জমা & 2 = খরচ");
             $table->string('marfot')->nullable();
             $table->double('taka',10 ,2);
+            $table->text('description')->nullable();
             $table->integer('payment_by')->comment("1 = Cash & 2 = Bank");
             $table->date('entry_date')->nullable();
             $table->timestamps();

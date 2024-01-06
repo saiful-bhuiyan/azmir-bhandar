@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
+use App\Models\mohajon_commission_setup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ponno_purchase_entry;
@@ -48,7 +49,6 @@ class PonnoPurchaseReportController extends Controller
     public function purchase_memo($id)
     {
         $purchase = ponno_purchase_entry::where('id',$id)->first();
-
         $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
         
         return view('user.report.ponno_purchase_report.purchase_memo',compact('purchase','sales'));

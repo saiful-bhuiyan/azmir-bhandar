@@ -1,6 +1,5 @@
 @if($purchase)
-
-  <div class="container mx-auto max-w-screen ">
+<div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white rounded shadow-lg md:p-8">
       <span class="p-1 text-white bg-blue-600">আড়ত চৌথা</span>
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
@@ -16,27 +15,15 @@
           <p class="text-blue-600">01843875890</p>
         </div>
       </div>
-      <div class="grid grid-cols-1 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-5">
-        <div class="md:col-span-3">
-          <p class="text-lg font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
+      <div class="grid grid-cols-4 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-4">
+        <div class="col-span-2">
+          <p class="text-base font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
         </div>
-        <div class="md:col-span-2">
-          <p class="text-lg font-bold text-red-600">তারিখ : {{$purchase->entry_date}}</p>
-        </div>
-        <div class="md:col-span-5">
-          <p class="text-lg font-bold text-red-600">মহাজনের নাম : {{$purchase->mohajon_setup->name}}</p>
-        </div>
-        <div class="md:col-span-3">
-          <p class="text-lg font-bold text-red-600">ঠিকানা : {{$purchase->mohajon_setup->address}}</p>
-        </div>
-        <div class="md:col-span-2">
-          <p class="text-lg font-bold text-red-600">এরিয়া : {{$purchase->mohajon_setup->area}}</p>
-        </div>
-        <div class="md:col-span-3">
-          <p class="text-lg font-bold text-red-600">মোবাইল নাম্বার : {{$purchase->mohajon_setup->mobile}}</p>
+        <div class="col-span-2">
+          <p class="text-base font-bold text-red-600">ধরণ : @if($purchase->purchase_type == 1) নিজ খরিদ @elseif($purchase->purchase_type == 2) কমিশন @endif</p>
         </div>
       </div>
-      <div class="flex">
+      <div class="flex mt-4">
         <div class="relative w-2/3 mb-6 bg-red-100">
           <table class="w-full text-sm text-center border border-collapse border-slate-500">
             <thead class="text-xs text-gray-700">
@@ -53,17 +40,20 @@
                 $count = 1;
                 $total_sale = 0;
                 $total_sale_qty = 0;
+                $total_sale_weight = 0;
                 $total_mohajon_commission = 0;
-                if($purchase->purchase_type == 2)
-                {
-                  $total_mohajon_commission += $purchase->mohajon_commission;
-                }
+        
+                
+            
                 @endphp
     
                 @foreach($sales as $s)
+
                 @php
                 $total_sale += $s->sales_weight * $s->sales_rate;
                 $total_sale_qty += $s->sales_qty;
+                $total_sale_weight += $s->sales_weight;
+                $total_mohajon_commission += $purchase->mohajon_commission * $s->sales_weight;
                 @endphp
                 <tr>
                     <td class="border border-slate-500">{{$count++}}</td>
@@ -75,24 +65,29 @@
                @endforeach
 
                @php 
-                $total_cost = $total_mohajon_commission + $purchase->labour_cost + $purchase->truck_cost +
-                            $purchase->van_cost + $purchase->other_cost +$purchase->tohori_cost;
-                $kacha_sales = $total_sale - $total_cost;
+                $total_cost = $sales_info->labour_cost + $sales_info->truck_cost +
+                            $sales_info->van_cost + $sales_info->other_cost + $sales_info->tohori_cost;
+              
+                $total_cost += $total_mohajon_commission;
+             
+                $total_amount = $total_sale + $total_cost;
                 
-               @endphp
-
+              @endphp
             </tbody>
             <tfoot class="">
               <tr>
-                <td colspan="4" class="font-bold border border-slate-500">সর্বমোট বিক্রি : </td>
+                <td class="font-bold border border-slate-500">মোট :</td>
+                <td class="font-bold border border-slate-500">{{$total_sale_qty}}</td>
+                <td class="font-bold border border-slate-500">{{$total_sale_weight}}</td>
+                <td class="font-bold border border-slate-500"></td>
                 <td class="font-bold border border-slate-500">{{$total_sale}}</td>
               </tr>
               <tr>
+                <td colspan="4" class="font-bold border text-base border-slate-500">নগদ পাওনা : </td>
+                <td class="font-bold border text-base border-slate-500">{{$total_sale - $total_cost}}</td>
+              </tr>
             </tfoot>
           </table>
-          <div class="w-4/5 pt-32 pb-16 -rotate-45">
-            <p class="text-xl font-bold">নগদ পাওনা : {{$kacha_sales}} টাকা</p>
-          </div>
         </div>
         <div class="relative w-1/3 mb-6 overflow-x-auto bg-white">
           <div class="font-bold">
@@ -100,8 +95,11 @@
               <p class="text-white">পন্যের বিবরনী</p>
             </div>
             <div class="text-left bg-sky-200">
-              <p class="p-1 text-xs text-gray-800">আমদানী তারিখ : {{$purchase->entry_date}}</p>
+              <p class="p-1 text-xs text-gray-800">আমদানী তারিখ : {{date('d-m-Y', strtotime($purchase->entry_date))}}</p>
               <p class="p-1 text-xs text-gray-800">ট্রাক নং : {{$purchase->gari_no}}</p>
+              <p class="p-1 text-xs text-gray-800">মহাজনের নাম : {{$purchase->mohajon_setup->name}}</p>
+              <p class="p-1 text-xs text-gray-800">ঠিকানা : {{$purchase->mohajon_setup->address}}</p>
+              <p class="p-1 text-xs text-gray-800">এরিয়া : {{$purchase->mohajon_setup->area}}</p>
               <p class="p-1 text-xs text-gray-800">পন্যের নাম : {{$purchase->ponno_setup->ponno_name}}</p>
               <p class="p-1 text-xs text-gray-800">মার্কা : {{$purchase->ponno_marka_setup->ponno_marka}}</p>
               <p class="p-1 text-xs text-gray-800">সাইজ : {{$purchase->ponno_size_setup->ponno_size}}</p>
@@ -115,22 +113,22 @@
             <div class="text-left bg-sky-200">
               <p class="p-1 text-xs text-gray-800">বিক্রি সংখ্যা : {{$total_sale_qty}}</p>
               <p class="p-1 text-xs text-gray-800">মহাজন কমিশন : {{$total_mohajon_commission}}</p>
-              <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">তহরী : {{$purchase->tohori_cost}}</p>
-              
+              <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$sales_info->labour_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$sales_info->truck_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$sales_info->van_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$sales_info->other_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">তহরি : {{$sales_info->tohori_cost}}</p>
               <p class="p-1 text-xs text-gray-800">মোট খরচ : {{$total_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">কাচা বিক্রি : {{$kacha_sales}}</p>
-              <p class="p-1 text-xs text-gray-800">নগদ বিক্রি : {{$total_sale}}</p>
-              <p class="p-1 text-xs text-gray-800">সর্বমোট টাকা : {{$total_sale - $total_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">নগদ পাওনা : {{$total_sale - $total_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">সর্বমোট বিক্রয় : {{$total_sale}}</p>
 
             </div>
           </div>
         </div>
       </div>
     </div>
+
+  
     <div class="w-32 my-8 mx-auto">
       <a href="{{url('arod_chotha_entry')}}/{{$purchase->id}}" onclick="window.open(this.href, 'আড়ত চৌথা',
 'left=(screen.width - 800) / 2,top=(screen.width - 700) / 2,width=800,height=700,toolbar=1,resizable=0'); return false;" class="bg-blue-700 text-white text-xl px-4 py-2 rounded-md hover:bg-blue-600">চৌথা ইডিট</a>
@@ -138,4 +136,6 @@
     
   </div>
 
-@endif
+  @else
+  <h1>no record found</h1>
+  @endif

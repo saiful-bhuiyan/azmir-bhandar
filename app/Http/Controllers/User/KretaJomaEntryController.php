@@ -136,7 +136,7 @@ class KretaJomaEntryController extends Controller
                 Toastr::error(__('এড কার্ট সফল হয়নি'), __('ব্যর্থ'));
             }
     
-            return redirect()->back();
+            return redirect()->back()->withInput();
     }
 
     /**

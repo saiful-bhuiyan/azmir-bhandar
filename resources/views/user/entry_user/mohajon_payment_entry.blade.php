@@ -77,7 +77,6 @@
               <div class="md:col-span-1">
                 <label for="payment_by">পেমেন্টের মাধ্যম :</label>
                 <select name="payment_by" id="payment_by" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getBankSetupInfo();" required>
-                    <option value="" selected>সিলেক্ট</option>
                     <option value="1">ক্যাশ</option>
                     <option value="2">ব্যাংক</option>
                 </select>
@@ -101,6 +100,14 @@
                 <select name="check_id" id="check_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50">
                     <option value="" selected>সিলেক্ট</option>
                 </select>
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="description">বিবরণ :</label>
+                <input type="text" name="description" id="description" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""/>
+                @if($errors->has('description'))
+                <span class="text-sm text-red-600">{{ $errors->first('description') }} </span>
+                @endif
               </div>
       
               <div class="md:col-span-5 text-right">
@@ -225,7 +232,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getMohajonAddressByArea')}}',
+                url : '{{url("getMohajonAddressByArea")}}',
                 data : {
                     area : area,
                 },
@@ -246,7 +253,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getMohajonNameByAddress')}}',
+                url : '{{url("getMohajonNameByAddress")}}',
                 data : {
                     address : address,
                 },
@@ -270,7 +277,7 @@
 
             $.ajax({
                 type : 'POST',
-                url : '{{url('getBankSetupInfo')}}',
+                url : '{{url("getBankSetupInfo")}}',
                 success:function(response)
                 {
                     $('#bank_setup_id').html(response);
@@ -295,7 +302,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getCheckByBankId')}}',
+                url : '{{url("getCheckByBankId")}}',
                 data : {
                   bank_setup_id : bank_setup_id,
                 },

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\arod_chotha_entry;
+use App\Models\arod_chotha_info;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
@@ -38,8 +39,9 @@ class ArodchothaController extends Controller
         $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
 
         $arod_chotha = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+        $arod_chotha_info = arod_chotha_info::where('purchase_id', $purchase->id)->first(); 
 
-        return view('user.entry_user.arod_chotha_entry',compact('purchase','sales','arod_chotha'));
+        return view('user.entry_user.arod_chotha_entry',compact('purchase','sales','arod_chotha','arod_chotha_info'));
         
     } 
 
@@ -85,7 +87,7 @@ class ArodchothaController extends Controller
                 'sales_rate'=>$request->sales_rate,
             );
 
-            $ponno = ponno_purchase_entry::where('purchase_id',$request->purchase_id)->first();
+            $ponno = ponno_purchase_entry::where('id',$request->purchase_id)->first();
 
             $insert = arod_chotha_entry::create($data);
             if($insert)
@@ -181,8 +183,10 @@ class ArodchothaController extends Controller
             if($cotha)
             {
                 $edited = " - Edited";
+            }else{
+                $edited = "";
             }
-            $select .= "<option value='".$v->id."'>".$v->quantity." / ".$v->ponno_setup->ponno_name." / ".$v->ponno_size_setup->ponno_size." / ".$v->ponno_marka_setup->ponno_marka." ".$edited."</option>";
+            $select .= "<option value='".$v->id."'>ই -".$v->id." / ".$v->quantity." / ".$v->ponno_setup->ponno_name." / ".$v->ponno_size_setup->ponno_size." / ".$v->ponno_marka_setup->ponno_marka." ".$edited."</option>";
         }
 
         return $select;
@@ -203,7 +207,8 @@ class ArodchothaController extends Controller
         if($arod_chotha > 0)
         {
             $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
-            return view('user.entry_user.arod_cotha_info_edited',compact('purchase','sales'));
+            $sales_info = arod_chotha_info::where('purchase_id', $purchase->id)->first(); 
+            return view('user.entry_user.arod_cotha_info_edited',compact('purchase','sales','sales_info'));
         }
         else
         {
@@ -221,7 +226,10 @@ class ArodchothaController extends Controller
         $purchase = ponno_purchase_entry::where('id',$id)->first();
 
         $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+
+        $sales_info = arod_chotha_info::where('purchase_id', $purchase->id)->first(); 
+
         
-        return view('user.entry_user.arod_chotha_memo',compact('purchase','sales'));
+        return view('user.entry_user.arod_chotha_memo',compact('purchase','sales','sales_info'));
     }
 }

@@ -19,7 +19,7 @@
 
       @php 
         $total_amount = 0;
-        if(count($cash_transfer) > 0)
+        if($cash_transfer)
         {
             $total_amount += $cash_transfer->amount; 
         }
@@ -27,8 +27,10 @@
 
     <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-2">
         <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-800">ক্যাশ জমা রিপোর্ট</p>
+        @if($cash_transfer)
         <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-600">তারিখ : {{$search_date}}</p>
-        <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-600">সাবেক ক্যাশ :@if(count($cash_transfer) > 0) {{$cash_transfer->amount}} - {{$cash_transfer->reference_date}} @endif</p>
+        <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-blue-600">সাবেক ক্যাশ :@if($cash_transfer) {{$cash_transfer->amount}} - {{$cash_transfer->reference_date}} @endif</p>
+        @endif
         <div class="w-full p-2">
         <hr>
         </div>

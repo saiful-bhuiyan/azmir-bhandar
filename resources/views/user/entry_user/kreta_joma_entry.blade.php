@@ -45,7 +45,7 @@
 
               <div class="md:col-span-2">
                 <label for="kreta_setup_id">ক্রেতার নাম :</label>
-                <select name="kreta_setup_id" id="kreta_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+                <select name="kreta_setup_id" id="kreta_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getKretaOldAmount();" required>
                     <option value="" selected>সিলেক্ট</option>
                 </select>
                 @if($errors->has('kreta_setup_id'))
@@ -77,7 +77,6 @@
               <div class="md:col-span-1">
                 <label for="payment_by">পেমেন্টের মাধ্যম :</label>
                 <select name="payment_by" id="payment_by" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getBankSetupInfo();" required>
-                    <option value="" selected>সিলেক্ট</option>
                     <option value="1">ক্যাশ</option>
                     <option value="2">ব্যাংক</option>
                 </select>
@@ -213,7 +212,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getkretaAddressByArea')}}',
+                url : '{{url("getkretaAddressByArea")}}',
                 data : {
                     area : area,
                 },
@@ -234,13 +233,34 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getKretaNameByAddress')}}',
+                url : '{{url("getKretaNameByAddress")}}',
                 data : {
                     address : address,
                 },
                 success:function(response)
                 {
                     $('#kreta_setup_id').html(response);
+                }
+
+            });
+        }
+    }
+
+    function getKretaOldAmount()
+    {
+        var kreta_setup_id = $('#kreta_setup_id').val();
+
+        if(kreta_setup_id != "")
+        {
+            $.ajax({
+                type : 'POST',
+                url : '{{url("getKretaOldAmount")}}',
+                data : {
+                  kreta_setup_id : kreta_setup_id,
+                },
+                success:function(response)
+                {
+                    $('#current_amount').val(response);
                 }
 
             });
@@ -257,7 +277,7 @@
 
             $.ajax({
                 type : 'POST',
-                url : '{{url('getBankSetupInfo')}}',
+                url : '{{url("getBankSetupInfo")}}',
                 success:function(response)
                 {
                     $('#bank_setup_id').html(response);

@@ -52,6 +52,7 @@ use App\Http\Controllers\Report\KretaShortReportController;
 use App\Http\Controllers\Report\ShortReportController;
 use App\Http\Controllers\Report\BikroyMarfotReportController;
 use App\Http\Controllers\Report\CashReportController;
+use App\Http\Controllers\Report\DailyCommissionReportController;
 
 
 /*
@@ -210,6 +211,9 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::get('bikroy_marfot_report',[BikroyMarfotReportController::class,'index'])->name('bikroy_marfot_report.index');
     Route::post('bikroy_marfot_report_search',[BikroyMarfotReportController::class,'search'])->name('bikroy_marfot_report.search');
 
+    Route::get('daily_commission_report',[DailyCommissionReportController::class,'index'])->name('daily_commission_report.index');
+    Route::post('daily_commission_report_search',[DailyCommissionReportController::class,'search'])->name('daily_commission_report.search');
+
     Route::get('cash_report',[CashReportController::class,'index'])->name('cash_report.index');
     Route::post('cash_report_search',[CashReportController::class,'search'])->name('cash_report.search');
     Route::get('cash_joma_report/{entry_date}',[CashReportController::class,'searchByJoma'])->name('cash_report.all_joma');
@@ -222,6 +226,7 @@ Route::group(['middleware' => 'auth'],  function() {
     /************* Common Ajax Route *************/
     Route::post('getkretaAddressByArea',[CommonAjaxController::class,'getkretaAddressByArea']);
     Route::post('getKretaNameByAddress',[CommonAjaxController::class,'getKretaNameByAddress']);
+    Route::post('getKretaOldAmount',[CommonAjaxController::class,'getKretaOldAmount']);
 
     Route::post('getBankSetupInfo',[CommonAjaxController::class,'getBankSetupInfo']);
     Route::post('getCheckByBankId',[CommonAjaxController::class,'getCheckByBankId']);
@@ -284,6 +289,9 @@ Route::group(['middleware' => 'admin'], function() {
     Route::post('ponno_sales_entry_info_update/{id}',[PonnoSalesEntryController::class,'info_update'])->name('ponno_sales_entry.info_update');
 
     Route::get('kreta_joma_entry_admin',[KretaJomaEntryController::class,'admin'])->name('kreta_joma_entry.admin');
+
+    Route::get('bank_entry_admin',[BankEntryController::class,'admin'])->name('bank_entry.admin');
+
 
     Route::get('amanot_entry_admin',[AmanotEntryController::class,'admin'])->name('amanot_entry.admin');
 

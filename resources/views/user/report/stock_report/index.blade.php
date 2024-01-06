@@ -29,6 +29,14 @@
                 <span class="text-sm text-red-600">{{ $errors->first('ponno_setup_id') }} </span>
                 @endif
               </div>
+
+              <div class="md:col-span-2 ">
+                  <label for="entry_date">তারিখ :</label>
+                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" min="01-01-2020" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                  @if($errors->has('entry_date'))
+                  <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                  @endif
+                </div>
       
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
@@ -57,6 +65,7 @@
   function searchStockReport()
   {
     var ponno_setup_id = $('#ponno_setup_id').val();
+    var entry_date = $('#entry_date').val();
 
     if(ponno_setup_id != "")
     {
@@ -65,6 +74,7 @@
       url : '{{route("stock_report.search")}}',
       data :  {
         ponno_setup_id : ponno_setup_id,
+        entry_date : entry_date
         
       },
       success : function(response)
@@ -94,6 +104,14 @@
   }
 
  
+$( function() {
+    $( "#entry_date" ).datepicker({
+      dateFormat: 'dd-mm-yy',
+      changeMonth: true,
+      changeYear: true,
+      maxDate: new Date(),
+    });
+  } );
 
   
 </script>

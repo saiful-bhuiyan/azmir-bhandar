@@ -208,7 +208,7 @@
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 
-<div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto shadow-lg sm:rounded-lg bg-white mb-12">
+<div class="w-full mx-auto p-4 relative overflow-x-auto shadow-lg sm:rounded-lg bg-white mb-12">
   <p class="text-lg text-gray-700 uppercase px-6 py-3 font-bold text-center barlow">এড কার্ট</p>
   <table id="" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 data-table purchase_table">
   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -273,11 +273,12 @@
 
 <script type="text/javascript">
 
+@if( isset($data) && $data->purchase_type == 2)
     $('#rate_div').hide();
     $('#taka_div').hide();
     $('#total_taka_div').hide();
     $('#avg_div').hide();
-
+@endif
     function getPurchaseType()
     {
       if($('#purchase_type').val() == 1)

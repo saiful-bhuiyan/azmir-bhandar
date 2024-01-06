@@ -236,7 +236,7 @@
 
                 <div class="md:col-span-1">
                   <label for="labour_cost">লেবার :</label>
-                  <input type="number" step="any" step="any" name="labour_cost" id="labour_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->labour_cost}}" onkeyup="return getTotalTaka()" />
+                  <input type="number" step="any" step="any" name="labour_cost" id="labour_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="@if($arod_chotha_info){{ $arod_chotha_info->labour_cost }}@endif" onkeyup="return getTotalTaka()" />
                   @if($errors->has('labour_cost'))
                   <span class="text-sm text-red-600">{{ $errors->first('labour_cost') }} </span>
                   @endif
@@ -244,7 +244,7 @@
 
                 <div class="md:col-span-1">
                   <label for="other_cost">অন্যান্য খরচ :</label>
-                  <input type="number" step="any" name="other_cost" id="other_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->other_cost}}" onkeyup="return getTotalTaka()" />
+                  <input type="number" step="any" name="other_cost" id="other_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="@if($arod_chotha_info){{ $arod_chotha_info->other_cost }}@endif" onkeyup="return getTotalTaka()" />
                   @if($errors->has('other_cost'))
                   <span class="text-sm text-red-600">{{ $errors->first('other_cost') }} </span>
                   @endif
@@ -252,7 +252,7 @@
 
                 <div class="md:col-span-1">
                   <label for="truck_cost">ট্রাক ভাড়া :</label>
-                  <input type="number" step="any" name="truck_cost" id="truck_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->truck_cost}}" onkeyup="return getTotalTaka()" />
+                  <input type="number" step="any" name="truck_cost" id="truck_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="@if($arod_chotha_info){{ $arod_chotha_info->truck_cost }}@endif" onkeyup="return getTotalTaka()" />
                   @if($errors->has('truck_cost'))
                   <span class="text-sm text-red-600">{{ $errors->first('truck_cost') }} </span>
                   @endif
@@ -260,7 +260,7 @@
 
                 <div class="md:col-span-1">
                   <label for="van_cost">ভ্যান ভাড়া :</label>
-                  <input type="number" step="any" name="van_cost" id="van_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->van_cost}}" onkeyup="return getTotalTaka()" />
+                  <input type="number" step="any" name="van_cost" id="van_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="@if($arod_chotha_info){{ $arod_chotha_info->van_cost }}@endif" onkeyup="return getTotalTaka()" />
                   @if($errors->has('van_cost'))
                   <span class="text-sm text-red-600">{{ $errors->first('van_cost') }} </span>
                   @endif
@@ -268,15 +268,15 @@
 
                 <div class="md:col-span-1">
                   <label for="tohori_cost">তহরী :</label>
-                  <input type="number" step="any" name="tohori_cost" id="tohori_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->tohori_cost}}" onkeyup="return getTotalTaka()" />
+                  <input type="number" step="any" name="tohori_cost" id="tohori_cost" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="@if($arod_chotha_info){{ $arod_chotha_info->tohori_cost }}@endif" onkeyup="return getTotalTaka()" />
                   @if($errors->has('tohori_cost'))
                   <span class="text-sm text-red-600">{{ $errors->first('tohori_cost') }} </span>
                   @endif
                 </div>
 
-                <div class="md:col-span-1">
-                  <label for="mohajon_commission">মহাজন কমিশন :</label>
-                  <input type="number" step="any" name="mohajon_commission" id="mohajon_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->mohajon_commission}}" onkeyup="return getTotalTaka()" />
+                <div class="md:col-span-2">
+                  <label for="mohajon_commission">মহাজন কমিশন (প্রতি কেজি):</label>
+                  <input type="number" step="any" name="mohajon_commission" id="mohajon_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{$purchase->mohajon_commission}}"  />
                   @if($errors->has('mohajon_commission'))
                   <span class="text-sm text-red-600">{{ $errors->first('mohajon_commission') }} </span>
                   @endif
@@ -341,9 +341,8 @@
       var truck_cost = parseFloat($('#truck_cost').val()) || 0;
       var van_cost = parseFloat($('#van_cost').val()) || 0;
       var tohori_cost = parseFloat($('#tohori_cost').val()) || 0;
-      var mohajon_commission = parseFloat($('#mohajon_commission').val()) || 0;
 
-      var all_total = labour_cost + other_cost + truck_cost + van_cost + tohori_cost +mohajon_commission;
+      var all_total = labour_cost + other_cost + truck_cost + van_cost + tohori_cost ;
       $('#total_cost').val(all_total.toFixed(2));
       
     }

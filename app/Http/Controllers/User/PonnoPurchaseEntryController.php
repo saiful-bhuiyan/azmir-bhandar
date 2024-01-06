@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\arod_chotha_info;
 use App\Models\mohajon_commission_setup;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
@@ -29,7 +30,7 @@ class PonnoPurchaseEntryController extends Controller
      public function index(Request $request)
      {
          if ($request->ajax()) {
-            $data = ponno_purchase_entry::orderBy('entry_date','DESC')->get();;
+            $data = ponno_purchase_entry::whereDay('entry_date', now()->day)->get();
             return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('sl',function($v){
@@ -180,12 +181,11 @@ class PonnoPurchaseEntryController extends Controller
 
                 $data['rate'] = $request->rate;
             }
-            else
-            {
-                $mohajon = mohajon_commission_setup::where('ponno_setup_id',$request->ponno_setup_id)->first();
-                $mohajon_commission = intval($mohajon->commission_amount * $request->weight);
-                $data['mohajon_commission'] = $mohajon_commission;
-            }
+            
+            $mohajon = mohajon_commission_setup::where('ponno_setup_id',$request->ponno_setup_id)->first();
+            $mohajon_commission = $mohajon->commission_amount;
+            $data['mohajon_commission'] = $mohajon_commission;
+            
 
             $insert = ponno_purchase_entry::create($data);
 
@@ -244,30 +244,54 @@ class PonnoPurchaseEntryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    /********************************* this is arod chotha info update function ******************************/
+
     public function update(Request $request, $id)
     {
         $data = array(
+            'purchase_id'=>$id,
             'labour_cost'=>$request->labour_cost ? $request->labour_cost : 0,
             'other_cost'=>$request->other_cost ? $request->other_cost : 0,
             'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
             'van_cost'=>$request->van_cost ? $request->van_cost : 0,
             'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
-            'mohajon_commission'=>$request->mohajon_commission ? $request->mohajon_commission : 0,
+            'entry_date'=> Carbon::now(),
         );
 
-        $update = ponno_purchase_entry::where('id',$id)->update($data);
+        $mohajon_commission = $request->mohajon_commission ? $request->mohajon_commission : 0;
+
+        $count = arod_chotha_info::where('purchase_id',$id)->count();
+
+        if($count > 0)
+        {
+            $update = arod_chotha_info::where('purchase_id',$id)->update($data);
 
             if($update)
             {
+                ponno_purchase_entry::where('id',$id)->update(['mohajon_commission' => $mohajon_commission]);
                 Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
             }
             else
             {
                 Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
             }
-    
+        }else{
+            $insert = arod_chotha_info::create($data);
+            if($insert)
+            {
+                ponno_purchase_entry::where('id',$id)->update(['mohajon_commission' => $mohajon_commission]);
+                Toastr::success(__('সেভ সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('সেভ সফল হয়নি'), __('ব্যর্থ'));
+            }
+        }
             return redirect()->back();
     }
+
+    /******************** End of arod chotha info update ************************/
 
     public function ponno_purchase_update(Request $request, $id)
     {
@@ -324,12 +348,11 @@ class PonnoPurchaseEntryController extends Controller
 
                 $data['rate'] = $request->rate;
             }
-            else
-            {
-                $mohajon = mohajon_commission_setup::where('ponno_setup_id',$request->ponno_setup_id)->first();
-                $mohajon_commission = intval($mohajon->commission_amount * $request->weight);
-                $data['mohajon_commission'] = $mohajon_commission;
-            }
+            
+            $mohajon = mohajon_commission_setup::where('ponno_setup_id',$request->ponno_setup_id)->first();
+            $mohajon_commission = $mohajon->commission_amount;
+            $data['mohajon_commission'] = $mohajon_commission;
+            
 
             $update = ponno_purchase_entry::find($id)->update($data);
 
@@ -408,7 +431,7 @@ class PonnoPurchaseEntryController extends Controller
     public function admin(Request $request)
     {
         if ($request->ajax()) {
-        $data = ponno_purchase_entry::orderBy('entry_date','DESC')->get();
+        $data = ponno_purchase_entry::orderBy('id','DESC')->get();
         return Datatables::of($data)
         ->addIndexColumn()
         ->addColumn('sl',function($v){

@@ -196,22 +196,17 @@ class KretaSetupController extends Controller
                 'old_amount'=>$request->old_amount,
             );
 
-            $check_kreta = kreta_setup::where('name',$request->name)->where('address',$request->address)->where('area',$request->area)->count();
-            
-            if($check_kreta == 0)
+
+            $update = kreta_setup::find($id)->update($data);
+            if($update)
             {
-                $update = kreta_setup::find($id)->update($data);
-                if($update)
-                {
-                    Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
-                }
-                else
-                {
-                    Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
-                }
-            }else{
-                Toastr::error(__('একি নাম ঠিকানা এরিয়া গ্রহণযোগ্য নয়'), __('ব্যর্থ'));
+                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
             }
+            else
+            {
+                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+            }
+        
             return redirect()->back();
     }
 

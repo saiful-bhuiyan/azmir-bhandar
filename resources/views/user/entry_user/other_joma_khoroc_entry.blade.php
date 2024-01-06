@@ -89,6 +89,14 @@
                     <option value="" selected>সিলেক্ট</option>
                 </select>
               </div>
+
+              <div class="md:col-span-5">
+                <label for="description">বিবরণ :</label>
+                <input type="text" name="description" id="description" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""/>
+                @if($errors->has('description'))
+                <span class="text-sm text-red-600">{{ $errors->first('description') }} </span>
+                @endif
+              </div>
       
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
@@ -211,7 +219,7 @@
 
             $.ajax({
                 type : 'POST',
-                url : '{{url('getBankSetupInfo')}}',
+                url : '{{url("getBankSetupInfo")}}',
                 success:function(response)
                 {
                     $('#bank_setup_id').html(response);
@@ -236,7 +244,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getCheckByBankId')}}',
+                url : '{{url("getCheckByBankId")}}',
                 data : {
                   bank_setup_id : bank_setup_id,
                 },

@@ -117,6 +117,14 @@
                 </select>
               </div>
 
+              <div class="md:col-span-5">
+                <label for="description">বিবরণ :</label>
+                <input type="text" name="description" id="description" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->description : '' }}" required/>
+                @if($errors->has('description'))
+                <span class="text-sm text-red-600">{{ $errors->first('description') }} </span>
+                @endif
+              </div>
+
               <div class="md:col-span-2 ">
                 <label for="entry_date">তারিখ :</label>
                 <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>

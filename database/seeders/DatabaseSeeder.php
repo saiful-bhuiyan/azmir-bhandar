@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MohajonSetupsTableSeeder::class);
         $this->call(OtherJomaKhorocSetupsTableSeeder::class);
         $this->call(BankSetupsTableSeeder::class);
+        $this->call(OtherJomaKhorocEntriesTableSeeder::class);
+        $this->call(AdminsTableSeeder::class);
     }
 }

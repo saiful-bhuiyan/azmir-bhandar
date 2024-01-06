@@ -49,6 +49,9 @@
                         মারফত
                     </th>
                     <th scope="col" class="px-2 py-3">
+                        বিবরণ
+                    </th>
+                    <th scope="col" class="px-2 py-3">
                         খরচ
                     </th>
                     <th scope="col" class="px-2 py-3">
@@ -80,6 +83,7 @@
                     <td class="px-2 py-3">@if($v->payment_by == 1) ক্যাশ @elseif($v->payment_by == 2)
                          {{$v->bank_setup->bank_name}}/{{substr($v->bank_setup->account_no, -4)}} @endif</td>
                     <td class="px-2 py-3">{{ $v->marfot }}</td>
+                    <td class="px-2 py-3">{{ $v->description }}</td>
                     <td class="px-2 py-3">@if($v->type == 2){{ $v->taka }}@else - @endif</td>
                     <td class="px-2 py-3">@if($v->type == 1){{ $v->taka }}@else - @endif</td>
                     @if($v->type == 1)

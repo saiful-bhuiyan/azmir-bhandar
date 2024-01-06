@@ -24,7 +24,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($stock)
                     @foreach($stock as $v)
-                    <option value="{{$v->purchase_id}}" {{ isset($data) && $data->ponno_purchase_entry->id == $v->purchase_id ? 'selected <script>getPurchaseDetail() </script>' : '' }} >{{$v->ponno_purchase_entry->id}} / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
+                    <option value="{{$v->purchase_id}}" {{ isset($data) && $data->ponno_purchase_entry->id == $v->purchase_id ? 'selected <script>getPurchaseDetail() </script>' : '' }} >ই - {{$v->purchase_id}} / @if($v->ponno_purchase_entry->purchase_type == 2){{$v->ponno_purchase_entry->mohajon_setup->name}}@else AB মার্কা @endif / {{$v->ponno_purchase_entry->quantity}} / {{$v->ponno_purchase_entry->ponno_setup->ponno_name}} /
                        {{$v->ponno_purchase_entry->ponno_size_setup->ponno_size}} / {{$v->ponno_purchase_entry->ponno_marka_setup->ponno_marka}} /
                         @if($v->ponno_purchase_entry->purchase_type == 1) নিজ খরিদ @else কমিশন @endif</option>
                     @endforeach
@@ -290,7 +290,7 @@
 
                 <div class="md:col-span-2 ">
                   <label for="entry_date">তারিখ :</label>
-                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($sales_info) ? date('d-m-Y',strtotime($sales_info->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($sales_info) ? date('d-m-Y',strtotime($sales_info->entry_date)) : '' }}"  placeholder="তারিখ সিলেক্ট করুন" required/>
                   @if($errors->has('entry_date'))
                   <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
                   @endif
@@ -328,6 +328,9 @@
           <tr>
             <th>
               নং
+            </th>
+            <th scope="col" class="px-2 py-3">
+              ইনভোয়েস
             </th>
             <th scope="col" class="px-2 py-3 whitespace-nowrap">
               এরিয়া / ঠিকানা
@@ -389,6 +392,7 @@
             @endphp
             <tr class="border border-collapse">
                 <td class="px-2 py-3">{{$count++}}</td>
+                <td class="px-2 py-3">{{$s->ponno_purchase_entry->id}}</td>
                 <td class="px-2 py-3">{{$s->ponno_purchase_entry->mohajon_setup->area}}/{{$s->ponno_purchase_entry->mohajon_setup->address}}</td>
                 <td class="px-2 py-3">{{$s->ponno_purchase_entry->mohajon_setup->name}}</td>
                 <td class="px-2 py-3">{{$s->ponno_purchase_entry->ponno_setup->ponno_name}}</td>
@@ -436,12 +440,13 @@
 
 
   <script type="text/javascript">
-    $('#rate_div').hide();
-    $('#taka_div').hide();
-    $('#total_taka_div').hide();
-    $('#avg_div').hide();
-
-    $('.due_sale').hide();  
+@if( isset($sales_info) && $sales_info->sales_type == 1)
+  $('.due_sale').hide();  
+  $('.cash_sale').show();
+@else
+  $('.due_sale').show();  
+  $('.cash_sale').hide();
+@endif
 
     function getPurchaseType() {
       if ($('#purchase_type').val() == 1) {

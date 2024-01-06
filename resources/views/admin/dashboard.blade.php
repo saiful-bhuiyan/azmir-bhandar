@@ -127,7 +127,7 @@
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার জমা এডমিন</p>
                 </a>
-                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('bank_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bank.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ব্যাংক উত্তোলন/জমা এডমিন</p>
                 </a>
@@ -200,13 +200,13 @@
 
 
         $('.url').click(function(){
-            var left = (screen.width - 1000) / 2;
+            var left = (screen.width - 1100) / 2;
             var top = (screen.height - 700) / 4;
 
             var url = $(this).attr('href');
 
             var myWindow = window.open(url, url,
-            'resizable=yes, width=' + '1000'
+            'resizable=yes, width=' + '1100'
             + ', height=' + '700' + ', top='
             + top + ', left=' + left);
         })

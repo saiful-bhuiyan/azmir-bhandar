@@ -116,6 +116,8 @@
             <thead class="text-xs text-gray-700">
               <tr>
                 <th scope="col" class="border border-slate-500">নং</th>
+                <th scope="col" class="border border-slate-500">তারিখ</th>
+                <th scope="col" class="border border-slate-500">ইনভয়েস</th>
                 <th scope="col" class="border border-slate-500">সংখ্যা</th>
                 <th scope="col" class="border border-slate-500">ওজন</th>
                 <th scope="col" class="border border-slate-500">দর</th>
@@ -127,11 +129,11 @@
                 $count = 1;
                 $total_sale = 0;
                 $total_sale_qty = 0;
+                $total_sale_weight = 0;
                 $total_mohajon_commission = 0;
-                if($purchase->purchase_type == 2)
-                {
-                  $total_mohajon_commission += $purchase->mohajon_commission;
-                }
+        
+                
+            
                 @endphp
     
                 @foreach($sales as $s)
@@ -139,21 +141,54 @@
                 @php
                 $total_sale += $s->sales_weight * $s->sales_rate;
                 $total_sale_qty += $s->sales_qty;
+                $total_sale_weight += $s->sales_weight;
+                $total_mohajon_commission += $purchase->mohajon_commission * $s->sales_weight;
                 @endphp
                 <tr>
                     <td class="border border-slate-500">{{$count++}}</td>
+                    <td class="border border-slate-500">{{date('d-m-Y', strtotime($s->ponno_sales_info->entry_date))}}</td>
+                    <td class="border border-slate-500 font-bold text-blue-700"><a class="url" onclick="return false;" href="{{route('ponno_sales_report.memo',$s->sales_invoice)}}">{{$s->sales_invoice}}</a></td>
                     <td class="border border-slate-500">{{$s->sales_qty}}</td>
                     <td class="border border-slate-500">{{$s->sales_weight}}</td>
                     <td class="border border-slate-500">{{$s->sales_rate}}</td>
                     <td class="border border-slate-500">{{$s->sales_weight * $s->sales_rate}}</td>
                 </tr>
                @endforeach
+
+               @php 
+                $total_cost = $purchase->labour_cost + $purchase->truck_cost +
+                            $purchase->van_cost + $purchase->other_cost + $purchase->tohori_cost;
+              
+                $total_cost += $total_mohajon_commission;
+                $total_cost += $purchase->weight * $purchase->rate;
+             
+                $total_amount = $total_sale - $total_cost;
+                
+              @endphp
             </tbody>
             <tfoot class="">
               <tr>
-                <td colspan="4" class="font-bold border border-slate-500">সর্বমোট বিক্রি : </td>
+                <td colspan="3" class="font-bold border border-slate-500">সর্বমোট বিক্রি :</td>
+                <td class="font-bold border border-slate-500">{{$total_sale_qty}}</td>
+                <td class="font-bold border border-slate-500">{{$total_sale_weight}}</td>
+                <td class="font-bold border border-slate-500"></td>
                 <td class="font-bold border border-slate-500">{{$total_sale}}</td>
               </tr>
+              @if($total_amount < 0)
+              @if($purchase->quantity == $total_sale_qty)
+              @php 
+              $loss = 0 - $total_amount;
+              @endphp
+              <tr>
+                <td colspan="6" class="font-bold border border-slate-500">দেনা : </td>
+                <td class="font-bold border border-slate-500">{{$loss}}</td>
+              </tr>
+              <tr>
+                <td colspan="6" class="font-bold border border-slate-500">সর্বমোট টাকা : </td>
+                <td class="font-bold border border-slate-500">{{$total_sale + $loss}}</td>
+              </tr>
+              @endif
+              @endif
               <tr>
             </tfoot>
           </table>
@@ -181,31 +216,23 @@
             </div>
             <div class="text-left bg-sky-200">
               <p class="p-1 text-xs text-gray-800">বিক্রি সংখ্যা : {{$total_sale_qty}}</p>
-              @if($purchase->purchase_type == 2)
               <p class="p-1 text-xs text-gray-800">মহাজন কমিশন : {{$total_mohajon_commission}}</p>
-              @endif
               <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost}}</p>
               <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost}}</p>
               <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost}}</p>
               <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost}}</p>
               <p class="p-1 text-xs text-gray-800">তহরি : {{$purchase->tohori_cost}}</p>
-              @php 
-                $total_cost = $purchase->labour_cost + $purchase->truck_cost +
-                            $purchase->van_cost + $purchase->other_cost + $purchase->tohori_cost;
-                if($purchase->purchase_type == 2){
-                  $total_cost += $total_mohajon_commission;
-                }
-                $kacha_sales = $total_sale - $total_cost;
-                
-              @endphp
+              
               @if($purchase->purchase_type == 1)
               <p class="p-1 text-xs text-gray-800">মোট ক্রয় : {{$purchase->weight * $purchase->rate}}</p>
               @endif
               <p class="p-1 text-xs text-gray-800">মোট খরচ : {{$total_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">কাচা বিক্রি : {{$kacha_sales}}</p>
-              <p class="p-1 text-xs text-gray-800">নগদ বিক্রি : {{$total_sale}}</p>
-              <p class="p-1 text-xs text-gray-800">সর্বমোট টাকা : {{$kacha_sales}} </p>
 
+              @if($total_amount > 0)
+              @if($purchase->quantity == $total_sale_qty)
+              <p class="p-1 text-xs text-gray-800">চৌথা : {{$total_amount}}</p>
+              @endif
+              @endif
             </div>
           </div>
         </div>
@@ -224,3 +251,17 @@
 </body>
 
 </html>
+
+<script>
+    $('.url').click(function() {
+        var left = (screen.width - 800) / 2;
+        var top = (screen.height - 700) / 4;
+
+        var url = $(this).attr('href');
+
+        var myWindow = window.open(url, url,
+            'resizable=yes, width=' + '400' +
+            ', height=' + '1200' + ', top=' +
+            top + ', left=' + left);
+    })
+</script>

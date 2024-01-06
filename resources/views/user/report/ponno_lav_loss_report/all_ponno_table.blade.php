@@ -104,7 +104,7 @@
                     <tr class="border border-collapse even:bg-gray-100 odd:bg-white">
                         <td class="px-2 py-3">{{$count++}}</td>
                         <td class="px-2 py-3 font-bold text-blue-700"><a href="{{route('ponno_purchase_report.memo',$p->id)}}" class="url" onclick="return false;">{{$p->id}}</a></td>
-                        <td class="px-2 py-3">@if($p->purchase_type == 1) নিজ খরিদ @elseif($p->purchase_type == 2) কমিশন @endif</td>
+                        <td class="px-2 py-3">@if($p->purchase_type == 1) নিজ খরিদ (AB মার্কা) @elseif($p->purchase_type == 2) কমিশন @endif</td>
                         <td class="px-2 py-3">{{$p->gari_no}}</td>
                         <td class="px-2 py-3">{{$p->ponno_setup->ponno_name}}</td>
                         <td class="px-2 py-3">{{$p->ponno_marka_setup->ponno_marka}}</td>
@@ -114,29 +114,31 @@
                         @php
                         $total_amount = 0;
                         $purchase_amount = 0;
+                        $total_mohajon_commission;
                         if($p->purchase_type == 1){
                             $purchase_amount += $p->weight * $p->rate;
-                            $purchase_amount +=$p->labour_cost;
-                            $purchase_amount +=$p->other_cost;
-                            $purchase_amount +=$p->truck_cost;
-                            $purchase_amount +=$p->van_cost;
-                            $purchase_amount +=$p->tohori_cost;
+                            $purchase_amount += $p->labour_cost;
+                            $purchase_amount += $p->other_cost;
+                            $purchase_amount += $p->truck_cost;
+                            $purchase_amount += $p->van_cost;
+                            $purchase_amount += $p->tohori_cost;
+                            
                         }else{
-                            $purchase_amount -=$p->labour_cost;
-                            $purchase_amount -=$p->other_cost;
-                            $purchase_amount -=$p->truck_cost;
-                            $purchase_amount -=$p->van_cost;
-                            $purchase_amount -=$p->tohori_cost;
+                            $purchase_amount -= $p->labour_cost;
+                            $purchase_amount -= $p->other_cost;
+                            $purchase_amount -= $p->truck_cost;
+                            $purchase_amount -= $p->van_cost;
+                            $purchase_amount -= $p->tohori_cost;
                         }
 
                         if($p->purchase_type == 2){
                             $arod_chotha = arod_chotha_entry::where('purchase_id',$p->id)->get(); 
                             foreach($arod_chotha as $a){
                                 $purchase_amount += $a->sales_weight * $a->sales_rate;
+                                $total_mohajon_commission += $p->mohajon_commission * $a->sales_weight;
                             }
+                            $purchase_amount += $total_mohajon_commission;
                         }
-                        
-                        
 
                         $sales = ponno_sales_entry::where('purchase_id',$p->id)->get(); 
                         
@@ -146,7 +148,7 @@
                         foreach($sales as $s){
                             $sales_qty += $s->sales_qty;
                             $sales_amount += $s->sales_weight * $s->sales_rate;
-                            
+                            $purchase_amount += $p->mohajon_commission * $s->sales_weight;
                         }
                         $total_amount = $sales_amount - $purchase_amount;
                         @endphp

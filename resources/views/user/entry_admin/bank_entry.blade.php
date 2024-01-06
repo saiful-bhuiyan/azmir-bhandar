@@ -1,8 +1,9 @@
 @extends('user.layout.master')
 @section('body')
 
-<form action="{{route('bank_entry.store')}}" id="form_data" method="POST">
+<form action="{{ isset($data) ? route('bank_entry.update',$data->id) : '' }}" id="form_data" method="POST">
 @csrf
+@method('PUT')
 
 <div class=" p-6 bg-gray-100 flex ">
   <div class="container max-w-screen-lg mx-auto">
@@ -22,8 +23,8 @@
                 <label for="type">ব্যাংক জমা/উত্তোলন :</label>
                 <select name="type" id="type" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
                     <option value="" selected>সিলেক্ট</option>
-                    <option value="1">জমা</option>
-                    <option value="2">উত্তোলন</option>
+                    <option value="1" {{ isset($data) && $data->type == 1 ? 'selected' : '' }} >জমা</option>
+                    <option value="2" {{ isset($data) && $data->type == 2 ? 'selected' : '' }} >উত্তোলন</option>
                 </select>
                 @if($errors->has('type'))
                 <span class="text-sm text-red-600">{{ $errors->first('type') }} </span>
@@ -32,11 +33,11 @@
 
               <div class="md:col-span-3">
                 <label for="bank_setup_id">ব্যাংক তথ্য :</label>
-                <select name="bank_setup_id" id="bank_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getCheckByBankId();" required>
+                <select name="bank_setup_id" id="bank_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
                     <option value="" selected>সিলেক্ট</option>
                     @if($bank_setup)
-                    @foreach($bank_setup as $b)
-                    <option value="{{$b->id}}">{{$b->shakha}}/{{$b->bank_name}}/{{$b->account_name}}/{{$b->account_no}}</option>
+                    @foreach($bank_setup as $v)
+                    <option value="{{$v->id}}" {{ isset($data) && $data->bank_setup->id == $v->id ? 'selected' : '' }} >{{$v->shakha.' / '.$v->bank_name.' /'.$v->account_name.' /'.$v->account_no}}</option>
                     @endforeach
                     @endif
                 </select>
@@ -49,12 +50,20 @@
                 <label for="check_id">চেক বই নাম্বার (প্রয়োজন হলে):</label>
                 <select name="check_id" id="check_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50">
                     <option value="" selected>সিলেক্ট</option>
+                    @if(isset($selected_check->id))
+                    <option value="{{$selected_check->id}}" selected>{{$selected_check->page}}</option>
+                    @endif
+                    @if($check_book)
+                    @foreach($check_book as $v)
+                    <option value="{{$v->id}}">{{$v->page}}</option>
+                    @endforeach
+                    @endif
                 </select>
               </div>
 
               <div class="md:col-span-2">
                 <label for="marfot">মারফত :</label>
-                <input type="text" name="marfot" id="marfot" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
+                <input type="text" name="marfot" id="marfot" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->marfot : '' }}" required/>
                 @if($errors->has('marfot'))
                 <span class="text-sm text-red-600">{{ $errors->first('marfot') }} </span>
                 @endif
@@ -62,15 +71,23 @@
 
               <div class="md:col-span-2">
                 <label for="taka">টাকা :</label>
-                <input type="text" name="taka" id="taka" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
+                <input type="text" name="taka" id="taka" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->taka : '' }}" required/>
                 @if($errors->has('taka'))
                 <span class="text-sm text-red-600">{{ $errors->first('taka') }} </span>
                 @endif
               </div> 
+
+              <div class="md:col-span-2 ">
+                <label for="entry_date">তারিখ :</label>
+                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                @if($errors->has('entry_date'))
+                <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                @endif
+              </div>
       
               <div class="md:col-span-5 text-right">
                 <div class="inline-flex items-end">
-                  <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">সেভ</button>
+                  <button type="submit" id="save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">আপডেট</button>
                 </div>
               </div>
 
@@ -113,6 +130,12 @@
             <th scope="col" class="px-6 py-3">
                 টাকা
             </th>
+            <th scope="col" class="px-6 py-3">
+                তারিখ
+            </th>
+            <th scope="col" class="px-6 py-3">
+                একশন
+            </th>
         </tr>
     </thead>
     <tbody id="table_body">
@@ -127,7 +150,7 @@
 
 <script type="text/javascript">
 
-    $('#check_div').hide();
+
  
     function loadCurrentData()
     {
@@ -152,7 +175,7 @@
                   "previous":   "পুর্বে"
               },
             },
-            ajax: "{{ route('bank_entry.index') }}",
+            ajax: "{{ route('bank_entry.admin') }}",
             columns: [
                 {data: 'sl', name: 'sl'},
                 {data: 'type', name: 'type'},
@@ -160,6 +183,8 @@
                 {data: 'check_id', name: 'check_id'},
                 {data: 'marfot', name: 'marfot'},
                 {data: 'taka', name: 'taka'},
+                {data: 'entry_date', name: 'entry_date'},
+                {data: 'action', name: 'action' , orderable: false, searchable: false},
             
             ]
         });
@@ -177,7 +202,7 @@
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getCheckByBankId')}}',
+                url : '{{url("getCheckByBankId")}}',
                 data : {
                   bank_setup_id : bank_setup_id,
                 },
@@ -204,6 +229,15 @@
       }
         
     });
+
+    $( function() {
+      $( "#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
 
     $('#save').on('submit',function(e){
 
