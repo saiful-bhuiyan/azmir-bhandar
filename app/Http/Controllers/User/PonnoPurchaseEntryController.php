@@ -249,46 +249,7 @@ class PonnoPurchaseEntryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $data = array(
-            'purchase_id'=>$id,
-            'labour_cost'=>$request->labour_cost ? $request->labour_cost : 0,
-            'other_cost'=>$request->other_cost ? $request->other_cost : 0,
-            'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
-            'van_cost'=>$request->van_cost ? $request->van_cost : 0,
-            'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
-            'entry_date'=> Carbon::now(),
-        );
-
-        $mohajon_commission = $request->mohajon_commission ? $request->mohajon_commission : 0;
-
-        $count = arod_chotha_info::where('purchase_id',$id)->count();
-
-        if($count > 0)
-        {
-            $update = arod_chotha_info::where('purchase_id',$id)->update($data);
-
-            if($update)
-            {
-                ponno_purchase_entry::where('id',$id)->update(['mohajon_commission' => $mohajon_commission]);
-                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
-            }
-            else
-            {
-                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
-            }
-        }else{
-            $insert = arod_chotha_info::create($data);
-            if($insert)
-            {
-                ponno_purchase_entry::where('id',$id)->update(['mohajon_commission' => $mohajon_commission]);
-                Toastr::success(__('সেভ সফল হয়েছে'), __('সফল'));
-            }
-            else
-            {
-                Toastr::error(__('সেভ সফল হয়নি'), __('ব্যর্থ'));
-            }
-        }
-            return redirect()->back();
+       
     }
 
     /******************** End of arod chotha info update ************************/

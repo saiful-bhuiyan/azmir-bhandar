@@ -86,8 +86,7 @@ class CashReportController extends Controller
 
         $total_labour = 0;
         $total_other_cost = 0;
-        $total_labour += $labour_cost;
-        $total_other_cost += $other_cost + $truck_cost + $van_cost + $tohori_cost;
+        $total_other_cost += $other_cost + $truck_cost + $van_cost + $tohori_cost + $labour_cost;
         foreach($sales_costs as $v)
         {
             $total_labour += ponno_sales_entry::where('sales_invoice',$v->id)->sum('labour');

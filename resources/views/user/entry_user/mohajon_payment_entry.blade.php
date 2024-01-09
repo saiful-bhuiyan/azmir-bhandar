@@ -45,7 +45,7 @@
 
               <div class="md:col-span-2">
                 <label for="mohajon_setup_id">মহাজনের নাম :</label>
-                <select name="mohajon_setup_id" id="mohajon_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+                <select name="mohajon_setup_id" id="mohajon_setup_id" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" onchange="return getMohajonOldAmount();" required>
                     <option value="" selected>সিলেক্ট</option>
                 </select>
                 @if($errors->has('mohajon_setup_id'))
@@ -309,6 +309,27 @@
                 success:function(response)
                 {
                     $('#check_id').html(response);
+                }
+
+            });
+        }
+    }
+
+    function getMohajonOldAmount()
+    {
+        var mohajon_setup_id = $('#mohajon_setup_id').val();
+
+        if(mohajon_setup_id != "")
+        {
+            $.ajax({
+                type : 'POST',
+                url : '{{url("getMohajonOldAmount")}}',
+                data : {
+                  mohajon_setup_id : mohajon_setup_id,
+                },
+                success:function(response)
+                {
+                    $('#current_amount').val(response);
                 }
 
             });

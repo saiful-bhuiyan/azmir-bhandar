@@ -1,6 +1,6 @@
 @extends('user.layout.report_layout')
 @section('report_body')
-<div class="container mx-auto max-w-screen ">
+<div class=" mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white md:p-8">
       <span class="p-1 text-white bg-blue-600">ক্রেতার লেজার</span>
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
@@ -17,7 +17,7 @@
         </div>
       </div>
 
-    <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto shadow-lg sm:rounded-lg bg-white mb-6">
+    <div class=" w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
         <p class="text-lg text-gray-700 uppercase px-2 py-3 font-bold text-center barlow">ক্রেতা লেজার</p>
         <div class="grid grid-cols-2 mt-2 text-center px-4">
             <div class="col-span-1 py-1">
@@ -138,7 +138,7 @@
             var url = $(this).attr('href');
 
             var myWindow = window.open(url, url,
-                'resizable=yes, width=' + '800' +
+                'resizable=yes, width=' + '400' +
                 ', height=' + '700' + ', top=' +
                 top + ', left=' + left);
         })

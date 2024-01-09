@@ -9,6 +9,8 @@ use DataTables;
 use App\Models\kreta_setup;
 use App\Models\bikroy_marfot_setup;
 use App\Models\kreta_commission_setup;
+use App\Models\kreta_joma_entry;
+use App\Models\kreta_koifiyot_entry;
 use App\Models\ponno_purchase_entry;
 use App\Models\temp_ponno_sale;
 use App\Models\ponno_sales_info;
@@ -531,21 +533,39 @@ class PonnoSalesEntryController extends Controller
         return json_encode($data);
     }
 
-    public function getAmountByKreta(Request $request)
+    public function getAmountByKreta($kreta_setup_id)
     {
         $temp_sale = temp_ponno_sale::all();
 
+        $kreta_setup = kreta_setup::find($kreta_setup_id);
+        $total_taka = 0;
         $sale_amount = 0;
 
+        if($kreta_setup){
+            $sales = ponno_sales_info::with('ponno_sales_entry')->whereHas('ponno_sales_entry',function($query) use($kreta_setup_id){
+                $query->whereHas('ponno_purchase_entry',function($query2) use($kreta_setup_id){
+                    $query2->whereIn('kreta_setup_id',[$kreta_setup_id]);
+                });
+            })->where('sales_type',2)->sum('total_taka');
+    
+            $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+            $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+    
+            $total_taka += $kreta_setup->old_amount;
+            $total_taka += $sales;
+            $total_taka -= $joma;
+            $total_taka -= $koifiyot;
+        }
         foreach($temp_sale as $t)
         {
             $sale_amount += ($t->sales_weight * $t->sales_rate) + $t->kreta_commission + $t->labour + $t->other;
         }
 
         $amount = array(
-            'old_amount'=>0,
+            'old_amount'=>$total_taka,
             'current_amount'=>$sale_amount
         );
+       
 
         return json_encode($amount);
     }

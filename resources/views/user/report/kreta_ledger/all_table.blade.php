@@ -1,7 +1,7 @@
 @extends('user.layout.report_layout')
 @section('report_body')
 
-<div class="container mx-auto max-w-screen ">
+<div class=" mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white md:p-8">
       <span class="p-1 text-white bg-blue-600">ক্রেতার লেজার</span>
       <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
@@ -140,7 +140,7 @@
             var url = $(this).attr('href');
 
             var myWindow = window.open(url, url,
-                'resizable=yes, width=' + '800' +
+                'resizable=yes, width=' + '400' +
                 ', height=' + '700' + ', top=' +
                 top + ', left=' + left);
         })

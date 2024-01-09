@@ -144,6 +144,7 @@
                 <th scope="col" class="border border-slate-500">সংখ্যা</th>
                 <th scope="col" class="border border-slate-500">ওজন</th>
                 <th scope="col" class="border border-slate-500">মোট টাকা</th>
+                <th scope="col" class="border border-slate-500">একশন</th>
               </tr>
             </thead>
             <tbody>
@@ -180,6 +181,14 @@
                 <td class="border border-slate-500">{{$s->sales_qty}}</td>
                 <td class="border border-slate-500">{{$s->sales_weight}}</td>
                 <td class="border border-slate-500">{{$s->sales_weight * $s->sales_rate}}</td>
+                <td class="border border-slate-500">
+                <form method="post" action="{{route('arod_chotha.destroy',$s->id)}}" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                        <button onclick="return confirmation();" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded" type="submit">
+                        ডিলিট</button>
+                    </form>
+                </td>
               </tr>
               @endforeach
             </tbody>
@@ -189,6 +198,7 @@
                 <td class="font-bold border border-slate-500">{{$total_sale_qty}}</td>
                 <td class="font-bold border border-slate-500">{{$total_sale_weight}}</td>
                 <td class="font-bold border border-slate-500">{{$total_sale}}</td>
+                <td class="font-bold border border-slate-500"></td>
               </tr>
               <tr>
             </tfoot>
@@ -218,7 +228,7 @@
 
 <!-- Cost Entry Update -->
 
-<form action="{{route('ponno_purchase_entry.update',$purchase->id)}}" id="form_data" method="POST">
+<form action="{{route('arod_chotha.update',$purchase->id)}}" id="form_data" method="POST">
   @csrf
   @method('PUT')
   <div class="flex p-6 bg-gray-100 ">
@@ -282,10 +292,18 @@
                   @endif
                 </div>
 
-                <div class="md:col-span-2" id="total_taka_div">
+                <div class="md:col-span-1" id="total_taka_div">
                   <label for="total_cost">সর্বমোট টাকা :</label>
                   <input type="text" id="total_cost" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly/>
                 </div>
+
+                <div class="md:col-span-2 ">
+                <label for="entry_date">তারিখ :</label>
+                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($arod_chotha_info) ? date('d-m-Y',strtotime($arod_chotha_info->entry_date)) : '' }}"  placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
+                @if($errors->has('entry_date'))
+                <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                @endif
+              </div>
 
                 <div class="text-right md:col-span-5">
                   <br>
@@ -347,8 +365,29 @@
       
     }
 
-
+    $( function() {
+      $( "#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
 
 </script>
+
+<script>
+  @if(session('invoice'))
+    var left = (screen.width - 800) / 2;
+    var top = (screen.height - 700) / 4;
+
+    var url = "{{route('arod_chotha.memo',session('invoice') )}}";
+
+    var myWindow = window.open(url, url,
+        'resizable=yes, width=' + '800' +
+        ', height=' + '700' + ', top=' +
+        top + ', left=' + left);
+  @endif
+    </script>
 
 @endsection

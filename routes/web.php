@@ -151,7 +151,7 @@ Route::group(['middleware' => 'auth'],  function() {
 
     Route::resource('ponno_sales_entry' ,PonnoSalesEntryController::class);
     Route::post('getPurchaseDetail',[PonnoSalesEntryController::class,'getPurchaseDetail']);
-    Route::get('getAmountByKreta',[PonnoSalesEntryController::class,'getAmountByKreta']);
+    Route::get('getAmountByKreta/{kreta_setup_id}',[PonnoSalesEntryController::class,'getAmountByKreta']);
     Route::post('storePonnoSales',[PonnoSalesEntryController::class,'storePonnoSales']);
 
     Route::resource('arod_chotha' ,ArodchothaController::class);
@@ -233,6 +233,7 @@ Route::group(['middleware' => 'auth'],  function() {
 
     Route::post('getMohajonAddressByArea',[CommonAjaxController::class,'getMohajonAddressByArea']);
     Route::post('getMohajonNameByAddress',[CommonAjaxController::class,'getMohajonNameByAddress']);
+    Route::post('getMohajonOldAmount',[CommonAjaxController::class,'getMohajonOldAmount']);
 
     Route::post('getAmanotNameByAddress',[CommonAjaxController::class,'getAmanotNameByAddress']);
 

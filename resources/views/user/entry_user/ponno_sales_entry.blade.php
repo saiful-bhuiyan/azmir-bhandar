@@ -395,12 +395,14 @@
     
    function totalWithDiscount()
    {
+    var old_amount = parseFloat($('#old_amount').val() || 0);
     var current_amount = parseFloat($('#current_amount').val() || 0);
     var discount = parseFloat($('#discount').val() || 0);
     var all_total_taka = 0;
     if(discount > 0)
     {
        all_total_taka = current_amount - discount;
+       all_total_taka += old_amount; 
       $('#all_total_taka').val(all_total_taka.toFixed(2));
     }
     else
@@ -575,31 +577,33 @@
       {
         $.ajax({
           type : 'GET',
-          url : '{{url("getAmountByKreta")}}',
+          url : '{{url("getAmountByKreta")}}/0',
  
           success : function(response)
           {
             var amount = $.parseJSON(response);
 
             $('#current_amount').val(amount.current_amount.toFixed(2));
+            $('#all_total_taka').val((amount.old_amount + amount.current_amount).toFixed(2));
           }
         });
         
       }
       else
       {
-        if(purchase_id > 0 && kreta_setup_id > 0)
+        if( kreta_setup_id != "")
         {
           $.ajax({
             type : 'GET',
-            url : '{{url("getAmountByKreta")}}',
+            url : '{{url("getAmountByKreta")}}/'+kreta_setup_id,
       
             success : function(response)
             {
               var amount = $.parseJSON(response);
 
-              $('#old_amount').val(amount.old_amount);
+              $('#old_amount').val(amount.old_amount.toFixed(2));
               $('#current_amount').val(amount.current_amount.toFixed(2));
+              $('#all_total_taka').val((amount.old_amount + amount.current_amount).toFixed(2));
             }
           });
         }

@@ -38,7 +38,7 @@
     </div>
     <div class="px-4 mt-2">
       <div class="flex place-content-stretch text-left text-gray-600">
-        <h1 class="font-bold text-sm w-1/2">তারিখ : <span class="text-gray-900">{{$sales->entry_date}}</span></h1>
+        <h1 class="font-bold text-sm w-1/2">তারিখ : <span class="text-gray-900">{{date('d-m-Y', strtotime($sales->entry_date))}}</span></h1>
         <h1 class="font-bold text-sm w-1/2">ইনভয়েস : <span class="text-gray-900">{{$sales->id}}</span></h1>
       </div>
       <div class="py-1 text-gray-600">

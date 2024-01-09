@@ -117,8 +117,8 @@ class PonnoSaleReportController extends Controller
                     $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
                     $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
             $kreta_old_amount += $old_sales ? $old_sales : 0;
-            $kreta_old_amount += $joma ? $joma : 0;
-            $kreta_old_amount += $koifiyot ? $koifiyot : 0;
+            $kreta_old_amount -= $joma ? $joma : 0;
+            $kreta_old_amount -= $koifiyot ? $koifiyot : 0;
            
         }else{
             $kreta_old_amount = 0;

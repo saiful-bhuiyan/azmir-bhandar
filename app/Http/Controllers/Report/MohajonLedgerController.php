@@ -10,6 +10,7 @@ use App\Models\mohajon_payment_entry;
 use App\Models\mohajon_return_entry;
 use App\Models\ponno_purchase_entry;
 use App\Models\arod_chotha_entry;
+use App\Models\arod_chotha_info;
 use App\Models\ponno_sales_entry;
 
 class MohajonLedgerController extends Controller
@@ -34,23 +35,26 @@ class MohajonLedgerController extends Controller
             {
                 if($v->purchase_type == 2)
                 {
-                    $arod_chotha = arod_chotha_entry::where('purchase_id',$v->id)->count();
+                    $arod_chotha = arod_chotha_entry::where('purchase_id',$v->id)->sum('sales_qty');
+                    $arod_chotha_info = arod_chotha_info::where('purchase_id',$v->id)->first();
                 
-                    if($arod_chotha > 0)
+                    if($arod_chotha == $v->quantity && $arod_chotha_info)
                     {
                         $sales = arod_chotha_entry::where('purchase_id', $v->id)->get(); 
 
                         $total_sale = 0;
                         $total_sale_qty = 0;
-                        $total_mohajon_commission = $v->mohajon_commission;
+                        $total_mohajon_commission = 0;
 
                         foreach($sales as $s){
                             $total_sale += $s->sales_weight * $s->sales_rate;
                             $total_sale_qty += $s->sales_qty;
+                            $total_mohajon_commission += $v->mohajon_commission * $s->sales_weight;
+
                         }
 
-                        $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
-                                $v->van_cost + $v->other_cost +$v->tohori_cost;
+                        $total_cost = $total_mohajon_commission + $arod_chotha_info->labour_cost + $arod_chotha_info->truck_cost +
+                                $arod_chotha_info->van_cost + $arod_chotha_info->other_cost + $arod_chotha_info->tohori_cost;
                         $kacha_sales = $total_sale - $total_cost;
 
                         $i++;
@@ -69,20 +73,20 @@ class MohajonLedgerController extends Controller
                     }
                     else
                     {
-                        $sales = ponno_sales_entry::where('purchase_id', $v->id)->get(); 
+                        // $sales = ponno_sales_entry::where('purchase_id', $v->id)->get(); 
 
-                        $total_sale = 0;
-                        $total_sale_qty = 0;
-                        $total_mohajon_commission = $v->mohajon_commission;
+                        // $total_sale = 0;
+                        // $total_sale_qty = 0;
+                        // $total_mohajon_commission = $v->mohajon_commission;
 
-                        foreach($sales as $s){
-                            $total_sale += $s->sales_weight * $s->sales_rate;
-                            $total_sale_qty += $s->sales_qty;
-                        }
+                        // foreach($sales as $s){
+                        //     $total_sale += $s->sales_weight * $s->sales_rate;
+                        //     $total_sale_qty += $s->sales_qty;
+                        // }
 
-                        $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
-                                $v->van_cost + $v->other_cost +$v->tohori_cost;
-                        $kacha_sales = $total_sale - $total_cost;
+                        // $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
+                        //         $v->van_cost + $v->other_cost +$v->tohori_cost;
+                        // $kacha_sales = $total_sale - $total_cost;
 
                         $i++;
                         $record[$i] = array(
@@ -91,7 +95,7 @@ class MohajonLedgerController extends Controller
                             'reference' => 'পন্য গ্রহণ',
                             'payment' => '-',
                             'marfot' => '-',
-                            'joma'=> $kacha_sales,
+                            'joma'=> 0,
                             'khoroc'=> '-',
                             'total_taka' => '-',
                             'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
@@ -101,6 +105,8 @@ class MohajonLedgerController extends Controller
                 }
                 else
                 {
+                    $sales_weight = ponno_sales_entry::where('purchase_id', $v->id)->sum('sales_weight'); 
+                    $total_mohajon_commission = $sales_weight * $v->mohajon_commission;
                     $i++;
                     $record[$i] = array(
                         'table' => 1,
@@ -108,8 +114,7 @@ class MohajonLedgerController extends Controller
                         'reference' => 'পন্য গ্রহণ',
                         'payment' => '-',
                         'marfot' => '-',
-                        'joma'=> ($v->weight * $v->rate) + $v->labour_cost + $v->truck_cost +
-                        $v->van_cost + $v->other_cost +$v->tohori_cost,
+                        'joma'=> ($v->weight * $v->rate),
                         'khoroc'=> '-',
                         'total_taka' => '-',
                         'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
@@ -177,6 +182,10 @@ class MohajonLedgerController extends Controller
             return response()->json(['viewContent' => $viewContent]);
 
         }
+
+        /******************************** Date Table ***********************************/
+
+
         else if($request->date_from !="" && $request->date_to != "")
         {
             $date_from = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
@@ -189,7 +198,7 @@ class MohajonLedgerController extends Controller
             $old_amount = $mohajon_setup->old_amount;
             
 
-            /*****************Getting Old Amount From Mohajon By Date ***************/
+            /***************** Getting Old Amount From Mohajon By Date ***************/
 
             $old_purchase = ponno_purchase_entry::where('entry_date','<',$date_from)->where('mohajon_setup_id',$request->mohajon_setup_id)->get();
             $old_mohajon_payment = mohajon_payment_entry::where('entry_date','<',$date_from)
@@ -204,52 +213,38 @@ class MohajonLedgerController extends Controller
                 {
                     if($v->purchase_type == 2)
                     {
-                        $arod_chotha = arod_chotha_entry::where('purchase_id',$v->id)->count();
+                        $arod_chotha_qty = arod_chotha_entry::where('purchase_id',$v->id)->sum('sales_qty');
+                        $arod_chotha_info = arod_chotha_info::where('purchase_id',$v->id)->first();
                     
-                        if($arod_chotha > 0)
+                        if($arod_chotha_qty == $v->quantity && $arod_chotha_info)
                         {
                             $sales = arod_chotha_entry::where('purchase_id', $v->id)->get(); 
 
                             $total_sale = 0;
                             $total_sale_qty = 0;
-                            $total_mohajon_commission = $v->mohajon_commission;
+                            $total_mohajon_commission = 0;
 
                             foreach($sales as $s){
                                 $total_sale += $s->sales_weight * $s->sales_rate;
                                 $total_sale_qty += $s->sales_qty;
+                                $total_mohajon_commission += $v->mohajon_commission * $s->sales_weight;
                             }
 
-                            $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
-                                    $v->van_cost + $v->other_cost +$v->tohori_cost;
-                            $kacha_sales = $total_sale - $total_cost;
+                            $total_cost = $total_mohajon_commission + $arod_chotha_info->labour_cost + $arod_chotha_info->truck_cost +
+                            $arod_chotha_info->van_cost + $arod_chotha_info->other_cost +$arod_chotha_info->tohori_cost;
+                            $total_amount = $total_sale - $total_cost;
 
-                            $old_amount += $kacha_sales;
+                            $old_amount += $total_amount;
                             
                         }
-                        else
-                        {
-                            $sales = ponno_sales_entry::where('purchase_id', $v->id)->get(); 
-
-                            $total_sale = 0;
-                            $total_sale_qty = 0;
-                            $total_mohajon_commission = $v->mohajon_commission;
-
-                            foreach($sales as $s){
-                                $total_sale += $s->sales_weight * $s->sales_rate;
-                                $total_sale_qty += $s->sales_qty;
-                            }
-
-                            $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
-                                    $v->van_cost + $v->other_cost +$v->tohori_cost;
-                            $kacha_sales = $total_sale - $total_cost;
-
-                            $old_amount += $kacha_sales;
-                        }
+                        
                     }
                     else
                     {
+                        $sales_weight = ponno_sales_entry::where('purchase_id', $v->id)->sum('sales_weight'); 
+                        $total_mohajon_commission = $sales_weight * $v->mohajon_commission;
                         $old_amount += ($v->weight * $v->rate);
-                        $old_amount +=  $v->labour_cost + $v->truck_cost + $v->van_cost + $v->other_cost + $v->tohori_cost;
+                      
                     }
                     
                 }
@@ -259,97 +254,99 @@ class MohajonLedgerController extends Controller
 
             $purchase = ponno_purchase_entry::whereBetween('entry_date',[$date_from, $date_to])->where('mohajon_setup_id',$request->mohajon_setup_id)->get();
 
-                foreach($purchase as $v)
+            foreach($purchase as $v)
+            {
+                if($v->purchase_type == 2)
                 {
-                    if($v->purchase_type == 2)
+                    $arod_chotha = arod_chotha_entry::where('purchase_id',$v->id)->sum('sales_qty');
+                    $arod_chotha_info = arod_chotha_info::where('purchase_id',$v->id)->first();
+                
+                    if($arod_chotha == $v->quantity && $arod_chotha_info)
                     {
-                        $arod_chotha = arod_chotha_entry::where('purchase_id',$v->id)->count();
-                    
-                        if($arod_chotha > 0)
-                        {
-                            $sales = arod_chotha_entry::where('purchase_id', $v->id)->get(); 
+                        $sales = arod_chotha_entry::where('purchase_id', $v->id)->get(); 
 
-                            $total_sale = 0;
-                            $total_sale_qty = 0;
-                            $total_mohajon_commission = $v->mohajon_commission;
+                        $total_sale = 0;
+                        $total_sale_qty = 0;
+                        $total_mohajon_commission = 0;
 
-                            foreach($sales as $s){
-                                $total_sale += $s->sales_weight * $s->sales_rate;
-                                $total_sale_qty += $s->sales_qty;
-                            }
+                        foreach($sales as $s){
+                            $total_sale += $s->sales_weight * $s->sales_rate;
+                            $total_sale_qty += $s->sales_qty;
+                            $total_mohajon_commission += $v->mohajon_commission * $s->sales_weight;
 
-                            $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
-                                    $v->van_cost + $v->other_cost +$v->tohori_cost;
-                            $kacha_sales = $total_sale - $total_cost;
-                            // table 4 = edited chotha
-
-                            $i++;
-                            $record[$i] = array(
-                                'table' => 4,
-                                'id' => $v->id,
-                                'reference' => 'পন্য গ্রহণ',
-                                'payment' => '-',
-                                'marfot' => '-',
-                                'joma'=> $kacha_sales,
-                                'khoroc'=> '-',
-                                'total_taka' => '-',
-                                'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
-                            );
-                            
                         }
-                        else
-                        {
-                            $sales = ponno_sales_entry::where('purchase_id', $v->id)->get(); 
 
-                            $total_sale = 0;
-                            $total_sale_qty = 0;
-                            $total_mohajon_commission = $v->_mohajon_commission;
+                        $total_cost = $total_mohajon_commission + $arod_chotha_info->labour_cost + $arod_chotha_info->truck_cost +
+                                $arod_chotha_info->van_cost + $arod_chotha_info->other_cost + $arod_chotha_info->tohori_cost;
+                        $kacha_sales = $total_sale - $total_cost;
 
-                            foreach($sales as $s){
-                                $total_sale += $s->sales_weight * $s->sales_rate;
-                                $total_sale_qty += $s->sales_qty;
-                            }
-
-                            $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
-                                    $v->van_cost + $v->other_cost +$v->tohori_cost;
-                            $kacha_sales = $total_sale - $total_cost;
-
-                            $i++;
-                            $record[$i] = array(
-                                'table' => 1,
-                                'id' => $v->id,
-                                'reference' => 'পন্য গ্রহণ',
-                                'payment' => '-',
-                                'marfot' => '-',
-                                'joma'=> $kacha_sales,
-                                'khoroc'=> '-',
-                                'total_taka' => '-',
-                                'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
-                            );
-                            
-                        }
-                    }
-                    else
-                    {
                         $i++;
                         $record[$i] = array(
-                            'table' => 1,
+                            'table' => 4,
                             'id' => $v->id,
-                            'reference' => 'পন্য গ্রহণ / নিজ খরিদ',
+                            'reference' => 'পন্য গ্রহণ',
                             'payment' => '-',
                             'marfot' => '-',
-                            'joma'=> ($v->weight * $v->rate) + $v->labour_cost + $v->truck_cost +
-                            $v->van_cost + $v->other_cost +$v->tohori_cost,
+                            'joma'=> $kacha_sales,
                             'khoroc'=> '-',
                             'total_taka' => '-',
                             'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
                         );
+                        
                     }
-                    
-                }
+                    else
+                    {
+                        // $sales = ponno_sales_entry::where('purchase_id', $v->id)->get(); 
 
-                $mohajon_payment = mohajon_payment_entry::whereBetween('entry_date',[$date_from, $date_to])->where('mohajon_setup_id',$request->mohajon_setup_id)->get();
-                $mohajon_return = mohajon_return_entry::whereBetween('entry_date',[$date_from, $date_to])->where('mohajon_setup_id',$request->mohajon_setup_id)->get();
+                        // $total_sale = 0;
+                        // $total_sale_qty = 0;
+                        // $total_mohajon_commission = $v->mohajon_commission;
+
+                        // foreach($sales as $s){
+                        //     $total_sale += $s->sales_weight * $s->sales_rate;
+                        //     $total_sale_qty += $s->sales_qty;
+                        // }
+
+                        // $total_cost = $total_mohajon_commission + $v->labour_cost + $v->truck_cost +
+                        //         $v->van_cost + $v->other_cost +$v->tohori_cost;
+                        // $kacha_sales = $total_sale - $total_cost;
+
+                        $i++;
+                        $record[$i] = array(
+                            'table' => 1,
+                            'id' => $v->id,
+                            'reference' => 'পন্য গ্রহণ',
+                            'payment' => '-',
+                            'marfot' => '-',
+                            'joma'=> 0,
+                            'khoroc'=> '-',
+                            'total_taka' => '-',
+                            'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
+                        );
+                        
+                    }
+                }
+                else
+                {
+                    $sales_weight = ponno_sales_entry::where('purchase_id', $v->id)->sum('sales_weight'); 
+                    $total_mohajon_commission = $sales_weight * $v->mohajon_commission;
+                    $i++;
+                    $record[$i] = array(
+                        'table' => 1,
+                        'id' => $v->id,
+                        'reference' => 'পন্য গ্রহণ',
+                        'payment' => '-',
+                        'marfot' => '-',
+                        'joma'=> ($v->weight * $v->rate),
+                        'khoroc'=> '-',
+                        'total_taka' => '-',
+                        'entry_date'=>Carbon::createFromFormat('Y-m-d', $v->entry_date)->format('d-m-Y'),
+                    );
+                }
+                
+            }
+            $mohajon_payment = mohajon_payment_entry::whereBetween('entry_date',[$date_from, $date_to])->where('mohajon_setup_id',$request->mohajon_setup_id)->get();
+            $mohajon_return = mohajon_return_entry::whereBetween('entry_date',[$date_from, $date_to])->where('mohajon_setup_id',$request->mohajon_setup_id)->get();
 
                 /********* Adding Row to array ***********/
 
@@ -406,10 +403,11 @@ class MohajonLedgerController extends Controller
 
                 return response()->json(['viewContent' => $viewContent]);
             }
-            else
-            {
-                return redirect()->back();
-            }
+        
+        else
+        {
+            return redirect()->back();
+        }
 
     }
 }

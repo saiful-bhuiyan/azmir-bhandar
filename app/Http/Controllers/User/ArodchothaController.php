@@ -36,9 +36,9 @@ class ArodchothaController extends Controller
     {
         $purchase = ponno_purchase_entry::where('id', $purchase_id)->first(); 
 
-        $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
+        $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
 
-        $arod_chotha = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+        $arod_chotha = arod_chotha_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
         $arod_chotha_info = arod_chotha_info::where('purchase_id', $purchase->id)->first(); 
 
         return view('user.entry_user.arod_chotha_entry',compact('purchase','sales','arod_chotha','arod_chotha_info'));
@@ -129,8 +129,52 @@ class ArodchothaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = array(
+            'purchase_id'=>$id,
+            'labour_cost'=>$request->labour_cost ? $request->labour_cost : 0,
+            'other_cost'=>$request->other_cost ? $request->other_cost : 0,
+            'truck_cost'=>$request->truck_cost ? $request->truck_cost : 0,
+            'van_cost'=>$request->van_cost ? $request->van_cost : 0,
+            'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
+            'entry_date'=> Carbon::createFromFormat('d-m-Y', $request->entry_date)->format('Y-m-d'),
+        );
+
+        $mohajon_commission = $request->mohajon_commission ? $request->mohajon_commission : 0;
+
+        $count = arod_chotha_info::where('purchase_id',$id)->count();
+
+        if($count > 0)
+        {
+            $update = arod_chotha_info::where('purchase_id',$id)->update($data);
+
+            if($update)
+            {
+                ponno_purchase_entry::where('id',$id)->update(['mohajon_commission' => $mohajon_commission]);
+                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('আপডেট সফল হয়নি'), __('ব্যর্থ'));
+            }
+            return redirect()->back()->with('invoice',$id);;
+        }else{
+            $insert = arod_chotha_info::create($data);
+            if($insert)
+            {
+                ponno_purchase_entry::where('id',$id)->update(['mohajon_commission' => $mohajon_commission]);
+                Toastr::success(__('সেভ সফল হয়েছে'), __('সফল'));
+            }
+            else
+            {
+                Toastr::error(__('সেভ সফল হয়নি'), __('ব্যর্থ'));
+            }
+            return redirect()->back()->with('invoice',$id);;
+        }
+            
     }
+
+    /******************** End of arod chotha info update ************************/
+    
 
     /**
      * Remove the specified resource from storage.
@@ -140,7 +184,17 @@ class ArodchothaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = arod_chotha_entry::destroy($id);
+        if($delete)
+        {
+            Toastr::success(__('ডিলিট সফল হয়েছে'), __('সফল'));
+        }
+        else
+        {
+            Toastr::error(__('ডিলিট সফল হয়নি'), __('ব্যর্থ'));
+        }
+
+        return redirect()->back();
     }
 
     public function getCommissionPurchaseMonth(Request $request)
@@ -166,12 +220,11 @@ class ArodchothaController extends Controller
 
     public function getPurchaseIdByMohajonId(Request $request)
     {
+        $date_from = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
+        $date_to = Carbon::createFromFormat('d-m-Y', $request->date_to)->format('Y-m-d');
 
-        $data = ponno_purchase_entry::where('mohajon_setup_id', $request->mohajon_setup_id)->where('purchase_type',2)->orderBy('entry_date','DESC')
-                ->whereIn('ponno_purchase_entries.id', function ($query) {
-                    $query->select('purchase_id')
-                        ->from('stocks')->where('quantity',0);
-                })->get();
+        $data = ponno_purchase_entry::where('mohajon_setup_id', $request->mohajon_setup_id)->where('purchase_type',2)
+        ->whereBetween('entry_date',[$date_from, $date_to])->orderBy('entry_date','DESC')->get();
 
         $select = "<option value='' selected>সিলেক্ট</option>";
 
@@ -179,8 +232,9 @@ class ArodchothaController extends Controller
 
         foreach($data as $v)
         {
-            $cotha = arod_chotha_entry::where('purchase_id',$v->id)->first();
-            if($cotha)
+            $cotha_qty = arod_chotha_entry::where('purchase_id',$v->id)->sum('sales_qty');
+            $sales_info = arod_chotha_info::where('purchase_id',$v->id)->first();
+            if($cotha_qty == $v->quantity && $sales_info)
             {
                 $edited = " - Edited";
             }else{
@@ -194,25 +248,21 @@ class ArodchothaController extends Controller
 
     public function loadArodChothaTable(Request $request)
     {
-        $purchase = ponno_purchase_entry::where('id', $request->purchase_id)
-                ->whereIn('ponno_purchase_entries.id', function ($query) {
-                    $query->select('purchase_id')
-                        ->from('stocks')->where('quantity',0);
-                })->first();
-
-       
-
+        $purchase = ponno_purchase_entry::where('id', $request->purchase_id)->first();
+        
         $arod_chotha = arod_chotha_entry::where('purchase_id',$purchase->id)->count();
+        $chotha_info = arod_chotha_info::where('purchase_id',$purchase->id)->count();
 
-        if($arod_chotha > 0)
+
+        if($arod_chotha > 0 && $chotha_info > 0)
         {
-            $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+            $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
             $sales_info = arod_chotha_info::where('purchase_id', $purchase->id)->first(); 
             return view('user.entry_user.arod_cotha_info_edited',compact('purchase','sales','sales_info'));
         }
         else
         {
-            $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
+            $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
             return view('user.entry_user.arod_cotha_info',compact('purchase','sales'));
         }
 
@@ -225,10 +275,9 @@ class ArodchothaController extends Controller
     {
         $purchase = ponno_purchase_entry::where('id',$id)->first();
 
-        $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->get(); 
+        $sales = arod_chotha_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
 
         $sales_info = arod_chotha_info::where('purchase_id', $purchase->id)->first(); 
-
         
         return view('user.entry_user.arod_chotha_memo',compact('purchase','sales','sales_info'));
     }

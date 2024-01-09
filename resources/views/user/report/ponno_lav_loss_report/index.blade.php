@@ -57,6 +57,18 @@
                 @endif
               </div>
 
+              <div class="md:col-span-1">
+                <label for="purchase_type">ধরণ :</label>
+                <select name="purchase_type" id="purchase_type" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" required>
+                    <option value="0" selected>সকল</option>
+                    <option value="1">নিজ খরিদ</option>
+                    <option value="2">কমিশন</option>
+                </select>
+                @if($errors->has('purchase_type'))
+                <span class="text-sm text-red-600">{{ $errors->first('purchase_type') }} </span>
+                @endif
+              </div>
+
               <div class="md:col-span-2">
                 <label for="date_from">তারিখ শুরু :</label>
                 <input datepicker datepicker-format="dd-mm-yyyy" type="text" name="date_from" id="date_from" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" min="01-01-2020" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
@@ -121,7 +133,8 @@
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
     var type = $('#type').val();
-    if(date_from != "" && date_to != "" && type != "")
+    var purchase_type = $('#purchase_type').val();
+    if(date_from != "" && date_to != "" && type != "" && purchase_type != "")
     {
       if(type == 1)
       {
@@ -133,7 +146,8 @@
         mohajon_setup_id : mohajon_setup_id,
         date_from : date_from,
         date_to : date_to,
-        type : type
+        type : type,
+        purchase_type : purchase_type
       },
       success : function(response)
       {
@@ -164,7 +178,8 @@
         mohajon_setup_id : mohajon_setup_id,
         date_from : date_from,
         date_to : date_to,
-        type : type
+        type : type,
+        purchase_type : purchase_type,
       },
       success : function(response)
       {

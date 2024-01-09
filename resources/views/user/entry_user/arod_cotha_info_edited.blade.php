@@ -15,12 +15,15 @@
           <p class="text-blue-600">01843875890</p>
         </div>
       </div>
-      <div class="grid grid-cols-4 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-4">
+      <div class="grid grid-cols-6 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-6">
         <div class="col-span-2">
           <p class="text-base font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
         </div>
         <div class="col-span-2">
           <p class="text-base font-bold text-red-600">ধরণ : @if($purchase->purchase_type == 1) নিজ খরিদ @elseif($purchase->purchase_type == 2) কমিশন @endif</p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-base font-bold text-red-600">চৌথার তারিখ : {{date('d-m-Y', strtotime($sales_info->entry_date))}}</p>
         </div>
       </div>
       <div class="flex mt-4">
@@ -39,6 +42,7 @@
                 @php
                 $count = 1;
                 $total_sale = 0;
+                $total_cost = 0;
                 $total_sale_qty = 0;
                 $total_sale_weight = 0;
                 $total_mohajon_commission = 0;
@@ -65,9 +69,12 @@
                @endforeach
 
                @php 
-                $total_cost = $sales_info->labour_cost + $sales_info->truck_cost +
-                            $sales_info->van_cost + $sales_info->other_cost + $sales_info->tohori_cost;
-              
+               if($sales_info)
+               {
+                  $total_cost = $sales_info->labour_cost + $sales_info->truck_cost +
+                  $sales_info->van_cost + $sales_info->other_cost + $sales_info->tohori_cost;
+               }
+                
                 $total_cost += $total_mohajon_commission;
              
                 $total_amount = $total_sale + $total_cost;
@@ -113,6 +120,7 @@
             <div class="text-left bg-sky-200">
               <p class="p-1 text-xs text-gray-800">বিক্রি সংখ্যা : {{$total_sale_qty}}</p>
               <p class="p-1 text-xs text-gray-800">মহাজন কমিশন : {{$total_mohajon_commission}}</p>
+              @if($sales_info)
               <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$sales_info->labour_cost}}</p>
               <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$sales_info->truck_cost}}</p>
               <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$sales_info->van_cost}}</p>
@@ -121,7 +129,7 @@
               <p class="p-1 text-xs text-gray-800">মোট খরচ : {{$total_cost}}</p>
               <p class="p-1 text-xs text-gray-800">নগদ পাওনা : {{$total_sale - $total_cost}}</p>
               <p class="p-1 text-xs text-gray-800">সর্বমোট বিক্রয় : {{$total_sale}}</p>
-
+              @endif
             </div>
           </div>
         </div>

@@ -102,12 +102,15 @@
           <p class="text-blue-600">01843875890</p>
         </div>
       </div>
-      <div class="grid grid-cols-4 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-4">
+      <div class="grid grid-cols-6 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-6">
         <div class="col-span-2">
           <p class="text-base font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
         </div>
         <div class="col-span-2">
           <p class="text-base font-bold text-red-600">ধরণ : @if($purchase->purchase_type == 1) নিজ খরিদ @elseif($purchase->purchase_type == 2) কমিশন @endif</p>
+        </div>
+        <div class="col-span-2">
+          <p class="text-base font-bold text-red-600">চৌথার তারিখ : {{date('d-m-Y', strtotime($sales_info->entry_date))}}</p>
         </div>
       </div>
       <div class="flex mt-4">

@@ -49,7 +49,7 @@ class PonnoPurchaseReportController extends Controller
     public function purchase_memo($id)
     {
         $purchase = ponno_purchase_entry::where('id',$id)->first();
-        $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->get(); 
+        $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
         
         return view('user.report.ponno_purchase_report.purchase_memo',compact('purchase','sales'));
     }

@@ -46,6 +46,7 @@
                 @php
                 use App\Models\ponno_sales_entry;
                 use App\Models\arod_chotha_entry;
+                use App\Models\arod_chotha_info;
                 $count = 1;
                 $total_purchase = 0;
                 $total_lav = 0;
@@ -101,10 +102,19 @@
                     @endphp
                     @if($countRow > 0)
                     @foreach($purchase as $p)
+                    @php
+                    $arod_chotha_info_count = arod_chotha_info::where('purchase_id',$p->id)->first(); 
+                    $arod_chotha_qty = arod_chotha_entry::where('purchase_id',$p->id)->sum('sales_qty'); 
+                    @endphp
+                    @if($p->purchase_type == 1 || $arod_chotha_info_count && $arod_chotha_qty == $p->quantity)
                     <tr class="border border-collapse even:bg-gray-100 odd:bg-white">
                         <td class="px-2 py-3">{{$count++}}</td>
+                        @if($p->purchase_type == 1)
                         <td class="px-2 py-3 font-bold text-blue-700"><a href="{{route('ponno_purchase_report.memo',$p->id)}}" class="url" onclick="return false;">{{$p->id}}</a></td>
-                        <td class="px-2 py-3">@if($p->purchase_type == 1) নিজ খরিদ (AB মার্কা) @elseif($p->purchase_type == 2) কমিশন @endif</td>
+                        @else
+                        <td class="px-2 py-3 font-bold text-blue-700"><a href="{{route('arod_chotha.memo',$p->id)}}" class="url" onclick="return false;">{{$p->id}}</a></td>
+                        @endif
+                        <td class="px-2 py-3">@if($p->purchase_type == 1) নিজ খরিদ (AB মার্কা) @elseif($p->purchase_type == 2) কমিশন/{{$p->mohajon_setup->name}} @endif</td>
                         <td class="px-2 py-3">{{$p->gari_no}}</td>
                         <td class="px-2 py-3">{{$p->ponno_setup->ponno_name}}</td>
                         <td class="px-2 py-3">{{$p->ponno_marka_setup->ponno_marka}}</td>
@@ -114,8 +124,12 @@
                         @php
                         $total_amount = 0;
                         $purchase_amount = 0;
-                        $total_mohajon_commission;
-                        if($p->purchase_type == 1){
+                        $cost_amount = 0;
+                        $total_mohajon_commission = 0;
+                        $sales_qty = 0;
+                        $sales_amount = 0;
+                        if($p->purchase_type == 1)
+                        {
                             $purchase_amount += $p->weight * $p->rate;
                             $purchase_amount += $p->labour_cost;
                             $purchase_amount += $p->other_cost;
@@ -123,52 +137,73 @@
                             $purchase_amount += $p->van_cost;
                             $purchase_amount += $p->tohori_cost;
                             
-                        }else{
-                            $purchase_amount -= $p->labour_cost;
-                            $purchase_amount -= $p->other_cost;
-                            $purchase_amount -= $p->truck_cost;
-                            $purchase_amount -= $p->van_cost;
-                            $purchase_amount -= $p->tohori_cost;
-                        }
-
-                        if($p->purchase_type == 2){
-                            $arod_chotha = arod_chotha_entry::where('purchase_id',$p->id)->get(); 
-                            foreach($arod_chotha as $a){
-                                $purchase_amount += $a->sales_weight * $a->sales_rate;
-                                $total_mohajon_commission += $p->mohajon_commission * $a->sales_weight;
+                            $sales = ponno_sales_entry::where('purchase_id',$p->id)->get(); 
+                            foreach($sales as $s)
+                            {
+                                $sales_qty += $s->sales_qty;
+                                $sales_amount += $s->sales_weight * $s->sales_rate;
+                                $purchase_amount += $p->mohajon_commission * $s->sales_weight;
                             }
-                            $purchase_amount += $total_mohajon_commission;
                         }
+                        else if($p->purchase_type == 2)
+                        {
+                            $arod_chotha_info = arod_chotha_info::where('purchase_id',$p->id)->first(); 
+                            $chotha_count = arod_chotha_entry::where('purchase_id',$p->id)->sum('sales_qty'); 
+                            $arod_chotha = arod_chotha_entry::where('purchase_id',$p->id)->get(); 
+                            if($arod_chotha_info && $chotha_count == $p->quantity)
+                            {
+                                foreach($arod_chotha as $a)
+                                {
+                                    $purchase_amount += $a->sales_weight * $a->sales_rate;
+                                    $total_mohajon_commission += $p->mohajon_commission * $a->sales_weight;
+                                }
+                                $cost_amount += $arod_chotha_info->labour_cost;
+                                $cost_amount += $arod_chotha_info->other_cost;
+                                $cost_amount += $arod_chotha_info->truck_cost;
+                                $cost_amount += $arod_chotha_info->van_cost;
+                                $cost_amount += $arod_chotha_info->tohori_cost;
+                                $cost_amount += $total_mohajon_commission;
+                                
+                                $sales = ponno_sales_entry::where('purchase_id',$p->id)->get(); 
+                                $old_mohajon_commission = 0;
+                                foreach($sales as $s)
+                                {
+                                    $sales_qty += $s->sales_qty;
+                                    $sales_amount += $s->sales_weight * $s->sales_rate;
+                                    $old_mohajon_commission += $p->mohajon_commission * $s->sales_weight;
+                                }
 
-                        $sales = ponno_sales_entry::where('purchase_id',$p->id)->get(); 
-                        
-                        
-                        $sales_qty = 0;
-                        $sales_amount = 0;
-                        foreach($sales as $s){
-                            $sales_qty += $s->sales_qty;
-                            $sales_amount += $s->sales_weight * $s->sales_rate;
-                            $purchase_amount += $p->mohajon_commission * $s->sales_weight;
+                                $cost_amount -= $p->labour_cost;
+                                $cost_amount -= $p->other_cost;
+                                $cost_amount -= $p->truck_cost;
+                                $cost_amount -= $p->van_cost;
+                                $cost_amount -= $p->tohori_cost;
+                                $cost_amount -= $old_mohajon_commission;
+                            }
+                            
                         }
-                        $total_amount = $sales_amount - $purchase_amount;
+                        
+                        $total_amount = ($sales_amount + $cost_amount) - $purchase_amount;
+
                         @endphp
                         <td class="px-2 py-3">{{ intval($purchase_amount) }}</td>
                         <td class="px-2 py-3">{{ $sales_qty }}</td>
                         <td class="px-2 py-3">{{ intval($sales_amount) }}</td>
                         @if($total_amount >= 0)
                         @php
-                        $total_lav += $total_amount;
+                        $total_lav += $total_amount ;
                         @endphp
-                        <td class="px-2 py-3">{{ intval($total_amount) }}</td>
-                        <td class="px-2 py-3">-</td>
+                        <td class="px-2 py-3 font-bold text-sm text-black">{{ intval($total_amount) }}</td>
+                        <td class="px-2 py-3 font-bold text-sm text-black">-</td>
                         @else
                         @php
                         $total_loss += $total_amount;
                         @endphp
-                        <td class="px-2 py-3">-</td>
-                        <td class="px-2 py-3">{{ intval($total_amount) }}</td>
+                        <td class="px-2 py-3 font-bold text-sm text-black">-</td>
+                        <td class="px-2 py-3 font-bold text-sm text-black">{{ intval($total_amount) }}</td>
                         @endif
                     </tr>
+                    @endif
                     @endforeach
                     
                     <tr class="border border-collapse even:bg-gray-100 odd:bg-white">

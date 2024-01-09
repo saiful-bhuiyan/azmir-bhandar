@@ -44,13 +44,35 @@
 
               <div class="md:col-span-2">
                 <label for="mohajon_setup_id">মহাজনের নাম :</label>
-                <select name="mohajon_setup_id" id="mohajon_setup_id" class="w-full h-10 px-4 mt-1 border rounded bg-gray-50" onchange="getPurchaseIdByMohajonId();" required>
+                <select name="mohajon_setup_id" id="mohajon_setup_id" class="w-full h-10 px-4 mt-1 border rounded bg-gray-50" required>
                     <option value="" selected>সিলেক্ট</option>
                 </select>
                 @if($errors->has('mohajon_setup_id'))
                 <span class="text-sm text-red-600">{{ $errors->first('mohajon_setup_id') }} </span>
                 @endif
               </div>
+
+              <div class="md:col-span-2">
+                <label for="date_from">তারিখ শুরু :</label>
+                <input type="text" name="date_from" id="date_from" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" autocomplete="off" min="01-01-2020" placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
+                @if($errors->has('date_from'))
+                <span class="text-sm text-red-600">{{ $errors->first('date_from') }} </span>
+                @endif
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="date_to">তারিখ শেষ :</label>
+                <input type="text" name="date_to" id="date_to" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" autocomplete="off" min="01-01-2020" placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
+                @if($errors->has('date_to'))
+                <span class="text-sm text-red-600">{{ $errors->first('date_to') }} </span>
+                @endif
+              </div>
+      
+              
+              <div class="md:col-span-1 mt-0 md:mt-6">
+                  <button onclick="getPurchaseIdByMohajonId();" type="button" id="save" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">দেখুন</button>
+                </div>
+              
 
               <div class="md:col-span-3">
                 <label for="purchase_id">গ্রহণ সংখ্যা / পন্যের নাম / সাইজ / মার্কা / গ্রহনের ধরণ:</label>
@@ -61,12 +83,6 @@
                 <span class="text-sm text-red-600">{{ $errors->first('purchase_id') }} </span>
                 @endif
               </div>
-      
-              <!-- <div class="text-right md:col-span-5">
-                <div class="inline-flex items-end">
-                  <button type="submit" id="save" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">দেখুন</button>
-                </div>
-              </div> -->
 
             </div>
           </div>
@@ -148,14 +164,19 @@
     function getPurchaseIdByMohajonId()
     {
         var mohajon_setup_id = $('#mohajon_setup_id').val();
+        var date_from = $('#date_from').val();
+        var date_to = $('#date_to').val();
+        $('#purchase_id').html('<option value="" selected>অপেক্ষা করুন.......</option>');
 
-        if(mohajon_setup_id != "")
+        if(mohajon_setup_id != "" && date_from != "" && date_to != "")
         {
             $.ajax({
                 type : 'POST',
                 url : '{{url("getPurchaseIdByMohajonId")}}',
                 data : {
                   mohajon_setup_id : mohajon_setup_id,
+                  date_from : date_from,
+                  date_to : date_to
                 },
                 success:function(response)
                 {
@@ -163,6 +184,8 @@
                 }
 
             });
+        }else{
+          swal("সঠিক তথ্য সিলেক্ট করুন")
         }
     }
 
@@ -185,6 +208,28 @@
         });
       }
     }
+
+    $( function() {
+    $( "#date_from" ).datepicker({
+      dateFormat: 'dd-mm-yy',
+      changeMonth: true,
+      changeYear: true,
+      maxDate: new Date(),
+    });
+
+    $( "#date_to" ).datepicker({
+      dateFormat: 'dd-mm-yy',
+      changeMonth: true,
+      changeYear: true,
+      maxDate: new Date(),
+      onSelect: function() {
+          if($("#date_from").val() > $("#date_to").val()){
+            swal("সঠিক তারিখ ইনপুট করুন");
+            $("#date_to").val("");
+          }
+        }
+    });
+  } );
 
 </script>
 

@@ -290,7 +290,7 @@
 
                 <div class="md:col-span-2 ">
                   <label for="entry_date">তারিখ :</label>
-                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($sales_info) ? date('d-m-Y',strtotime($sales_info->entry_date)) : '' }}"  placeholder="তারিখ সিলেক্ট করুন" required/>
+                  <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($sales_info) ? date('d-m-Y',strtotime($sales_info->entry_date)) : '' }}"  placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
                   @if($errors->has('entry_date'))
                   <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
                   @endif
@@ -402,7 +402,7 @@
                 <td class="px-2 py-3">{{$s->sales_qty}}</td>
                 <td class="px-2 py-3">{{$s->sales_weight}}</td>
                 <td class="px-2 py-3">{{$s->sales_rate}}</td>
-                <td class="px-2 py-3">{{$s->sales_weight * $s->sales_rate}}</td>
+                <td class="px-2 py-3">{{$s->sales_weight * $s->sales_rate + $s->labour + $s->other + $v->kreta_commission}}</td>
                 <td>
                   <div class="flex gap-x-2">
                   <a href="{{route('ponno_sales_entry.edit', $s->id)}}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ইডিট</a>
@@ -417,12 +417,12 @@
                   </div>
                 </td>
                 @php
-                $total += $s->total_taka;
+                $total += $s->sales_weight * $s->sales_rate + $s->labour + $s->other + $v->kreta_commission;
                 @endphp
             </tr>
             @endforeach
             <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                <td colspan="10" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
+                <td colspan="11" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
                 <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
                 <td class="px-2 py-3 text-base font-bold text-red-600 text-left"></td>
             </tr>
@@ -447,6 +447,15 @@
   $('.due_sale').show();  
   $('.cash_sale').hide();
 @endif
+
+$( function() {
+      $("#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
 
     function getPurchaseType() {
       if ($('#purchase_type').val() == 1) {
@@ -638,14 +647,7 @@
       
     }
 
-    $( function() {
-      $( "#entry_date" ).datepicker({
-        dateFormat: 'dd-mm-yy',
-        changeMonth: true,
-        changeYear: true,
-        maxDate: new Date(),
-      });
-    } );
+    
 
     getAmountByKreta();
 

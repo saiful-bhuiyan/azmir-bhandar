@@ -23,6 +23,18 @@ class PonnoLavLossReportController extends Controller
         $date_from = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
         $date_to = Carbon::createFromFormat('d-m-Y', $request->date_to)->format('Y-m-d');
         $ponno_setup_id = $request->ponno_setup_id;
+
+        if($request->purchase_type == 1)
+        {
+            $purchase_type = [1];
+        }
+        else if($request->purchase_type == 2)
+        {
+            $purchase_type = [2];
+        }else
+        {
+            $purchase_type = [1,2];
+        }
         
         if($request->type == 1)
         {
@@ -32,7 +44,7 @@ class PonnoLavLossReportController extends Controller
                 ->whereIn('ponno_purchase_entries.id', function ($query) {
                     $query->select('purchase_id')
                         ->from('stocks')->where('quantity',0);
-                })->get();
+                })->whereIn('purchase_type',$purchase_type)->get();
 
                 $title = "সকল পন্যের লাভ লস রিপোর্ট";
             }
