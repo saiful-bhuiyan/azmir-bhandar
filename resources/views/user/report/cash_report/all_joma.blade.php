@@ -628,6 +628,18 @@
         <h1 class="text-2xl font-bold text-green-700">সর্বমোট জমা : {{$total_amount}}</h1>
     </div>
 
-    
+    <script>
+        $('.url').click(function() {
+            var left = (screen.width - 800) / 2;
+            var top = (screen.height - 700) / 4;
+
+            var url = $(this).attr('href');
+
+            var myWindow = window.open(url, url,
+                'resizable=yes, width=' + '400' +
+                ', height=' + '700' + ', top=' +
+                top + ', left=' + left);
+        })
+    </script>
 
 @endsection

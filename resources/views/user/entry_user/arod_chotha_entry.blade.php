@@ -299,7 +299,7 @@
 
                 <div class="md:col-span-2 ">
                 <label for="entry_date">তারিখ :</label>
-                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($arod_chotha_info) ? date('d-m-Y',strtotime($arod_chotha_info->entry_date)) : '' }}"  placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
+                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($arod_chotha_info) ? date('d-m-Y',strtotime($arod_chotha_info->entry_date)) : '' }}"  placeholder="তারিখ সিলেক্ট করুন" readonly required/>
                 @if($errors->has('entry_date'))
                 <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
                 @endif

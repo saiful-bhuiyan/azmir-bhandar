@@ -491,6 +491,51 @@
         </table>
     </div>
 
+     <!-- লেবার ও পন্য গ্রহণ টেবিল -->
+
+     <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
+    <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">বিক্রয় লেবার ও পন্য গ্রহণ খরচ</p>
+        
+        <table id="table" class="w-full text-sm text-left text-gray-500 data-table">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
+                <tr class="border border-collapse text-base">
+                    <th>
+                        নং
+                    </th>
+                    <th scope="col" class="px-2 py-3">
+                        খাতের নাম
+                    </th>
+                    <th scope="col" class="px-2 py-3">
+                        টাকা
+                </th>
+
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                <tr class="border border-collapse odd:bg-white even:bg-gray-100 text-base">
+                    <td class="px-2 py-3">{{ $count++ }}</td>
+                    <td class="px-2 py-3">বিক্রয় লেবার</td>
+                    <td class="px-2 py-3">{{ $total_labour ? $total_labour : 0 }}</td>
+                </tr>
+                <tr class="border border-collapse odd:bg-white even:bg-gray-100 text-base">
+                    <td class="px-2 py-3">{{ $count++ }}</td>
+                    <td class="px-2 py-3">পন্য গ্রহণ খরচ</td>
+                    <td class="px-2 py-3">{{ $total_purchase_cost ? $total_purchase_cost : 0 }}</td>
+                </tr>
+                   
+                <tr class="border border-collapse odd:bg-white even:bg-gray-100">
+                    <td colspan="2" class="px-2 py-3 text-base font-bold text-red-600 text-center">মোট টাকা : </td>
+                    <td class="px-2 py-3 text-base font-bold text-red-600 text-left">{{$total}}</td>
+                </tr>
+                @php
+                $total_amount += $total_labour ? $total_labour : 0;
+                $total_amount += $total_purchase_cost ? $total_purchase_cost : 0;
+                @endphp
+            </tbody>
+            
+        </table>
+    </div>
+
     <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
         <h1 class="text-2xl font-bold text-green-700">সর্বমোট খরচ : {{$total_amount}}</h1>
     </div>

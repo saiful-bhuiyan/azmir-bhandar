@@ -588,13 +588,16 @@ class PonnoSalesEntryController extends Controller
             $kreta_area = kreta_setup::select('area')->groupBy('area')->where('status',1)->get();
             $marfot = bikroy_marfot_setup::get();
 
-            $viewContent = view('user.entry_admin.sales_update',compact('sales_info','sales_entry','stock','kreta_area','marfot'))->render();
+            // $viewContent = view('user.entry_admin.sales_update',compact('sales_info','sales_entry','stock','kreta_area','marfot'))->render();
 
-            return response()->json(['viewContent' => $viewContent]);
+            // return response()->json(['viewContent' => $viewContent]);
+
+            return view('user.entry_admin.sales_update',compact('sales_info','sales_entry','stock','kreta_area','marfot'));
         }
         else
         {
-            return 404;
+            Toastr::error(__('ইনভোয়েস পাওয়া যায়নি'), __('ব্যর্থ'));
+            return redirect()->back();
         }
         
     }

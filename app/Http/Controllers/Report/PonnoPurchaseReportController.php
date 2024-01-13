@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
 use App\Models\mohajon_commission_setup;
+use App\Models\ponno_purchase_cost_entry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ponno_purchase_entry;
@@ -50,8 +51,28 @@ class PonnoPurchaseReportController extends Controller
     {
         $purchase = ponno_purchase_entry::where('id',$id)->first();
         $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
+        $labour_cost = 0;
+        $other_cost = 0;
+        $truck_cost = 0;
+        $van_cost = 0;
+        $tohori_cost = 0;
+        $ponno_cost = ponno_purchase_cost_entry::where('purchase_id',$id)->get();
+        foreach($ponno_cost as $v)
+        {
+            if($v->cost_name == 1){
+                 $labour_cost += $v->taka;
+            }else if($v->cost_name == 2){
+                $other_cost += $v->taka;
+            }else if($v->cost_name == 3){
+                $truck_cost += $v->taka;
+            }else if($v->cost_name == 4){
+                $van_cost += $v->taka;
+            }else if($v->cost_name == 5){
+                $tohori_cost += $v->taka;
+            }
+        }
         
-        return view('user.report.ponno_purchase_report.purchase_memo',compact('purchase','sales'));
+        return view('user.report.ponno_purchase_report.purchase_memo',compact('purchase','sales','labour_cost','other_cost','truck_cost','van_cost','tohori_cost'));
     }
     
 }

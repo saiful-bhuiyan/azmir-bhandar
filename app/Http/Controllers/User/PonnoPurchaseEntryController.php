@@ -167,6 +167,7 @@ class PonnoPurchaseEntryController extends Controller
                 'van_cost'=>$request->van_cost ? $request->van_cost : 0,
                 'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
                 'entry_date'=> Carbon::now(),
+                'cost_date'=> Carbon::now(),
             );
             
             if($request->purchase_type == 1)
@@ -266,6 +267,7 @@ class PonnoPurchaseEntryController extends Controller
                 'quantity' => 'required|numeric',
                 'weight' => 'required|numeric',
                 'entry_date' => 'required',
+                'cost_date' => 'required',
             ],
             [
                 'purchase_type.required'=>'দয়া করে ধরণ সিলেক্ট করুন',
@@ -277,7 +279,8 @@ class PonnoPurchaseEntryController extends Controller
                 'quantity.numeric'=>'সংখ্যা ইনপুট করুন',
                 'weight.required'=>'দয়া করে ওজন ইনপুট করুন',
                 'weight.numeric'=>'সংখ্যা ইনপুট করুন',
-                'entry_date.required'=>'দয়া তারিখ সিলেক্ট করুন',
+                'entry_date.required'=>'দয়া করে তারিখ সিলেক্ট করুন',
+                'cost_date.required'=>'দয়া করে তারিখ সিলেক্ট করুন',
             ]);
 
             $data = array(
@@ -295,6 +298,7 @@ class PonnoPurchaseEntryController extends Controller
                 'van_cost'=>$request->van_cost ? $request->van_cost : 0,
                 'tohori_cost'=>$request->tohori_cost ? $request->tohori_cost : 0,
                 'entry_date'=> Carbon::createFromFormat('d-m-Y', $request->entry_date)->format('Y-m-d'),
+                'cost_date'=> Carbon::createFromFormat('d-m-Y', $request->cost_date)->format('Y-m-d'),
             );
             
             if($request->purchase_type == 1)

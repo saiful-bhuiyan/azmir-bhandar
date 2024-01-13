@@ -119,9 +119,9 @@
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য বিক্রয় এডমিন</p>
                 </a>
-                <a href="" onclick="return false;" class="grid justify-center items-center p-4 border url">
-                    <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
-                    <p class="text-center mt-2">আড়ৎ চৌথা এডমিন</p>
+                <a href="{{route('ponno_purchase_cost_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                    <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
+                    <p class="text-center mt-2">পন্যের খরচ এন্ট্রি এডমিন</p>
                 </a>
                 <a href="{{route('kreta_joma_entry.admin')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">

@@ -53,30 +53,18 @@
     var invoice = $('#invoice').val();
      if(invoice != "")
         {
-          $.ajax({
-            type : 'GET',
-            url : '{{url("ponno_sales_entry_update_admin")}}/'+invoice,
-            success : function(response)
-            {
-              if(response == 404)
-              {
-                swal('ইনভোয়েস পাওয়া যায়নি');
-              }else{
-                var left = (screen.width - 800) / 2;
-                var top = (screen.height - 700) / 4;
+          var left = (screen.width - 800) / 2;
+          var top = (screen.height - 700) / 4;
 
-                var myWindow = window.open('','_blank',
-                'resizable=yes, width=' + '800'
-                + ', height=' + '700' + ', top='
-                + top + ', left=' + left);
-              
-                myWindow.document.write(response.viewContent);
-              }
-              
+          var url = "{{url('ponno_sales_entry_update_admin')}}/"+invoice;
 
-                  
-            },
-          });
+          window.location.href = url;
+
+          // var myWindow = window.open(url,url,
+          // 'resizable=yes, width=' + '800'
+          // + ', height=' + '700' + ', top='
+          // + top + ', left=' + left);
+
         }
         else
         {

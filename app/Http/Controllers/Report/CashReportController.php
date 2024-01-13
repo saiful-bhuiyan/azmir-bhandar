@@ -18,6 +18,7 @@ use App\Models\ponno_purchase_entry;
 use App\Models\ponno_sales_entry;
 use App\Models\cash_transfer;
 use App\Models\kreta_koifiyot_entry;
+use App\Models\ponno_purchase_cost_entry;
 
 class CashReportController extends Controller
 {
@@ -75,18 +76,19 @@ class CashReportController extends Controller
         $other_khoroc_cash = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',1)->sum('taka');
         $other_khoroc_bank = other_joma_khoroc_entry::where('entry_date',$entry_date)->where('type',2)->where('payment_by',2)->sum('taka');
 
-        $labour_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('labour_cost');
-        $other_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('other_cost');
-        $truck_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('truck_cost');
-        $van_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('van_cost');
-        $tohori_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('tohori_cost');
+        $labour_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('labour_cost');
+        $other_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('other_cost');
+        $truck_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('truck_cost');
+        $van_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('van_cost');
+        $tohori_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('tohori_cost');
+        
         $sales_costs = ponno_sales_info::where('entry_date',$entry_date)->get();
 
-
+        $ponno_cost = ponno_purchase_cost_entry::where('entry_date',$entry_date)->sum('taka');
 
         $total_labour = 0;
         $total_other_cost = 0;
-        $total_other_cost += $other_cost + $truck_cost + $van_cost + $tohori_cost + $labour_cost;
+        $total_other_cost += $other_cost + $truck_cost + $van_cost + $tohori_cost + $labour_cost + $ponno_cost;
         foreach($sales_costs as $v)
         {
             $total_labour += ponno_sales_entry::where('sales_invoice',$v->id)->sum('labour');
@@ -250,7 +252,7 @@ class CashReportController extends Controller
 
         $khoroc[$j] = array(
             'sl' => $count_khoroc++,
-            'reference' => "লেবার খরচ",
+            'reference' => "বিক্রয় লেবার খরচ",
             'total_taka' => $total_labour,
         );
 
@@ -300,20 +302,27 @@ class CashReportController extends Controller
         $amanot = amanot_entry::where('entry_date',$entry_date)->get();
         $hawlat = hawlat_entry::where('entry_date',$entry_date)->get();
         $other = other_joma_khoroc_entry::where('entry_date',$entry_date)->get();
-        $labour_cost = ponno_purchase_entry::where('entry_date',$entry_date)->sum('labour_cost');
         $sales_costs = ponno_sales_info::where('entry_date',$entry_date)->get();
 
+        
+        $labour_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('labour_cost');
+        $other_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('other_cost');
+        $truck_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('truck_cost');
+        $van_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('van_cost');
+        $tohori_cost = ponno_purchase_entry::where('cost_date',$entry_date)->sum('tohori_cost');
+
+        $ponno_cost = ponno_purchase_cost_entry::where('entry_date',$entry_date)->sum('taka');
+
         $total_labour = 0;
-        $total_other_cost = 0;
-        $total_labour += $labour_cost;
+        $total_purchase_cost = $labour_cost + $other_cost + $truck_cost + $van_cost + $tohori_cost + $ponno_cost;
 
         foreach($sales_costs as $v)
         {
             $total_labour += ponno_sales_entry::where('sales_invoice',$v->id)->sum('labour');
-            $total_other_cost += ponno_sales_entry::where('sales_invoice',$v->id)->sum('other');
+            $total_labour += ponno_sales_entry::where('sales_invoice',$v->id)->sum('other');
         }
 
-        return view('user.report.cash_report.all_khoroc',compact('bank_joma','kreta_joma','mohajon_payment','mohajon_return','amanot','hawlat','other','search_date'));
+        return view('user.report.cash_report.all_khoroc',compact('bank_joma','kreta_joma','mohajon_payment','mohajon_return','amanot','hawlat','other','total_labour','total_purchase_cost','search_date'));
     }
 
     public function cash_transfer(Request $request)
@@ -333,8 +342,6 @@ class CashReportController extends Controller
                 'reference_date'=>$ref_date,
                 'amount'=>$request->amount,
             );
-    
-    
     
             $insert = cash_transfer::create($data);
     

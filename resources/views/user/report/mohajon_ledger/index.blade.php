@@ -110,11 +110,11 @@ function search()
       },
       success : function(response)
       {
-        var left = (screen.width - 800) / 2;
+        var left = (screen.width - 1000) / 2;
         var top = (screen.height - 700) / 4;
 
         var myWindow = window.open('','_blank',
-        'resizable=yes, width=' + '800'
+        'resizable=yes, width=' + '1000'
         + ', height=' + '700' + ', top='
         + top + ', left=' + left);
       

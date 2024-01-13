@@ -47,6 +47,7 @@
                 use App\Models\ponno_sales_entry;
                 use App\Models\arod_chotha_entry;
                 use App\Models\arod_chotha_info;
+                use App\Models\ponno_purchase_cost_entry;
                 $count = 1;
                 $total_purchase = 0;
                 $total_lav = 0;
@@ -107,6 +108,7 @@
                     $arod_chotha_qty = arod_chotha_entry::where('purchase_id',$p->id)->sum('sales_qty'); 
                     @endphp
                     @if($p->purchase_type == 1 || $arod_chotha_info_count && $arod_chotha_qty == $p->quantity)
+                        @if($p->purchase_type == 1 && $p->weight != 0 || $p->rate != 0)
                     <tr class="border border-collapse even:bg-gray-100 odd:bg-white">
                         <td class="px-2 py-3">{{$count++}}</td>
                         @if($p->purchase_type == 1)
@@ -172,12 +174,36 @@
                                     $sales_amount += $s->sales_weight * $s->sales_rate;
                                     $old_mohajon_commission += $p->mohajon_commission * $s->sales_weight;
                                 }
+                                
 
-                                $cost_amount -= $p->labour_cost;
-                                $cost_amount -= $p->other_cost;
-                                $cost_amount -= $p->truck_cost;
-                                $cost_amount -= $p->van_cost;
-                                $cost_amount -= $p->tohori_cost;
+                                $ponno_cost = ponno_purchase_cost_entry::where('purchase_id',$p->id)->get();
+
+                                $labour_cost = 0;
+                                $other_cost = 0;
+                                $truck_cost = 0;
+                                $van_cost = 0;
+                                $tohori_cost = 0;
+
+                                foreach($ponno_cost as $v)
+                                {
+                                    if($v->cost_name == 1){
+                                        $labour_cost += $v->taka;
+                                    }else if($v->cost_name == 2){
+                                        $other_cost += $v->taka;
+                                    }else if($v->cost_name == 3){
+                                        $truck_cost += $v->taka;
+                                    }else if($v->cost_name == 4){
+                                        $van_cost += $v->taka;
+                                    }else if($v->cost_name == 5){
+                                        $tohori_cost += $v->taka;
+                                    }
+                                }
+
+                                $cost_amount -= $p->labour_cost + $labour_cost;
+                                $cost_amount -= $p->other_cost + $other_cost;
+                                $cost_amount -= $p->truck_cost + $truck_cost;
+                                $cost_amount -= $p->van_cost + $van_cost;
+                                $cost_amount -= $p->tohori_cost + $tohori_cost;
                                 $cost_amount -= $old_mohajon_commission;
                             }
                             
@@ -201,6 +227,7 @@
                         @endphp
                         <td class="px-2 py-3 font-bold text-sm text-black">-</td>
                         <td class="px-2 py-3 font-bold text-sm text-black">{{ intval($total_amount) }}</td>
+                        @endif
                         @endif
                     </tr>
                     @endif

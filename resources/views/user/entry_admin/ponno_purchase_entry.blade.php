@@ -177,10 +177,18 @@
               </div>
 
               <div class="md:col-span-2 ">
-                <label for="entry_date">তারিখ :</label>
-                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->entry_date)) : '' }}" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                <label for="entry_date">গ্রহনের তারিখ :</label>
+                <input type="text" name="entry_date" id="entry_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->entry_date)) : '' }}" autocomplete="off" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
                 @if($errors->has('entry_date'))
                 <span class="text-sm text-red-600">{{ $errors->first('entry_date') }} </span>
+                @endif
+              </div>
+
+              <div class="md:col-span-2 ">
+                <label for="cost_date">পন্য খরচের তারিখ :</label>
+                <input type="text" name="cost_date" id="cost_date" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="{{ isset($data) ? date('d-m-Y',strtotime($data->cost_date)) : '' }}" autocomplete="off" readonly placeholder="তারিখ সিলেক্ট করুন" required/>
+                @if($errors->has('cost_date'))
+                <span class="text-sm text-red-600">{{ $errors->first('cost_date') }} </span>
                 @endif
               </div>
       
@@ -380,6 +388,15 @@
 
     $( function() {
       $( "#entry_date" ).datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: new Date(),
+      });
+    } );
+
+    $( function() {
+      $( "#cost_date" ).datepicker({
         dateFormat: 'dd-mm-yy',
         changeMonth: true,
         changeYear: true,

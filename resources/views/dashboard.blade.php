@@ -139,6 +139,10 @@
                     <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">আড়ৎ চৌথা</p>
                 </a>
+                <a href="{{route('ponno_purchase_cost_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                    <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
+                    <p class="text-center mt-2">পন্যের খরচ এন্ট্রি</p>
+                </a>
                 <a href="{{route('kreta_joma_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার জমা</p>
@@ -206,6 +210,10 @@
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">হাওলাত লেজার</p>
                 </a>
+                <a href="{{route('arod_chotha_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                    <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
+                    <p class="text-center mt-2">আড়ৎ চৌথা রিপোর্ট</p>
+                </a>
                 <a href="{{route('other_joma_khoroc_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/other_cost.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">অন্যান্য জমা/খরচ রিপোর্ট</p>
@@ -230,7 +238,7 @@
                     <img src="{{asset('frontend')}}/image/commission.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">ক্রেতার সর্ট রিপোর্ট</p>
                 </a>
-                <a href="report_amanoti/report_amanoti.php" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('mohajon_short_report.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/borrow.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">মহাজন সর্ট রিপোর্ট</p>
                 </a>

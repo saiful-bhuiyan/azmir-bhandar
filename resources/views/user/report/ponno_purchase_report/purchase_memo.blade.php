@@ -217,11 +217,11 @@
             <div class="text-left bg-sky-200">
               <p class="p-1 text-xs text-gray-800">বিক্রি সংখ্যা : {{$total_sale_qty}}</p>
               <p class="p-1 text-xs text-gray-800">মহাজন কমিশন : {{$total_mohajon_commission}}</p>
-              <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">তহরি : {{$purchase->tohori_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost + $labour_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost + $truck_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost + $van_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost + $other_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">তহরি : {{$purchase->tohori_cost + $tohori_cost}}</p>
               
               @if($purchase->purchase_type == 1)
               <p class="p-1 text-xs text-gray-800">মোট ক্রয় : {{$purchase->weight * $purchase->rate}}</p>

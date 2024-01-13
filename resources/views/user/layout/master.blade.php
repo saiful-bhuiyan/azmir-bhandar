@@ -16,7 +16,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
     <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{{asset('datatable')}}/datatables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" />
 
@@ -24,8 +23,8 @@
     <script src="{{asset('datatable')}}/datatables.min.js"></script>
     <script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="{{asset('jquery-ui-themes-1.13.2')}}/themes/base/jquery-ui.css">
+    <script src="{{asset('jquery-ui-1.13.2')}}/jquery-ui.js"></script>
 
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800;900&display=swap');

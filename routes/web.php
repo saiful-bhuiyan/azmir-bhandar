@@ -31,6 +31,7 @@ use App\Http\Controllers\User\AmanotEntryController;
 use App\Http\Controllers\User\HawlatEntryController;
 use App\Http\Controllers\User\OtherJomaKhorocEntryController;
 use App\Http\Controllers\User\PonnoPurchaseEntryController;
+use App\Http\Controllers\User\PonnoPurchaseCostEntryController;
 use App\Http\Controllers\User\PonnoSalesEntryController;
 use App\Http\Controllers\User\ArodchothaController;
 
@@ -49,10 +50,12 @@ use App\Http\Controllers\Report\CommissionReportController;
 use App\Http\Controllers\Report\PonnoLavLossReportController;
 use App\Http\Controllers\Report\MohajonLedgerController;
 use App\Http\Controllers\Report\KretaShortReportController;
+use App\Http\Controllers\Report\MohajonShortReportController;
 use App\Http\Controllers\Report\ShortReportController;
 use App\Http\Controllers\Report\BikroyMarfotReportController;
 use App\Http\Controllers\Report\CashReportController;
 use App\Http\Controllers\Report\DailyCommissionReportController;
+use App\Http\Controllers\Report\ArodChothaReportController;
 
 
 /*
@@ -149,6 +152,10 @@ Route::group(['middleware' => 'auth'],  function() {
 
     Route::resource('ponno_purchase_entry' ,PonnoPurchaseEntryController::class);
 
+    Route::resource('ponno_purchase_cost_entry' ,PonnoPurchaseCostEntryController::class);
+    Route::get('purchase_cost_form/{id}',[PonnoPurchaseCostEntryController::class,'cost_entry']);
+
+
     Route::resource('ponno_sales_entry' ,PonnoSalesEntryController::class);
     Route::post('getPurchaseDetail',[PonnoSalesEntryController::class,'getPurchaseDetail']);
     Route::get('getAmountByKreta/{kreta_setup_id}',[PonnoSalesEntryController::class,'getAmountByKreta']);
@@ -205,6 +212,9 @@ Route::group(['middleware' => 'auth'],  function() {
 
     Route::get('kreta_short_report',[KretaShortReportController::class,'index'])->name('kreta_short_report.index');
 
+    Route::get('mohajon_short_report',[MohajonShortReportController::class,'index'])->name('mohajon_short_report.index');
+
+
     Route::get('short_report',[ShortReportController::class,'index'])->name('short_report.index');
     Route::post('short_report_search',[ShortReportController::class,'search'])->name('short_report.search');
 
@@ -219,6 +229,9 @@ Route::group(['middleware' => 'auth'],  function() {
     Route::get('cash_joma_report/{entry_date}',[CashReportController::class,'searchByJoma'])->name('cash_report.all_joma');
     Route::get('cash_khoroc_report/{entry_date}',[CashReportController::class,'searchByKhoroc'])->name('cash_report.all_khoroc');
     Route::post('cash_report_transfer',[CashReportController::class,'cash_transfer'])->name('cash_report.transfer');
+
+    Route::get('arod_chotha_report',[ArodChothaReportController::class,'index'])->name('arod_chotha_report.index');
+    Route::post('arod_chotha_report_search',[ArodChothaReportController::class,'search'])->name('arod_chotha_report.search');
 
 
 
@@ -283,6 +296,9 @@ Route::group(['middleware' => 'admin'], function() {
 
     Route::get('ponno_purchase_entry_admin',[PonnoPurchaseEntryController::class,'admin'])->name('ponno_purchase_entry.admin');
     Route::post('ponno_purchase_update/{id}',[PonnoPurchaseEntryController::class,'ponno_purchase_update'])->name('ponno_purchase_entry.ponno_purchase_update');
+
+    Route::get('ponno_purchase_cost_entry_admin',[PonnoPurchaseCostEntryController::class,'admin'])->name('ponno_purchase_cost_entry.admin');
+    Route::get('purchase_cost_form_admin/{id}',[PonnoPurchaseCostEntryController::class,'admin_cost_entry']);
 
     Route::get('ponno_sales_entry_admin',[PonnoSalesEntryController::class,'admin'])->name('ponno_sales_entry.admin');
     Route::get('ponno_sales_entry_update_admin/{id}',[PonnoSalesEntryController::class,'update_sales']);

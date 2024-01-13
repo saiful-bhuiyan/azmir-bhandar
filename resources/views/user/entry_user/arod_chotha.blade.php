@@ -54,7 +54,7 @@
 
               <div class="md:col-span-2">
                 <label for="date_from">তারিখ শুরু :</label>
-                <input type="text" name="date_from" id="date_from" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" autocomplete="off" min="01-01-2020" placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
+                <input type="text" name="date_from" id="date_from" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" autocomplete="off" min="01-01-2020" placeholder="তারিখ সিলেক্ট করুন" readonly required/>
                 @if($errors->has('date_from'))
                 <span class="text-sm text-red-600">{{ $errors->first('date_from') }} </span>
                 @endif
@@ -62,7 +62,7 @@
 
               <div class="md:col-span-2">
                 <label for="date_to">তারিখ শেষ :</label>
-                <input type="text" name="date_to" id="date_to" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" autocomplete="off" min="01-01-2020" placeholder="তারিখ সিলেক্ট করুন" onkeypress="return false;" required/>
+                <input type="text" name="date_to" id="date_to" class="h-10 border mt-1 rounded px-4 w-full bg-gray-100" value="" autocomplete="off" min="01-01-2020" placeholder="তারিখ সিলেক্ট করুন" readonly required/>
                 @if($errors->has('date_to'))
                 <span class="text-sm text-red-600">{{ $errors->first('date_to') }} </span>
                 @endif

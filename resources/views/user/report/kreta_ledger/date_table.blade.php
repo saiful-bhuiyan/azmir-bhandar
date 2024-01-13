@@ -42,25 +42,25 @@
         <table id="table" class="w-full text-sm text-left text-gray-500 data-table">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr class="border border-collapse">
-                    <th scope="col" class="px-2 py-3">
+                    <th scope="col" class="px-4 py-3">
                         তারিখ
                     </th>
-                    <th scope="col" class="px-2 py-3">
+                    <th scope="col" class="px-4 py-3">
                         ইনভয়েস
                     </th>
-                    <th scope="col" class="px-2 py-3">
+                    <th scope="col" class="px-4 py-3">
                         পেমেন্টের মাধ্যম
                     </th>
-                    <th scope="col" class="px-2 py-3">
+                    <th scope="col" class="px-4 py-3">
                         মারফত
                     </th>
-                    <th scope="col" class="px-2 py-3">
-                        খরচ
-                    </th>
-                    <th scope="col" class="px-2 py-3">
+                    <th scope="col" class="px-4 py-3">
                         জমা
                     </th>
-                    <th scope="col" class="px-2 py-3">
+                    <th scope="col" class="px-4 py-3">
+                        খরচ
+                    </th>
+                    <th scope="col" class="px-4 py-3">
                         মোট টাকা
                     </th>
 
@@ -75,8 +75,8 @@
 
                 @if($total_due)
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td colspan="6" class="px-2 py-3 text-right">সাবেক পাওনা :</td>
-                    <td class="px-2 py-3 text-sm font-bold text-red-600 ">{{$total += $total_due}}</td>
+                    <td colspan="6" class="px-4 py-3 text-right">সাবেক পাওনা :</td>
+                    <td class="px-4 py-3 text-sm font-bold text-red-600 ">{{$total += $total_due}}</td>
                 </tr>
                 @endif
 
@@ -94,29 +94,30 @@
 
                 @endphp
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td class="px-2 py-3">{{ $data['entry_date'] }}</td>
+                    <td class="px-4 py-3">{{ $data['entry_date'] }}</td>
                     @if($data['table'] == 1)
-                    <td class="px-2 py-3 font-bold text-blue-700 "><a href="{{route('ponno_sales_report.memo',$data['id'])}}" class="url" onclick="return false;">{{ $data['id'] }}</a></td>
+                    <td class="px-4 py-3 font-bold text-blue-700 "><a href="{{route('ponno_sales_report.memo',$data['id'])}}" class="url" onclick="return false;">{{ $data['id'] }}</a></td>
                     @else
-                    <td class="px-2 py-3">{{ $data['id'] }}</td>
+                    <td class="px-4 py-3">{{ $data['id'] }}</td>
                     @endif
-                    <td class="px-2 py-3">{{ $data['payment'] }}</td>
-                    <td class="px-2 py-3">{{ $data['marfot'] }}</td>
-                    <td class="px-2 py-3">{{ $data['khoroc'] }}</td>
-                    <td class="px-2 py-3">{{ $data['joma'] }}</td>
+                    <td class="px-4 py-3">{{ $data['payment'] }}</td>
+                    <td class="px-4 py-3">{{ $data['marfot'] }}</td>
+                    <td class="px-4 py-3">{{ $data['joma'] }}</td>
+                    <td class="px-4 py-3">{{ $data['khoroc'] }}</td>
+
                     @if($data['table'] != 1)
-                    <td class="px-2 py-3">{{ $total -= $data['joma'] }}</td>
+                    <td class="px-4 py-3">{{ $total -= $data['joma'] }}</td>
                     @else
-                    <td class="px-2 py-3">{{ $total += $data['khoroc'] }}</td>
+                    <td class="px-4 py-3">{{ $total += $data['khoroc'] }}</td>
                     @endif
                 </tr>
 
                 @endforeach
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td colspan="4" class="px-2 py-3 text-sm font-bold text-red-600 text-center">মোট</td>
-                    <td class="px-2 py-3 text-sm font-bold text-red-600">{{$total_khoroc}}</td>
-                    <td class="px-2 py-3 text-sm font-bold text-red-600">{{$total_joma}}</td>
-                    <td class="px-2 py-3 text-sm font-bold text-red-600"></td>
+                    <td colspan="4" class="px-4 py-3 text-sm font-bold text-red-600 text-center">মোট</td>
+                    <td class="px-4 py-3 text-sm font-bold text-red-600">{{$total_joma}}</td>
+                    <td class="px-4 py-3 text-sm font-bold text-red-600">{{$total_khoroc}}</td>
+                    <td class="px-4 py-3 text-sm font-bold text-red-600"></td>
                 </tr>
                 @endif
             </tbody>

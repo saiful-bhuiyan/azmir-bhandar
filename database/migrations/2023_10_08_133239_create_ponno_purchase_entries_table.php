@@ -35,6 +35,7 @@ return new class extends Migration
             $table->double('tohori_cost' ,10 ,2)->nullable();
             $table->double('mohajon_commission' ,10 ,2)->nullable();
             $table->date('entry_date')->nullable();
+            $table->date('cost_date')->nullable();
             $table->timestamps();
         });
     }
