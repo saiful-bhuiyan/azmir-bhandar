@@ -257,6 +257,11 @@
                   <input type="text" id="current_amount" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly />
                 </div>
 
+                <div class="md:col-span-1" hidden>
+                  <label for="current_amount_old">বর্তমান পাওনা :</label>
+                  <input type="text" id="current_amount_old" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="" readonly  />
+                </div>
+
                 <div class="md:col-span-1">
                   <label for="discount">ছাড় :</label>
                   <input type="number" step="any" name="discount" id="discount" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" onkeyup="return totalWithDiscount();"/>
@@ -538,6 +543,7 @@
       var labour = parseFloat($('#labour').val() || 0);
       var other = parseFloat($('#other').val() || 0);
       var kreta_commission = parseFloat($('#kreta_commission').val() || 0);
+      var current_amount = parseFloat($('#current_amount_old').val() || 0);
 
       if(sales_weight > 0  && sales_rate > 0)
       {
@@ -546,6 +552,7 @@
         var all_total = total + labour + other +num_kreta_com;
         $('#read_taka').val(total.toFixed(2));
         $('#read_total_taka').val(all_total.toFixed(2));
+        $('#current_amount').val((all_total + current_amount).toFixed(2));
       }
       else
       {
@@ -583,6 +590,7 @@
           {
             var amount = $.parseJSON(response);
 
+            $('#current_amount_old').val(amount.current_amount.toFixed(2));
             $('#current_amount').val(amount.current_amount.toFixed(2));
             $('#all_total_taka').val((amount.old_amount + amount.current_amount).toFixed(2));
           }

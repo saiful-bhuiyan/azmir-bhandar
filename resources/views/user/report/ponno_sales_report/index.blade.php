@@ -92,7 +92,7 @@
     {
       $.ajax({
       type : 'POST',
-      url : '{{url('searchSalesReport')}}',
+      url : '{{url("searchSalesReport")}}',
       data :  {
         sales_type : sales_type,
         ponno_setup_id : ponno_setup_id,

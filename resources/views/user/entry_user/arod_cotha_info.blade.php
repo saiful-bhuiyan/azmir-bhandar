@@ -1,20 +1,10 @@
 @if($purchase)
   <div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white rounded shadow-lg md:p-8">
-      <span class="p-1 text-white bg-blue-600">আড়ত চৌথা</span>
-      <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
-      <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>
-      <p class="text-lg font-bold text-red-600">সাথী মার্কেট ইসলামপুর রোড,ফেনী</p>
-      <div class="flex justify-center pt-1 space-x-4 divide-x-2 divide-red-600 item-center">
-        <div class="text-center ">
-          <p class="text-red-600">জাহিদুল ইসলাম নাহিদ</p>
-          <p class="text-blue-600">01839398051</p>
-        </div>
-        <div class="pl-4 text-center">
-          <p class="text-red-600">ওমর ফয়সাল মজুমদার</p>
-          <p class="text-blue-600">01843875890</p>
-        </div>
-      </div>
+      <span class="p-1 text-white bg-blue-600">পন্যের বিবরনী</span>
+      @component('components.project_headline')
+      @endcomponent
+
       <div class="grid grid-cols-4 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-4">
         <div class="col-span-2">
           <p class="text-base font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
@@ -28,9 +18,12 @@
           <table class="w-full text-sm text-center border border-collapse border-slate-500">
             <thead class="text-xs text-gray-700">
               <tr>
-                <th scope="col" class="border border-slate-500">নং</th>
-                <th scope="col" class="border border-slate-500">তারিখ</th>
-                <th scope="col" class="border border-slate-500">ইনভয়েস</th>
+                <button id="sales_btn" class="bg-blue-600 text-white w-full hover:bg-blue-700">সকল বিক্রি</button>
+              </tr>
+              <tr>
+                <th scope="col" class="border border-slate-500 p-0">নং</th>
+                <th scope="col" class="border border-slate-500 all_sales">তারিখ</th>
+                <th scope="col" class="border border-slate-500 all_sales">ইনভয়েস</th>
                 <th scope="col" class="border border-slate-500">সংখ্যা</th>
                 <th scope="col" class="border border-slate-500">ওজন</th>
                 <th scope="col" class="border border-slate-500">দর</th>
@@ -40,6 +33,7 @@
             <tbody>
                 @php
                 $count = 1;
+                $short_count = 1;
                 $total_sale = 0;
                 $total_sale_qty = 0;
                 $total_sale_weight = 0;
@@ -57,7 +51,7 @@
                 $total_sale_weight += $s->sales_weight;
                 $total_mohajon_commission += $purchase->mohajon_commission * $s->sales_weight;
                 @endphp
-                <tr>
+                <tr class="all_sales">
                     <td class="border border-slate-500">{{$count++}}</td>
                     <td class="border border-slate-500">{{date('d-m-Y', strtotime($s->ponno_sales_info->entry_date))}}</td>
                     <td class="border border-slate-500 font-bold text-blue-700"><a class="url" onclick="return false;" href="{{route('ponno_sales_report.memo',$s->sales_invoice)}}">{{$s->sales_invoice}}</a></td>
@@ -65,6 +59,18 @@
                     <td class="border border-slate-500">{{$s->sales_weight}}</td>
                     <td class="border border-slate-500">{{$s->sales_rate}}</td>
                     <td class="border border-slate-500">{{$s->sales_weight * $s->sales_rate}}</td>
+                </tr>
+               @endforeach
+
+              <!-- for short sales -->
+
+               @foreach($short_sales as $ss)
+                <tr class="short_sales">
+                    <td class="border border-slate-500">{{$short_count++}}</td>
+                    <td class="border border-slate-500">{{$ss->sales_qty}}</td>
+                    <td class="border border-slate-500">{{$ss->sales_weight}}</td>
+                    <td class="border border-slate-500">{{$ss->sales_rate}}</td>
+                    <td class="border border-slate-500">{{$ss->sales_weight * $ss->sales_rate}}</td>
                 </tr>
                @endforeach
 
@@ -79,9 +85,9 @@
                 
               @endphp
             </tbody>
-            <tfoot class="">
+            <tfoot class="all_sales">
               <tr>
-                <td colspan="3" class="font-bold border border-slate-500">সর্বমোট বিক্রি :</td>
+                <td colspan="3" class="font-bold border border-slate-500">মোট :</td>
                 <td class="font-bold border border-slate-500">{{$total_sale_qty}}</td>
                 <td class="font-bold border border-slate-500">{{$total_sale_weight}}</td>
                 <td class="font-bold border border-slate-500"></td>
@@ -97,7 +103,35 @@
                 <td class="font-bold border border-slate-500">{{$loss}}</td>
               </tr>
               <tr>
-                <td colspan="6" class="font-bold border border-slate-500">সর্বমোট টাকা : </td>
+                <td colspan="6" class="font-bold border border-slate-500">মোট : </td>
+                <td class="font-bold border border-slate-500">{{$total_sale + $loss}}</td>
+              </tr>
+              @endif
+              @endif
+              <tr>
+            </tfoot>
+
+            <!-- for short sales tfoot -->
+
+            <tfoot class="short_sales">
+              <tr>
+                <td class="font-bold border border-slate-500 p-0">মোট :</td>
+                <td class="font-bold border border-slate-500">{{$total_sale_qty}}</td>
+                <td class="font-bold border border-slate-500">{{$total_sale_weight}}</td>
+                <td class="font-bold border border-slate-500"></td>
+                <td class="font-bold border border-slate-500">{{$total_sale}}</td>
+              </tr>
+              @if($total_amount < 0)
+              @if($purchase->quantity == $total_sale_qty)
+              @php 
+              $loss = 0 - $total_amount;
+              @endphp
+              <tr>
+                <td colspan="4" class="font-bold border border-slate-500">দেনা : </td>
+                <td class="font-bold border border-slate-500">{{$loss}}</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="font-bold border border-slate-500">মোট : </td>
                 <td class="font-bold border border-slate-500">{{$total_sale + $loss}}</td>
               </tr>
               @endif
@@ -130,11 +164,11 @@
             <div class="text-left bg-sky-200">
               <p class="p-1 text-xs text-gray-800">বিক্রি সংখ্যা : {{$total_sale_qty}}</p>
               <p class="p-1 text-xs text-gray-800">মহাজন কমিশন : {{$total_mohajon_commission}}</p>
-              <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost}}</p>
-              <p class="p-1 text-xs text-gray-800">তহরি : {{$purchase->tohori_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">লেবার খরচ : {{$purchase->labour_cost + $labour_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">ট্রাক ভাড়া : {{$purchase->truck_cost + $truck_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">ভ্যান ভাড়া : {{$purchase->van_cost + $van_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">অন্যান্য খরচ : {{$purchase->other_cost + $other_cost}}</p>
+              <p class="p-1 text-xs text-gray-800">তহরি : {{$purchase->tohori_cost + $tohori_cost}}</p>
               
               @if($purchase->purchase_type == 1)
               <p class="p-1 text-xs text-gray-800">মোট ক্রয় : {{$purchase->weight * $purchase->rate}}</p>
@@ -162,3 +196,4 @@
   @else
   <h1>no record found</h1>
   @endif
+

@@ -204,6 +204,27 @@
           success:function(response)
           {
             document.getElementById('table_form').innerHTML = response;
+            $('.short_sales').hide();
+
+            $('.url').click(function() {
+            var left = (screen.width - 800) / 2;
+            var top = (screen.height - 700) / 4;
+
+            var url = $(this).attr('href');
+
+            var myWindow = window.open(url, url,
+                'resizable=yes, width=' + '400' +
+                ', height=' + '1200' + ', top=' +
+                top + ', left=' + left);
+                })
+
+                $('#sales_btn').click(function(){
+                  var current_text = $(this).text();
+                  var newText = current_text === 'শর্ট বিক্রি' ? 'সকল বিক্রি' : 'শর্ট বিক্রি';
+                  $('#sales_btn').text(newText);
+                  $('.all_sales').toggle();
+                  $('.short_sales').toggle();
+                })
           }
         });
       }
@@ -232,5 +253,7 @@
   } );
 
 </script>
+
+
 
 @endsection

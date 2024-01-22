@@ -3,20 +3,8 @@
 
 <div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white md:p-8">
-      <span class="p-1 text-white bg-blue-600">ক্রেতার কৈফিয়ত রিপোর্ট</span>
-      <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
-      <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>
-      <p class="text-lg font-bold text-red-600">সাথী মার্কেট ইসলামপুর রোড,ফেনী</p>
-      <div class="flex justify-center pt-1 space-x-4 divide-x-2 divide-red-600 item-center">
-        <div class="text-center ">
-          <p class="text-red-600">জাহিদুল ইসলাম নাহিদ</p>
-          <p class="text-blue-600">01839398051</p>
-        </div>
-        <div class="pl-4 text-center">
-          <p class="text-red-600">ওমর ফয়সাল মজুমদার</p>
-          <p class="text-blue-600">01843875890</p>
-        </div>
-      </div>
+    @component('components.project_headline')
+    @endcomponent
 
     <div class="xl:w-10/12 lg:w-11/12 w-full mx-auto p-4 relative overflow-x-auto  sm:rounded-lg bg-white mb-6">
     <p class="text-xl uppercase w-[90%] py-3 font-bold text-center pl-4 barlow text-green-800">ক্রেতার কৈফিয়ত রিপোর্ট</p>

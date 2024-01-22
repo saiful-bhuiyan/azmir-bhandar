@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(OtherJomaKhorocEntriesTableSeeder::class);
         $this->call(AdminsTableSeeder::class);
         $this->call(PonnoPurchaseEntriesTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
     }
 }

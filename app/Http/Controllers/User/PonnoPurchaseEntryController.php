@@ -352,7 +352,7 @@ class PonnoPurchaseEntryController extends Controller
 
                 stock::where('purchase_id',$id)->update($stock);
 
-                Toastr::success(__('আপডেট সফল হয়েছে'), __('সফল'));
+                Toastr::success(__('ইনভয়েস '.$id.' আপডেট সফল হয়েছে'), __('সফল'));
             }
             else
             {

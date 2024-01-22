@@ -1,107 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>Home</title>
-    <!-- <link rel="stylesheet" href="./output/tailwind.css" /> -->
-    <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" />
-
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800;900&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@500&display=swap');
-    body{
-        
-        font-family: 'Noto Sans Bengali', sans-serif;
-    }
-    .checkbox {
-    display: none;
-    }
-
-    .slider {
-        width: 40px;
-        height: 20px;
-        background-color: lightgray;
-        border-radius: 10px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        border: 1px solid transparent;
-        transition: .3s;
-        box-shadow: 0 0 10px 0 rgb(0, 0, 0, 0.25) inset;
-        cursor: pointer;
-    }
-
-    .slider::before {
-        content: '';
-        display: block;
-        width: 100%;
-        height: 100%;
-        background-color: #fff;
-        transform: translateX(-20px);
-        border-radius: 10px;
-        transition: .3s;
-        box-shadow: 0 0 10px 3px rgb(0, 0, 0, 0.25);
-    }
-
-    .checkbox:checked ~ .slider::before {
-        transform: translateX(20px);
-        box-shadow: 0 0 10px 3px rgb(0, 0, 0, 0.25);
-    }
-
-    .checkbox:checked ~ .slider {
-        background-color: #2196F3;
-    }
-
-    .checkbox:active ~ .slider::before {
-        transform: translate(0);
-    }
-    footer{
-        font-family: 'Barlow', sans-serif;
-    }
-    .barlow{
-        font-family: 'Barlow', sans-serif;
-    }
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    }
-
-    /* Firefox */
-    input[type=number] {
-    -moz-appearance: textfield;
-    }
-
-    </style>
-</head>
+@extends('user.layout.report_layout')
+@section('report_body')
 
 <body class="">
 @if($purchase)
   <div class="container mx-auto max-w-screen ">
     <div class="p-4 px-4 mb-6 text-center bg-white rounded shadow-lg md:p-8">
       <span class="p-1 text-white bg-blue-600">পন্যের বিবরনী</span>
-      <h1 class="pt-4 text-3xl font-bold text-red-600">নিউ আজমীর ভান্ডার</h1>
-      <p class="text-lg font-bold text-blue-600">হলুদ,মরিচ,বাদাম,পেঁয়াজ,রসুন,আদা এবং যাবতীয় কাচা মালের আড়ত</p>
-      <p class="text-lg font-bold text-red-600">সাথী মার্কেট ইসলামপুর রোড,ফেনী</p>
-      <div class="flex justify-center pt-1 space-x-4 divide-x-2 divide-red-600 item-center">
-        <div class="text-center ">
-          <p class="text-red-600">জাহিদুল ইসলাম নাহিদ</p>
-          <p class="text-blue-600">01839398051</p>
-        </div>
-        <div class="pl-4 text-center">
-          <p class="text-red-600">ওমর ফয়সাল মজুমদার</p>
-          <p class="text-blue-600">01843875890</p>
-        </div>
-      </div>
+      @component('components.project_headline')
+      @endcomponent
+
       <div class="grid grid-cols-6 gap-4 pt-4 text-sm text-left gap-y-2 md:grid-cols-6">
         <div class="col-span-2">
           <p class="text-base font-bold text-red-600">চৌথা/ইনভোয়েস নং : {{$purchase->id}}</p>
@@ -114,7 +21,7 @@
         </div>
       </div>
       <div class="flex mt-4">
-        <div class="relative w-2/3 mb-6 bg-red-100">
+        <div class="relative flex flex-col justify-between w-2/3 mb-6 bg-red-100">
           <table class="w-full text-sm text-center border border-collapse border-slate-500">
             <thead class="text-xs text-gray-700">
               <tr>
@@ -163,8 +70,6 @@
                 $total_amount = $total_sale + $total_cost;
                 
               @endphp
-            </tbody>
-            <tfoot class="">
               <tr>
                 <td class="font-bold border border-slate-500">মোট :</td>
                 <td class="font-bold border border-slate-500">{{$total_sale_qty}}</td>
@@ -172,12 +77,12 @@
                 <td class="font-bold border border-slate-500"></td>
                 <td class="font-bold border border-slate-500">{{$total_sale}}</td>
               </tr>
-              <tr>
-                <td colspan="4" class="font-bold border text-base border-slate-500">নগদ পাওনা : </td>
-                <td class="font-bold border text-base border-slate-500">{{$total_sale - $total_cost}}</td>
-              </tr>
-            </tfoot>
+            </tbody>
+
           </table>
+          <div class=" bottom-10 py-4 w-full text-center">
+                <div class="font-bold text-2xl ">নগদ পাওনা : {{$total_sale - $total_cost}} টাকা</div>
+          </div>
         </div>
         <div class="relative w-1/3 mb-6 overflow-x-auto bg-white">
           <div class="font-bold">
@@ -244,3 +149,5 @@
             top + ', left=' + left);
     })
 </script>
+
+@endsection

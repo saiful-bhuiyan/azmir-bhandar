@@ -1,25 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sales Memo Template</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap');
-    .font-bangla{
-      font-family: 'Noto Sans Bengali', sans-serif;
-    }
-    @media print {
-    body {
-      -webkit-print-color-adjust: exact;
-      width: 400px;
-      height: auto;
-    }
-    }
-  </style>
-</head>
-<body>
+@extends('user.layout.report_layout')
+@section('report_body')
+
 @if($sales)
   <div class="mx-auto w-[400px] h-[400px]">
     <div class="my-2 text-center">
@@ -160,3 +141,5 @@
   @endif
 </body>
 </html>
+
+@endsection

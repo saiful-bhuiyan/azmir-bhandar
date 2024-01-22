@@ -24,7 +24,7 @@
                     <option value="" selected>সিলেক্ট</option>
                     @if($mohajon_setup)
                     @foreach($mohajon_setup as $b)
-                    <option value="{{$b->area}}">{{$b->area}}</option>
+                    <option value="{{$b->area}}" {{ old('area') == $b->area ? 'selected'  : '' }}>{{$b->area}}</option>
                     @endforeach
                     @endif
                 </select>
@@ -60,7 +60,7 @@
 
               <div class="md:col-span-2">
                 <label for="marfot">মারফত :</label>
-                <input type="text" name="marfot" id="marfot" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" required/>
+                <input type="text" name="marfot" id="marfot" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ old('marfot') ?  old('marfot') : '' }}" required/>
                 @if($errors->has('marfot'))
                 <span class="text-sm text-red-600">{{ $errors->first('marfot') }} </span>
                 @endif
@@ -239,6 +239,10 @@
                 success:function(response)
                 {
                     $('#address').html(response);
+                    @if(old('address'))
+                    $('#address').val('{{old("address")}}');
+                    getMohajonNameByAddress();
+                    @endif
                 }
 
             });
@@ -335,6 +339,10 @@
             });
         }
     }
+
+    $(document).ready(function(){
+      getMohajonAddressByArea();
+    })
 
     $('#save').on('submit',function(e){
 

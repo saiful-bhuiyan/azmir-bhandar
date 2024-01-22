@@ -32,16 +32,57 @@
             </div>
             <div class="min-h-20 font-sans">
                 @php
-                use App\Models\User;
 
-                $users = User::select('name','email')->get();
+                use App\Models\User;
+                use App\Models\ponno_purchase_entry;
+                use App\Models\arod_chotha_info;
+                use App\Models\arod_chotha_entry;
+                use Carbon\Carbon;
+                use Illuminate\Http\Request;
+                use Illuminate\Support\Facades\Cache;
+                         
+                $incomplete_purchase = ponno_purchase_entry::where('purchase_type',1)->where('weight',0)->orWhere('rate',0)->count();
+
+                $incomplete_chotha = ponno_purchase_entry::where('purchase_type', 2)
+                ->whereNotIn('id', function ($query) {
+                    $query->select('purchase_id')
+                        ->from('arod_chotha_infos');
+                })
+                ->where('quantity', '!=', function ($query) {
+                    $query->selectRaw('COALESCE(SUM(sales_qty), 0)')
+                        ->from('arod_chotha_entries')
+                        ->whereColumn('arod_chotha_entries.purchase_id', '=', 'ponno_purchase_entries.id');
+                })
+                ->where('quantity', '=', function ($query) {
+                    $query->selectRaw('COALESCE(SUM(sales_qty), 0)')
+                        ->from('ponno_sales_entries')
+                        ->whereColumn('ponno_sales_entries.purchase_id', '=', 'ponno_purchase_entries.id');
+                })
+                ->count();
+
+
+                $users = User::all();
                 @endphp
-                @foreach($users as $user)
+
+                @foreach ($users as $user)
                 <div class="w-auto my-1">
                     <p class="mx-4 font-bold text-base">Name : {{$user->name}}</p>
                     <p class="mx-4 font-bold text-base">Email : {{$user->email}}</p>
-                    <p class="mx-4 font-bold text-base">Last Active : </p>
-                    <span class="mx-4 inline-flex items-center rounded-md bg-green-700 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10">Active</span>
+                    <p class="mx-4 font-bold text-base">IP Address : {{$user->ip_address}}</p>
+                    @if(Cache::has('user-is-online-' . $user->id))
+                    @php
+                    $color = 'bg-green-700';
+                    $status = 'online';
+                    @endphp
+                    <p class="mx-4 font-bold text-base">Last Active : Now</p>
+                    @else
+                    @php
+                    $color = 'bg-red-700';
+                    $status = 'offline';
+                    @endphp
+                    <p class="mx-4 font-bold text-base">Last Active :@if($user->last_seen == null) None @else {{ Carbon::parse($user->last_seen)->diffForHumans() }} @endif</p>
+                    @endif
+                    <span class="mx-4 inline-flex items-center rounded-md {{$color}} px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10">{{$status}}</span>
                     <hr class="py-2 w-auto bg-gray-100 mt-1">
                     </hr>
                 </div>
@@ -127,17 +168,24 @@
             </div>
 
             <div id="entryDiv" class="grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-2 border-solid">
-                <a href="{{route('ponno_purchase_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
-                    <img src="{{asset('frontend')}}/image/import.png" alt="" class="w-8 h-8 mx-auto">
+                
+                <a href="{{ route('ponno_purchase_entry.index') }}" onclick="return false;" class="url relative h-auto grid justify-center items-center p-4 border">
+                <div>
+                    <img src="{{ asset('frontend') }}/image/import.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য গ্রহন</p>
+                    <span class="w-6 h-6 rounded-full bg-red-600 absolute top-1 right-1 text-center text-white">{{$incomplete_purchase}}</span>
+                </div>
                 </a>
                 <a href="{{route('ponno_sales_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/bikroy_marfot.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">পন্য বিক্রয়</p>
                 </a>
-                <a href="{{route('arod_chotha.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('arod_chotha.index')}}" onclick="return false;" class="url relative h-auto grid justify-center items-center p-4 border">
+                <div>
                     <img src="{{asset('frontend')}}/image/order.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">আড়ৎ চৌথা</p>
+                    <span class="w-6 h-6 rounded-full bg-red-600 absolute top-1 right-1 text-center text-white">{{$incomplete_chotha}}</span>
+                </div>
                 </a>
                 <a href="{{route('ponno_purchase_cost_entry.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
                     <img src="{{asset('frontend')}}/image/kyc.png" alt="" class="w-8 h-8 mx-auto">

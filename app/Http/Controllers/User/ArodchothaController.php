@@ -12,6 +12,7 @@ use App\Models\mohajon_setup;
 use App\Models\kreta_setup;
 use App\Models\mohajon_commission_setup;
 use App\Models\kreta_commission_setup;
+use App\Models\ponno_purchase_cost_entry;
 use App\Models\ponno_purchase_entry;
 use App\Models\temp_ponno_sale;
 use App\Models\ponno_sales_info;
@@ -262,8 +263,33 @@ class ArodchothaController extends Controller
         }
         else
         {
+            $purchase = ponno_purchase_entry::where('id',$purchase->id)->first();
             $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
-            return view('user.entry_user.arod_cotha_info',compact('purchase','sales'));
+            $short_sales = ponno_sales_entry::selectRaw('SUM(sales_qty) as sales_qty, SUM(sales_weight) as sales_weight, sales_rate')
+            ->where('purchase_id', $purchase->id)->groupBy('sales_rate')->orderBy('sales_rate', 'DESC')->get();
+            
+            $labour_cost = 0;
+            $other_cost = 0;
+            $truck_cost = 0;
+            $van_cost = 0;
+            $tohori_cost = 0;
+            $ponno_cost = ponno_purchase_cost_entry::where('purchase_id',$purchase->id)->get();
+            foreach($ponno_cost as $v)
+            {
+                if($v->cost_name == 1){
+                     $labour_cost += $v->taka;
+                }else if($v->cost_name == 2){
+                    $other_cost += $v->taka;
+                }else if($v->cost_name == 3){
+                    $truck_cost += $v->taka;
+                }else if($v->cost_name == 4){
+                    $van_cost += $v->taka;
+                }else if($v->cost_name == 5){
+                    $tohori_cost += $v->taka;
+                }
+            }
+            
+            return view('user.entry_user.arod_cotha_info',compact('purchase','sales','short_sales','labour_cost','other_cost','truck_cost','van_cost','tohori_cost'));
         }
 
         

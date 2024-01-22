@@ -296,7 +296,12 @@ class PonnoSalesEntryController extends Controller
         if($sales_info)
         {
             $sales_entry = ponno_sales_entry::where('sales_invoice',$data->sales_invoice)->get();
-            $stock = stock::where('quantity' ,'>', 0)->get();
+            $stock = stock::where('quantity', '>', 0)
+            ->orWhere(function ($query) use ($data) {
+                $query->where('quantity', 0)
+                      ->where('purchase_id', $data->purchase_id);
+            })
+            ->get();
             $kreta_area = kreta_setup::select('area')->groupBy('area')->where('status',1)->get();
             $marfot = bikroy_marfot_setup::get();
 
@@ -333,25 +338,25 @@ class PonnoSalesEntryController extends Controller
                 'sales_rate.numeric'=>'সংখ্যা ইনপুট করুন',
             ]);
 
-            if($request->read_current_qty >= $request->sales_qty)
+            $stock_sales = ponno_sales_entry::find($id);
+            $stock_qty = $request->read_current_qty;
+            if($stock_sales->purchase_id == $request->purchase_id)
+            {
+                $stock_qty += $stock_sales->sales_qty;
+            }
+            if($stock_qty >= $request->sales_qty)
             {
                 $data = array(
                     'purchase_id'=>$request->purchase_id,
                     'sales_qty'=>$request->sales_qty,
                     'sales_weight'=>$request->sales_weight,
                     'sales_rate'=>$request->sales_rate,
+                    'kreta_commission'=>$request->kreta_commission ? $request->kreta_commission : 0,
                     'labour'=>$request->labour ? $request->labour : 0,
                     'other'=>$request->other ? $request->other : 0,
                 );
 
                 $purchase = ponno_purchase_entry::where('id',$request->purchase_id)->first();
-
-
-                $kreta = kreta_commission_setup::where('ponno_setup_id',$purchase->ponno_setup->id)->first();
-
-                $kreta_commission = intval($kreta->commission_amount * $request->sales_weight);
-
-                $data['kreta_commission'] = $kreta_commission;
 
                 $old_data = ponno_sales_entry::find($id);
 
@@ -587,10 +592,6 @@ class PonnoSalesEntryController extends Controller
             $stock = stock::where('quantity' ,'>', 0)->get();
             $kreta_area = kreta_setup::select('area')->groupBy('area')->where('status',1)->get();
             $marfot = bikroy_marfot_setup::get();
-
-            // $viewContent = view('user.entry_admin.sales_update',compact('sales_info','sales_entry','stock','kreta_area','marfot'))->render();
-
-            // return response()->json(['viewContent' => $viewContent]);
 
             return view('user.entry_admin.sales_update',compact('sales_info','sales_entry','stock','kreta_area','marfot'));
         }

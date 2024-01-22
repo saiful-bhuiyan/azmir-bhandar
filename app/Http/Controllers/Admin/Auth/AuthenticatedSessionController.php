@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AdminLoginRequest;
+use App\Models\Admin;
+use App\Notifications\AdminLoginNotification;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +34,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/admin');
+        $admin = Auth::guard('admin')->user();
+
+        // Sending notification to other admins
+      
+            $admin->notify(new AdminLoginNotification($admin));
+        
 
         return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
 

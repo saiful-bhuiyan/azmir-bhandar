@@ -51,6 +51,9 @@ class PonnoPurchaseReportController extends Controller
     {
         $purchase = ponno_purchase_entry::where('id',$id)->first();
         $sales = ponno_sales_entry::where('purchase_id', $purchase->id)->orderBy('sales_rate','DESC')->get(); 
+        $short_sales = ponno_sales_entry::selectRaw('SUM(sales_qty) as sales_qty, SUM(sales_weight) as sales_weight, sales_rate')
+        ->where('purchase_id', $purchase->id)->groupBy('sales_rate')->orderBy('sales_rate', 'DESC')->get();
+        
         $labour_cost = 0;
         $other_cost = 0;
         $truck_cost = 0;
@@ -72,7 +75,7 @@ class PonnoPurchaseReportController extends Controller
             }
         }
         
-        return view('user.report.ponno_purchase_report.purchase_memo',compact('purchase','sales','labour_cost','other_cost','truck_cost','van_cost','tohori_cost'));
+        return view('user.report.ponno_purchase_report.purchase_memo',compact('purchase','sales','short_sales','labour_cost','other_cost','truck_cost','van_cost','tohori_cost'));
     }
     
 }

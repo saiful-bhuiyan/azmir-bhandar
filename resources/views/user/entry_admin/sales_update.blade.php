@@ -112,7 +112,7 @@
 
                 <div class="md:col-span-1">
                   <label for="sales_weight">বিক্রয় ওজন :</label>
-                  <input type="number" step="any" name="sales_weight" id="sales_weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->sales_weight : '' }}" onkeyup=" sumTotalSale();" required/>
+                  <input type="number" step="any" name="sales_weight" id="sales_weight" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->sales_weight : '' }}" onkeyup=" sumCommissionAmount();" required/>
                   @if($errors->has('sales_weight'))
                   <span class="text-sm text-red-600">{{ $errors->first('sales_weight') }} </span>
                   @endif
@@ -133,7 +133,7 @@
 
                 <div class="md:col-span-1">
                   <label for="kreta_commission">ক্রেতা কমিশন :</label>
-                  <input type="text" id="kreta_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value=""  />
+                  <input type="text" id="kreta_commission" name="kreta_commission" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{ isset($data) ? $data->kreta_commission : '' }}" onkeyup=" sumTotalSale();" />
                   <input type="hidden" id="kreta_com_per_kg" class="h-10 border-none mt-1 rounded px-4 w-full bg-gray-200" value="{{ isset($data) ? $data->ponno_purchase_entry->ponno_setup->kreta_commission_setup->commission_amount : ''}}" readonly />
                 </div>
 
@@ -402,7 +402,7 @@
                 <td class="px-2 py-3">{{$s->sales_qty}}</td>
                 <td class="px-2 py-3">{{$s->sales_weight}}</td>
                 <td class="px-2 py-3">{{$s->sales_rate}}</td>
-                <td class="px-2 py-3">{{$s->sales_weight * $s->sales_rate + $s->labour + $s->other + $v->kreta_commission}}</td>
+                <td class="px-2 py-3">{{$s->sales_weight * $s->sales_rate + $s->labour + $s->other + $s->kreta_commission}}</td>
                 <td>
                   <div class="flex gap-x-2">
                   <a href="{{route('ponno_sales_entry.edit', $s->id)}}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">ইডিট</a>
@@ -417,7 +417,7 @@
                   </div>
                 </td>
                 @php
-                $total += $s->sales_weight * $s->sales_rate + $s->labour + $s->other + $v->kreta_commission;
+                $total += $s->sales_weight * $s->sales_rate + $s->labour + $s->other + $s->kreta_commission;
                 @endphp
             </tr>
             @endforeach
@@ -585,16 +585,14 @@ $( function() {
       var sales_rate = parseFloat($('#sales_rate').val() || 0);
       var labour = parseFloat($('#labour').val() || 0);
       var other = parseFloat($('#other').val() || 0);
-      var kreta_com_per_kg = parseFloat($('#kreta_com_per_kg').val() || 0);
+      var kreta_commission = parseFloat($('#kreta_commission').val() || 0);
 
       if(sales_weight > 0  && sales_rate > 0)
       {
         var total = sales_weight *  sales_rate;
-        var kreta_com = sales_weight * kreta_com_per_kg;
-        var num_kreta_com = parseFloat(kreta_com);
+        var num_kreta_com = parseFloat(kreta_commission);
         var all_total = total + labour + other +num_kreta_com;
         $('#read_taka').val(total.toFixed(2));
-        $('#kreta_commission').val(kreta_com.toFixed(2));
         $('#read_total_taka').val(all_total.toFixed(2));
       }
       else
@@ -603,6 +601,18 @@ $( function() {
         $('#read_total_taka').val("");
       }
 
+    }
+
+    function sumCommissionAmount()
+    {
+      var sales_weight = parseFloat($('#sales_weight').val() || 0);
+      var kreta_com_per_kg = parseFloat($('#kreta_com_per_kg').val() || 0);
+      if(sales_weight > 0)
+      {
+        var kreta_com = sales_weight * kreta_com_per_kg;
+        var num_kreta_com = parseFloat(kreta_com);
+        $('#kreta_commission').val(kreta_com.toFixed(2));
+      }
     }
 
     function getAmountByKreta()
@@ -615,38 +625,39 @@ $( function() {
       {
         $.ajax({
           type : 'GET',
-          url : '{{url("getAmountByKreta")}}',
+          url : '{{url("getAmountByKreta")}}/0',
  
           success : function(response)
           {
             var amount = $.parseJSON(response);
 
-            $('#current_amount').val(amount.current_amount);
+            $('#current_amount').val(amount.current_amount.toFixed(2));
+            $('#all_total_taka').val((amount.old_amount + amount.current_amount).toFixed(2));
           }
         });
         
       }
       else
       {
-        if(purchase_id > 0 && kreta_setup_id > 0)
+        if( kreta_setup_id != "")
         {
           $.ajax({
             type : 'GET',
-            url : '{{url("getAmountByKreta")}}',
+            url : '{{url("getAmountByKreta")}}/'+kreta_setup_id,
       
             success : function(response)
             {
               var amount = $.parseJSON(response);
 
-              $('#old_amount').val(amount.old_amount);
-              $('#current_amount').val(amount.current_amount);
+              $('#old_amount').val(amount.old_amount.toFixed(2));
+              $('#current_amount').val(amount.current_amount.toFixed(2));
+              $('#all_total_taka').val((amount.old_amount + amount.current_amount).toFixed(2));
             }
           });
         }
       }
       
     }
-
     
 
     getAmountByKreta();

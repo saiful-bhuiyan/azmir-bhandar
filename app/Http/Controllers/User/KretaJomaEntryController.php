@@ -235,7 +235,17 @@ class KretaJomaEntryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = kreta_joma_entry::destroy($id);
+        if($delete)
+        {
+            Toastr::success(__('ডিলিট সফল হয়েছে'), __('সফল'));
+        }
+        else
+        {
+            Toastr::error(__('ডিলিট সফল হয়নি'), __('ব্যর্থ'));
+        }
+
+        return redirect('kreta_joma_entry_admin');
     }
 
     public function admin(Request $request)

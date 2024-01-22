@@ -135,7 +135,7 @@ function search()
         {
             $.ajax({
                 type : 'POST',
-                url : '{{url('getAmanotNameByAddress')}}',
+                url : '{{url("getAmanotNameByAddress")}}',
                 data : {
                     address : address,
                 },

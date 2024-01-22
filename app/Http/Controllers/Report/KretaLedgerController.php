@@ -108,7 +108,7 @@ class KretaLedgerController extends Controller
             
             $kreta = kreta_setup::where('id',$request->kreta_setup_id)->first();
 
-            $total_due = $kreta->old_amount;
+            $total_due = $kreta->old_amount ? $kreta->old_amount : 0;
             $total_due += $old_sales;
             $total_due -= $old_joma;
             $total_due -= $old_koifiyot;
