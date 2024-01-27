@@ -68,9 +68,12 @@
                 @endphp
 
                 @if($mohajon_setup)
+                @php
+                $total += $mohajon_setup->old_amount;
+                @endphp
                 <tr class="border border-collapse odd:bg-white even:bg-gray-100">
-                    <td colspan="8" class="px-4 py-3 text-right">সাবেক পাওনা :</td>
-                    <td class="px-4 py-3 text-sm font-bold text-red-600 ">{{$total += $mohajon_setup->old_amount}}</td>
+                    <td colspan="9" class="px-4 py-3 text-right">সাবেক দেনা :</td>
+                    <td class="px-4 py-3 text-sm font-bold text-red-600 ">{{ floatval($total) }}</td>
                 </tr>
                 @endif
 

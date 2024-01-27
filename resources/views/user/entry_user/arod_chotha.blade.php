@@ -74,10 +74,17 @@
                 </div>
               
 
-              <div class="md:col-span-3">
+              <div class="md:col-span-4">
                 <label for="purchase_id">গ্রহণ সংখ্যা / পন্যের নাম / সাইজ / মার্কা / গ্রহনের ধরণ:</label>
                 <select name="purchase_id" id="purchase_id" class="w-full h-10 px-4 mt-1 border rounded bg-gray-50" onchange="loadArodChothaTable();" required>
                   <option value="" selected>সিলেক্ট</option>
+                  @if($incomplete_chotha)
+                    @foreach($incomplete_chotha as $v)
+                    <option value="{{$v->id}}">ই - {{$v->id}} / @if($v->purchase_type == 2){{$v->mohajon_setup->name}}@else AB মার্কা @endif / {{$v->quantity}} / {{$v->ponno_setup->ponno_name}} /
+                       {{$v->ponno_size_setup->ponno_size}} / {{$v->ponno_marka_setup->ponno_marka}} /
+                        @if($v->purchase_type == 1) নিজ খরিদ @else কমিশন @endif</option>
+                    @endforeach
+                  @endif
                 </select>
                 @if($errors->has('purchase_id'))
                 <span class="text-sm text-red-600">{{ $errors->first('purchase_id') }} </span>

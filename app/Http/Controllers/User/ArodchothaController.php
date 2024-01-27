@@ -9,15 +9,9 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use DataTables;
 use App\Models\mohajon_setup;
-use App\Models\kreta_setup;
-use App\Models\mohajon_commission_setup;
-use App\Models\kreta_commission_setup;
 use App\Models\ponno_purchase_cost_entry;
 use App\Models\ponno_purchase_entry;
-use App\Models\temp_ponno_sale;
-use App\Models\ponno_sales_info;
 use App\Models\ponno_sales_entry;
-use App\Models\stock;
 use Carbon\Carbon;
 
 class ArodchothaController extends Controller
@@ -30,7 +24,24 @@ class ArodchothaController extends Controller
     public function index()
     {
         $mohajon_setup = mohajon_setup::select('area')->groupBy('area')->get();
-        return view('user.entry_user.arod_chotha',compact('mohajon_setup'));
+
+        $incomplete_chotha = ponno_purchase_entry::where('purchase_type', 2)
+                ->whereNotIn('id', function ($query) {
+                    $query->select('purchase_id')
+                        ->from('arod_chotha_infos');
+                })
+                ->where('quantity', '!=', function ($query) {
+                    $query->selectRaw('COALESCE(SUM(sales_qty), 0)')
+                        ->from('arod_chotha_entries')
+                        ->whereColumn('arod_chotha_entries.purchase_id', '=', 'ponno_purchase_entries.id');
+                })
+                ->where('quantity', '=', function ($query) {
+                    $query->selectRaw('COALESCE(SUM(sales_qty), 0)')
+                        ->from('ponno_sales_entries')
+                        ->whereColumn('ponno_sales_entries.purchase_id', '=', 'ponno_purchase_entries.id');
+                })
+                ->get();
+        return view('user.entry_user.arod_chotha',compact('mohajon_setup','incomplete_chotha'));
     }
 
     public function arod_chotha_entry($purchase_id)

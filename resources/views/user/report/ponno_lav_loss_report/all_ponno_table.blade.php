@@ -211,7 +211,7 @@
                         <td class="px-2 py-3 font-bold text-sm text-black">-</td>
                         @else
                         @php
-                        $total_loss += $total_amount;
+                        $total_loss -= $total_amount;
                         @endphp
                         <td class="px-2 py-3 font-bold text-sm text-black">-</td>
                         <td class="px-2 py-3 font-bold text-sm text-red-600">{{ intval($total_amount) * -1 }}</td> 
@@ -222,7 +222,7 @@
                     
                     <tr class="border border-collapse even:bg-gray-100 odd:bg-white">
                         @if($total_lav >= 0)
-                        <td colspan="13" class="px-2 py-3 text-center font-bold text-base text-green-600">আপনার মোট লাভ হয়েছে : {{$total_lav}} টাকা</td>
+                        <td colspan="13" class="px-2 py-3 text-center font-bold text-base text-green-600">আপনার মোট লাভ হয়েছে : {{$total_lav - $total_loss}} টাকা</td>
                         @else
                         <td colspan="13" class="px-2 py-3 text-center font-bold text-base text-red-600">আপনার মোট লস হয়েছে : {{$total_loss}} টাকা</td>
                         @endif

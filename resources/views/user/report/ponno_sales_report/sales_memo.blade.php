@@ -111,7 +111,7 @@
                 @if($sales->sales_type == 2)
                 @php
                 $sabek = 0;
-                $sabek += $kreta_old_amount;
+                $sabek += floatval($kreta_old_amount);
                 @endphp
                 <tr>
                     <td colspan="6" class="font-bold border border-slate-500 text-right px-2">(+) সাবেক : </td>

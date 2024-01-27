@@ -113,7 +113,7 @@
             </div>
             <br>
             <div id="setupDiv" class="grid grid-cols-3 lg:grid-cols-5 gap-x-2 gap-y-2 border-solid">
-                <a href="{{route('mohajon_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border url">
+                <a href="{{route('mohajon_setup.index')}}" onclick="return false;" class="grid justify-center items-center p-4 border transition-all hover:bg-cyan-600 hover:text-white rounded url">
                     <img src="{{asset('frontend')}}/image/supplier.png" alt="" class="w-8 h-8 mx-auto">
                     <p class="text-center mt-2">মহাজন সেটাপ</p>
                 </a>

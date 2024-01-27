@@ -105,6 +105,7 @@ class PonnoSaleReportController extends Controller
         if($sales->sales_type == 2)
         {
             $kreta_setup_id = $sales->kreta_setup->id;
+            $entry_date = $sales->entry_date;
             $kreta_old_amount = $sales->kreta_setup->old_amount;
                     $total_taka = 0;
 
@@ -112,10 +113,10 @@ class PonnoSaleReportController extends Controller
                         $query->whereHas('ponno_purchase_entry',function($query2) use($kreta_setup_id){
                             $query2->whereIn('kreta_setup_id',[$kreta_setup_id]);
                         });
-                    })->where('sales_type',2)->sum('total_taka');
+                    })->where('sales_type',2)->where('entry_date','<=',$entry_date)->sum('total_taka');
 
-                    $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
-                    $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->sum('taka');
+                    $joma = kreta_joma_entry::where('kreta_setup_id',$kreta_setup_id)->where('entry_date','<',$entry_date)->sum('taka');
+                    $koifiyot = kreta_koifiyot_entry::where('kreta_setup_id',$kreta_setup_id)->where('entry_date','<',$entry_date)->sum('taka');
             $kreta_old_amount += $old_sales ? $old_sales : 0;
             $kreta_old_amount -= $joma ? $joma : 0;
             $kreta_old_amount -= $koifiyot ? $koifiyot : 0;
